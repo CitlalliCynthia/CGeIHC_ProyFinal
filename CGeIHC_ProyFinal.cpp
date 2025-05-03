@@ -47,6 +47,7 @@ Camera camera;
 
 Texture plainTexture;
 Texture pisoTexture;
+Texture rejaTexture;
 
 ///////////////////
 //Definir modelos//
@@ -56,12 +57,15 @@ Texture pisoTexture;
 Model RuedaFortuna_M;
 Model Neuvillette_Genshin_M;
 Model Furina_Genshin_M;
+
 // Puesto Helados
 Model PuestoHelado_M;
 Model MariusCasual_M;
 Model Sigwinne_Genshin_M;
+
 // Banca Puesto de Helados
 Model Wriothesley_Genshin_M;
+
 // Puesto Dardos
 Model PuestoDardos_M;
 Model Globo1_M;
@@ -70,67 +74,125 @@ Model Globo3_M;
 Model Dardo_M;
 Model Firefly_StarRail_M;
 Model LukeNormal_M;
+
 // Carrusel
 Model Carrusel_Base_M;
 Model Carrusel_M;
 Model Lyney_M;
+
 // Baño Puesto Dardos
 Model Bano_M;
 Model MariusChino_M;
+
 // Puesto Hot Dogs
 Model PuestoHotDog_M;
 Model Jean_Genshin_M;
 Model VynNormal_M;
+
 // Banca Puesto de Hot Dogs
 Model Klee_Genshin_M;
+
 // Banca Puesto Palomitas
 Model Sunday_StarRail_M;
+
 // Artem Protagonista
 Model ArtemNormal_M;
+
 // Puesto Palomitas
 Model PuestoPalomitas_M;
 Model Feixiao_StarRail_M;
+
 // Puesto Lanzamiento Hacha
 Model LanzamientoHacha_M;
 Model Hacha_M;
 Model Wanderer_Genshin_M;
+
 // Puesto Dados
 Model MesaDados_M;
 Model Aventurine_StarRail_M;
+
 // Puesto Boliche
 Model Boliche_M;
 Model Rendija_Boliche_M;
 Model Bolo_M;
 Model Bola_Boliche_M;
 Model Ayato_Genshin_M;
+
 // Puesto Golpear al Topo
 Model GolpearTopo_M;
 Model Yanqing_StarRail_M;
+
 // Puesto Algodón Azúcar
 Model MaquinaAlgodon_M;
 Model Robin_StarRail_M;
+
 // Puesto Carros Chocones
 Model CarrosChocones_M;
 Model ArtemCasual_Themis_M;
+
 // Jaula Bateo
 Model PuestoBateo_M;
 Model Bate_M;
 Model PelotaBateo_M;
 Model LukeCasual_Themis_M;
+
 // Baño Boliche
 Model Ratio_StarTail_M;
+
 // Puesto de Tickets
 Model PuestoTickets_M;
+
 // Banca Boliche
 Model Banca_Genshin_M;
 Model VynChino_Themis_M;
+
 // Puesto de Tacos
 Model PuestoTacos_M;
 Model Herta_StarTail_M;
 Model Xiao_Genshin_M;
+
 // Decoraciones
 Model Lampara_Genshin_M;
 Model Bote_StarRail_M;
+
+//Plataforma Dodoco
+Model Plataforma_Genshin_M;
+
+//Mesa Comida Genshin
+Model MesaComida;
+Model LecheDango;
+
+//Stand madera Tears of Themis
+Model Stand_Dardos_M;
+Model Stand_HotDog_M;
+Model Stand_Taquilla_M;
+Model Stand_Carrusel_M;
+Model Stand_Carros_M;
+Model Stand_Comida_M;
+Model Stand_Dados_M;
+Model Stand_Topos_M;
+
+//Puesto Inazuma
+Model Ixbalanque_M;
+Model PuestoInazuma_M;
+
+//Globos de Genshin
+Model Globo_Enojado_M;
+Model Globo_Feliz_M;
+Model Globo_Verde_M;
+Model Globo_Naranja_M;
+
+//Gatos Star Rail
+Model Gato_Basura_M;
+Model Gato_Blade_M;
+Model Gato_Clara_M;
+Model Gato_DanHeng_M;
+Model Gato_Kafka_M;
+Model Gato_March_M;
+Model Gato_Naranja_M;
+Model Gato_RuanMei_M;
+Model Gato_Herta_M;
+Model Gato_Verde_M;
 
 Skybox skybox;
 
@@ -192,21 +254,6 @@ void calcAverageNormals(unsigned int* indices, unsigned int indiceCount, GLfloat
 
 void CreateObjects()
 {
-	unsigned int indices[] = {
-		0, 3, 1,
-		1, 3, 2,
-		2, 3, 0,
-		0, 1, 2
-	};
-
-	GLfloat vertices[] = {
-		//	x      y      z			u	  v			nx	  ny    nz
-			-1.0f, -1.0f, -0.6f,	0.0f, 0.0f,		0.0f, 0.0f, 0.0f,
-			0.0f, -1.0f, 1.0f,		0.5f, 0.0f,		0.0f, 0.0f, 0.0f,
-			1.0f, -1.0f, -0.6f,		1.0f, 0.0f,		0.0f, 0.0f, 0.0f,
-			0.0f, 1.0f, 0.0f,		0.5f, 1.0f,		0.0f, 0.0f, 0.0f
-	};
-
 	unsigned int floorIndices[] = {
 		0, 2, 1,
 		1, 2, 3
@@ -219,46 +266,28 @@ void CreateObjects()
 		10.0f, 0.0f, 10.0f,		10.0f, 10.0f,	0.0f, -1.0f, 0.0f
 	};
 
-	unsigned int vegetacionIndices[] = {
+	unsigned int rejaIndices[] = {
 	   0, 1, 2,
 	   0, 2, 3,
-	   4,5,6,
-	   4,6,7
 	};
 
-	GLfloat vegetacionVertices[] = {
-		-0.5f, -0.5f, 0.0f,		0.0f, 0.0f,		0.0f, 0.0f, 0.0f,
-		0.5f, -0.5f, 0.0f,		1.0f, 0.0f,		0.0f, 0.0f, 0.0f,
-		0.5f, 0.5f, 0.0f,		1.0f, 1.0f,		0.0f, 0.0f, 0.0f,
-		-0.5f, 0.5f, 0.0f,		0.0f, 1.0f,		0.0f, 0.0f, 0.0f,
-
-		0.0f, -0.5f, -0.5f,		0.0f, 0.0f,		0.0f, 0.0f, 0.0f,
-		0.0f, -0.5f, 0.5f,		1.0f, 0.0f,		0.0f, 0.0f, 0.0f,
-		0.0f, 0.5f, 0.5f,		1.0f, 1.0f,		0.0f, 0.0f, 0.0f,
-		0.0f, 0.5f, -0.5f,		0.0f, 1.0f,		0.0f, 0.0f, 0.0f,
-
+	GLfloat rejaVertices[] = {
+		-12.0f, 0.0f, 0.0f,			0.0f, 0.0f,		0.0f, 0.0f, 0.0f, //inf izq
+		12.0f, 0.0f, 0.0f,			1.0f, 0.0f,		0.0f, 0.0f, 0.0f, //inf der
+		12.0f, 12.0f, 0.0f,			1.0f, 1.0f,		0.0f, 0.0f, 0.0f, //sup der
+		-12.0f, 12.0f, 0.0f,		0.0f, 1.0f,		0.0f, 0.0f, 0.0f, //sup izq
 
 	};
-	
+
 	Mesh *obj1 = new Mesh();
-	obj1->CreateMesh(vertices, indices, 32, 12);
+	obj1->CreateMesh(floorVertices, floorIndices, 32, 6);
 	meshList.push_back(obj1);
 
-	Mesh *obj2 = new Mesh();
-	obj2->CreateMesh(vertices, indices, 32, 12);
+	Mesh* obj2 = new Mesh();
+	obj2->CreateMesh(rejaVertices, rejaIndices, 31, 6);
 	meshList.push_back(obj2);
 
-	Mesh *obj3 = new Mesh();
-	obj3->CreateMesh(floorVertices, floorIndices, 32, 6);
-	meshList.push_back(obj3);
-
-	Mesh* obj4 = new Mesh();
-	obj4->CreateMesh(vegetacionVertices, vegetacionIndices, 64, 12);
-	meshList.push_back(obj4);
-
-	calcAverageNormals(indices, 12, vertices, 32, 8, 5);
-
-	calcAverageNormals(vegetacionIndices, 12, vegetacionVertices, 64, 8, 5);
+	calcAverageNormals(rejaIndices, 6, rejaVertices, 32, 8, 5);
 
 }
 
@@ -286,6 +315,8 @@ int main()
 	plainTexture.LoadTextureA();
 	pisoTexture = Texture("Textures/piso.tga");
 	pisoTexture.LoadTextureA();
+	rejaTexture = Texture("Textures/Reja.png");
+	rejaTexture.LoadTextureA();
 
 	//////////////////////
 	//Instanciar modelos//
@@ -449,17 +480,105 @@ int main()
 	Bote_StarRail_M = Model();
 	Bote_StarRail_M.LoadModel("Models/Bote/Bote.obj");
 
+	//Plataforma Dodoco
+	Plataforma_Genshin_M = Model();
+	Plataforma_Genshin_M.LoadModel("Models/MesaComida/Plataforma.obj");
 
-	std::vector<std::string> skyboxFaces;
-	skyboxFaces.push_back("Textures/Skybox/cupertin-lake_rt.tga");
-	skyboxFaces.push_back("Textures/Skybox/cupertin-lake_lf.tga");
-	skyboxFaces.push_back("Textures/Skybox/cupertin-lake_dn.tga");
-	skyboxFaces.push_back("Textures/Skybox/cupertin-lake_up.tga");
-	skyboxFaces.push_back("Textures/Skybox/cupertin-lake_bk.tga");
-	skyboxFaces.push_back("Textures/Skybox/cupertin-lake_ft.tga");
+	//Mesa con comida Genshin
+	MesaComida = Model();
+	MesaComida.LoadModel("Models/MesaComida/MesaComidas1.obj");
+	LecheDango = Model();
+	LecheDango.LoadModel("Models/MesaComida/lechedango.obj");
 
-	skybox = Skybox(skyboxFaces);
+	//Stands de madera de Tears of Themis
+	Stand_Dardos_M = Model();
+	Stand_Dardos_M.LoadModel("Models/StandMadera/standMadera_ArtemDardos.obj");
+	Stand_HotDog_M = Model();
+	Stand_HotDog_M.LoadModel("Models/StandMadera/standMadera_ArtemHotDog.obj");
+	Stand_Taquilla_M = Model();
+	Stand_Taquilla_M.LoadModel("Models/StandMadera/standMadera_CarnivalThemis.obj");
+	Stand_Carrusel_M = Model();
+	Stand_Carrusel_M.LoadModel("Models/StandMadera/standMadera_Carrucel.obj");
+	Stand_Carros_M = Model();
+	Stand_Carros_M.LoadModel("Models/StandMadera/standMadera_VynCarrosChocones.obj");
+	Stand_Comida_M = Model();
+	Stand_Comida_M.LoadModel("Models/StandMadera/standMadera_LukeComida.obj");
+	Stand_Dados_M = Model();
+	Stand_Dados_M.LoadModel("Models/StandMadera/standMadera_MariusCasino.obj");
+	Stand_Topos_M = Model();
+	Stand_Topos_M.LoadModel("Models/StandMadera/standMadera_VynTopos.obj");
+	
+	//Puesto Inazuma
+	PuestoInazuma_M = Model();
+	PuestoInazuma_M.LoadModel("Models/PuestoInazuma/puestoInazumaPulpo.obj");
+	Ixbalanque_M = Model();
+	Ixbalanque_M.LoadModel("Models/Ixbalanque_Genshin/Ixbalanque_Genshin.obj");
+	
+	//Globos Genshin
+	Globo_Enojado_M = Model();
+	Globo_Enojado_M.LoadModel("Models/Globo/globoEnojado.obj");
+	Globo_Feliz_M = Model();
+	Globo_Feliz_M.LoadModel("Models/Globo/globoFeliz.obj");
+	Globo_Verde_M = Model();
+	Globo_Verde_M.LoadModel("Models/Globo/globoVerde.obj");
+	Globo_Naranja_M = Model();
+	Globo_Naranja_M.LoadModel("Models/Globo/globoNaranja.obj");
 
+	//Gatos Star Rail
+	Gato_Basura_M = Model();
+	Gato_Basura_M.LoadModel("Models/Gato_StarRail/Gato_StarRail_Basura.obj");
+	Gato_Blade_M = Model();
+	Gato_Blade_M.LoadModel("Models/Gato_StarRail/Gato_StarRail_Blade.obj");
+	Gato_Clara_M = Model();
+	Gato_Clara_M.LoadModel("Models/Gato_StarRail/Gato_StarRail_Clara.obj");
+	Gato_DanHeng_M = Model();
+	Gato_DanHeng_M.LoadModel("Models/Gato_StarRail/Gato_StarRail_DanHeng.obj");
+	Gato_Kafka_M = Model();
+	Gato_Kafka_M.LoadModel("Models/Gato_StarRail/Gato_StarRail_Kafka.obj");
+	Gato_March_M = Model();
+	Gato_March_M.LoadModel("Models/Gato_StarRail/Gato_StarRail_March.obj");
+	Gato_Naranja_M = Model();
+	Gato_Naranja_M.LoadModel("Models/Gato_StarRail/Gato_StarRail_Naranja.obj");
+	Gato_RuanMei_M = Model();
+	Gato_RuanMei_M.LoadModel("Models/Gato_StarRail/Gato_StarRail_RuanMei.obj");
+	Gato_Herta_M = Model();
+	Gato_Herta_M.LoadModel("Models/Gato_StarRail/Gato_StarRail_Herta.obj");
+	Gato_Verde_M = Model();
+	Gato_Verde_M.LoadModel("Models/Gato_StarRail/Gato_StarRail_Verde.obj");
+	
+	// --------------------------------------
+	// -----------SKYBOX TEXTURAS------------
+	// --------------------------------------
+
+	std::vector<std::string> skyboxFaces; //Se crea un vector con las texturas que componen al skybox de día
+	//Todo esto para que dentro del while se vayan cambiando con los skybox ya existentes creados aquí
+	skyboxFaces.push_back("Textures/Skybox/Nubes_Derecha.tga");
+	skyboxFaces.push_back("Textures/Skybox/Nubes_Izq.tga");
+	skyboxFaces.push_back("Textures/Skybox/Nubes_Abajo.tga");
+	skyboxFaces.push_back("Textures/Skybox/Nubes_Arriba.tga");
+	skyboxFaces.push_back("Textures/Skybox/Nubes_Detras.tga");
+	skyboxFaces.push_back("Textures/Skybox/Nubes_Enfrente.tga");
+
+	std::vector<std::string> skyboxFacesAtard; //Se crea un vector con las texturas que componen al skybox de atardecer
+	skyboxFacesAtard.push_back("Textures/Skybox/Atardecer_Derecha.tga");
+	skyboxFacesAtard.push_back("Textures/Skybox/Atardecer_Izq.tga");
+	skyboxFacesAtard.push_back("Textures/Skybox/Atardecer_Abajo.tga");
+	skyboxFacesAtard.push_back("Textures/Skybox/Atardecer_Arriba.tga");
+	skyboxFacesAtard.push_back("Textures/Skybox/Atardecer_Detras.tga");
+	skyboxFacesAtard.push_back("Textures/Skybox/Atardecer_Enfrente.tga");
+
+	std::vector<std::string> skyboxFacesNoche; //Se crea un vector con las texturas que componen al skybox de noche
+	skyboxFacesNoche.push_back("Textures/Skybox/Night_Derecha.tga");
+	skyboxFacesNoche.push_back("Textures/Skybox/Night_Izq.tga");
+	skyboxFacesNoche.push_back("Textures/Skybox/Night_Abajo.tga ");
+	skyboxFacesNoche.push_back("Textures/Skybox/Night_Arriba.tga");
+	skyboxFacesNoche.push_back("Textures/Skybox/Night_Detras.tga");
+	skyboxFacesNoche.push_back("Textures/Skybox/Night_Enfrente.tga");
+
+	int skyCount = 0; //Se crea una variable contadora para que lleve la cuenta de vueltas que lleva el while y se vayan cambiando
+
+	//skybox = Skybox(skyboxFaces); ///BORRAR!!!!!!!
+	
 	Material_brillante = Material(4.0f, 256);
 	Material_opaco = Material(0.3f, 4);
 
@@ -563,6 +682,30 @@ int main()
 		deltaTime += (now - lastTime) / limitFPS;
 		lastTime = now;
 
+
+		//Inicia el if para cambiar de skybox
+		//Se cambia solo una vez en lugar de cada vez dentro de un rango para ahorrar recursos
+
+		if (skyCount == 0) { //Si es cero la variable contadora, entonces se pone el skybox de dia
+			skybox = Skybox(skyboxFaces);
+		}
+		else if (skyCount == 10000) {//Si es x la variable contadora, entonces se pone el skybox de atardecer
+			skybox = Skybox(skyboxFacesAtard);
+		}
+		else if (skyCount == 20000) { //Si es y la variable contadora, entonces se pone el skybox de noche
+			skybox = Skybox(skyboxFacesNoche);
+		}
+		else if (skyCount == 30000) { //Si es z la variable contadora, entonces se pone el skybox de dia nuevamente para que se resetee
+			skyCount = -1; //Se le resta uno porque abajo se suma 1 y al sumarse 1 ya no queda en e para el reinicio
+		}
+
+		skyCount += 1; //La variable contadora aumenta en uno con cada ciclo del while que es lo que lleva la cuenta del tiempo
+
+		//Termina el cambio del skybox
+
+
+
+
 		//Recibir eventos del usuario
 		glfwPollEvents();
 		camera.keyControl(mainWindow.getsKeys(), deltaTime);
@@ -579,6 +722,9 @@ int main()
 		uniformEyePosition = shaderList[0].GetEyePositionLocation();
 		uniformColor = shaderList[0].getColorLocation();
 		
+
+
+
 		//información en el shader de intensidad especular y brillo
 		uniformSpecularIntensity = shaderList[0].GetSpecularIntensityLocation();
 		uniformShininess = shaderList[0].GetShininessLocation();
@@ -613,9 +759,16 @@ int main()
 		else if (mainWindow.getarticulacion10() == 0.5) shaderList[0].SetSpotLights(spotLights1, spotLightCount - 1);
 		else shaderList[0].SetSpotLights(spotLights1, spotLightCount - 2);
 
+
+
+
 		glm::mat4 model(1.0);
 		glm::mat4 modelaux(1.0);
 		glm::vec3 color = glm::vec3(1.0f, 1.0f, 1.0f);
+
+		// --------------------------------------
+		// -----------------PISO-----------------
+		// --------------------------------------
 
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
@@ -626,7 +779,7 @@ int main()
 		pisoTexture.UseTexture();
 		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
 
-		meshList[2]->RenderMesh();
+		meshList[0]->RenderMesh();
 
 		// --------------------------------------
 		// ------------RUEDA FORTUNA-------------
@@ -637,6 +790,12 @@ int main()
 		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		RuedaFortuna_M.RenderModel();
+
+		//Gato 7 de Marzo
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(0.0f, 4.0f, 10.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Gato_March_M.RenderModel();
 		
 		//Neuvillette Genshin Impact
 		model = glm::mat4(1.0);
@@ -656,6 +815,38 @@ int main()
 		model = glm::translate(model, glm::vec3(-20.0f, 0.0f, 20.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Bote_StarRail_M.RenderModel();
+
+		//Globos derecha
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(30.0f, 0.0f, 21.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Globo_Verde_M.RenderModel();
+
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(32.0f, 0.0f, 22.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Globo_Naranja_M.RenderModel();
+
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(34.0f, 0.0f, 21.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Globo_Verde_M.RenderModel();
+
+		//Globos izquierda
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-30.0f, 0.0f, 21.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Globo_Verde_M.RenderModel();
+
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-32.0f, 0.0f, 22.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Globo_Naranja_M.RenderModel();
+
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-34.0f, 0.0f, 21.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Globo_Verde_M.RenderModel();
 
 		// --------------------------------------
 		// -----------PUESTO HELADOS-------------
@@ -682,6 +873,13 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Sigwinne_Genshin_M.RenderModel();
 
+		//Lámpara Genshin Impact
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(54.0f, 0.0f, -1.0f));
+		model = glm::rotate(model, -180 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Lampara_Genshin_M.RenderModel();
+
 		// --------------------------------------
 		// --------BANCA PUESTO HELADOS----------
 		// --------------------------------------
@@ -692,7 +890,7 @@ int main()
 		model = glm::rotate(model, -90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Wriothesley_Genshin_M.RenderModel();
-
+		
 		//Basura Honkai Star Rail
 		model = glm::translate(model, glm::vec3(12.0f, 0.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -703,6 +901,19 @@ int main()
 		model = glm::translate(model, glm::vec3(105.0f, 0.0f, 5.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Lampara_Genshin_M.RenderModel();
+
+		//Globo
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(105.0f, 0.0f, 15.0f));
+		model = glm::rotate(model, -90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Globo_Enojado_M.RenderModel();
+
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(104.0f, 0.0f, 17.0f));
+		model = glm::rotate(model, -90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Globo_Feliz_M.RenderModel();
 
 		// --------------------------------------
 		// -----------PUESTO DE DARDOS-----------
@@ -727,6 +938,13 @@ int main()
 		//Dardo
 		Dardo_M.RenderModel();
 
+		//Gato Verde
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(98.0f, 5.66f, -17.5f));
+		model = glm::rotate(model, -90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Gato_Verde_M.RenderModel();
+
 		//Firefly Honkai Star Rail
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(100.0f, 0.0f, -15.0f));
@@ -740,6 +958,44 @@ int main()
 		model = glm::rotate(model, -90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		LukeNormal_M.RenderModel();
+
+		//Globos izquierda
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(102.0f, 0.0f, -43.0f));
+		model = glm::rotate(model, -90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Globo_Naranja_M.RenderModel();
+
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(100.0f, 0.0f, -45.0f));
+		model = glm::rotate(model, -90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Globo_Verde_M.RenderModel();
+
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(102.0f, 0.0f, -47.0f));
+		model = glm::rotate(model, -90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Globo_Naranja_M.RenderModel();
+
+		//Globos derecha
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(102.0f, 0.0f, -6.0f));
+		model = glm::rotate(model, -90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Globo_Naranja_M.RenderModel();
+
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(100.0f, 0.0f, -4.0f));
+		model = glm::rotate(model, -90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Globo_Verde_M.RenderModel();
+
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(102.0f, 0.0f, -2.0f));
+		model = glm::rotate(model, -90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Globo_Naranja_M.RenderModel();
 
 		// --------------------------------------
 		// ---------------CARRUSEL---------------
@@ -787,6 +1043,13 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Bano_M.RenderModel();
 
+		//Gato Kafka
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(105.0f, 11.9f, -78.0f));
+		model = glm::rotate(model, -90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Gato_Kafka_M.RenderModel();
+
 		//Marius Chino Tears of Themis
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(105.0f, 0.0f, -70.0f));
@@ -827,6 +1090,19 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Jean_Genshin_M.RenderModel();
 
+		//Globo
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(100.0f, 0.0f, -119.0f));
+		model = glm::rotate(model, -15 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Globo_Enojado_M.RenderModel();
+
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(101.0f, 0.0f, -117.0f));
+		model = glm::rotate(model, -15 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Globo_Feliz_M.RenderModel();
+
 		// --------------------------------------
 		// --------BANCA PUESTO HOTDOGS----------
 		// --------------------------------------
@@ -843,6 +1119,22 @@ int main()
 		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Lampara_Genshin_M.RenderModel();
+
+		//Globos
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(40.0f, 0.0f, -125.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Globo_Verde_M.RenderModel();
+
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(42.0f, 0.0f, -123.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Globo_Naranja_M.RenderModel();
+
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(44.0f, 0.0f, -125.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Globo_Verde_M.RenderModel();
 
 		// --------------------------------------
 		// -------BANCA PUESTO PALOMITAS---------
@@ -874,15 +1166,42 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Bote_StarRail_M.RenderModel();
 
+		//Globos
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-46.0f, 0.0f, -125.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Globo_Naranja_M.RenderModel();
+
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-44.0f, 0.0f, -123.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Globo_Verde_M.RenderModel();
+
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-42.0f, 0.0f, -125.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Globo_Naranja_M.RenderModel();
+
 		// --------------------------------------
 		// ----------ARTEM PROTAGONISTA----------
 		// --------------------------------------
 		//Artem Normal Tears of Themis
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(0.0f, 0.0f, -90.0f));
+		model = glm::translate(model, glm::vec3(-10.0f, 0.0f, -55.0f));
 		model = glm::rotate(model, -180 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		ArtemNormal_M.RenderModel();
+
+		//Globos
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-8.0f, 0.0f, -50.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Globo_Feliz_M.RenderModel();
+
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(8.0f, 0.0f, -50.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Globo_Feliz_M.RenderModel();
 
 		// --------------------------------------
 		// ----------PUESTO PALOMITAS------------
@@ -898,6 +1217,25 @@ int main()
 		//Feixiao Honkai Star Rail
 		Feixiao_StarRail_M.RenderModel();
 
+		//Gato DanHeng
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-94.0f, 9.17f, -121.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Gato_DanHeng_M.RenderModel();
+
+		//Globos
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-106.0f, 0.0f, -117.0f));
+		model = glm::rotate(model, 15 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Globo_Naranja_M.RenderModel();
+
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-108.0f, 0.0f, -115.0f));
+		model = glm::rotate(model, 15 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Globo_Verde_M.RenderModel();
+
 		// --------------------------------------
 		// ----------PUESTO TIRO DADOS-----------
 		// --------------------------------------
@@ -911,6 +1249,51 @@ int main()
 
 		//Aventurine Honkai Star Rail
 		Aventurine_StarRail_M.RenderModel();
+
+		//Lámpara Genshin Impact
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-120.0f, 0.0f, -20.0f));
+		model = glm::rotate(model, -180 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Lampara_Genshin_M.RenderModel();
+
+		//Globos Izquierda
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-104.0f, 0.0f, -57.0f));
+		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Globo_Naranja_M.RenderModel();
+
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-103.0f, 0.0f, -55.0f));
+		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Globo_Verde_M.RenderModel();
+
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-104.0f, 0.0f, -53.0f));
+		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Globo_Naranja_M.RenderModel();
+
+		//Globos Derecha
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-104.0f, 0.0f, -22.0f));
+		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Globo_Naranja_M.RenderModel();
+
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-103.0f, 0.0f, -20.0f));
+		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Globo_Verde_M.RenderModel();
+
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-104.0f, 0.0f, -18.0f));
+		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Globo_Naranja_M.RenderModel();
 
 		// --------------------------------------
 		// -----------PUESTO BOLICHE-------------
@@ -945,6 +1328,38 @@ int main()
 		model = glm::rotate(model, -90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Lampara_Genshin_M.RenderModel();
+
+		//Globos Izquierda
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-41.0f, 0.0f, 89.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Globo_Verde_M.RenderModel();
+
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-39.0f, 0.0f, 87.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Globo_Naranja_M.RenderModel();
+
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-37.0f, 0.0f, 89.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Globo_Verde_M.RenderModel();
+
+		//Globos Derecha
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-81.0f, 0.0f, 89.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Globo_Verde_M.RenderModel();
+
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-79.0f, 0.0f, 87.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Globo_Naranja_M.RenderModel();
+
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-77.0f, 0.0f, 89.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Globo_Verde_M.RenderModel();
 
 		// --------------------------------------
 		// -----------GOLPEAR AL TOPO------------
@@ -985,6 +1400,22 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Robin_StarRail_M.RenderModel();
 
+		//Globos
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(49.0f, 0.0f, 76.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Globo_Naranja_M.RenderModel();
+
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(48.0f, 0.0f, 74.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Globo_Verde_M.RenderModel();
+
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(47.0f, 0.0f, 76.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Globo_Naranja_M.RenderModel();
+
 		// --------------------------------------
 		// -----------CARROS CHOCONES------------
 		// --------------------------------------
@@ -1014,7 +1445,14 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Bano_M.RenderModel();
 
-		//Marius Chino Tears of Themis
+		//Gato Clara
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-100.0f, 11.9f, 93.0f));
+		model = glm::rotate(model, -180 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Gato_Clara_M.RenderModel();
+
+		//Ratio Star Rail
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(-110.0f, 0.0f, 90.0f));
 		model = glm::rotate(model, -180 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
@@ -1028,6 +1466,19 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Lampara_Genshin_M.RenderModel();
 
+		//Globos
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-123.0f, 0.0f, 79.0f));
+		model = glm::rotate(model, 75 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Globo_Verde_M.RenderModel();
+
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-121.0f, 0.0f, 76.0f));
+		model = glm::rotate(model, 75 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Globo_Naranja_M.RenderModel();
+
 		// --------------------------------------
 		// ---------PUESTO DE TICKETS------------
 		// --------------------------------------
@@ -1039,12 +1490,29 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		PuestoTickets_M.RenderModel();
 
+		//Gato Blade
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(86.0f, 7.8f, 113.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Gato_Blade_M.RenderModel();
+
 		//Lámpara Genshin Impact
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(80.0f, 0.0f, 105.0f));
 		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Lampara_Genshin_M.RenderModel();
+
+		//Globos
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(91.0f, 0.0f, 110.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Globo_Enojado_M.RenderModel();
+
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(80.0f, 0.0f, 109.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Globo_Enojado_M.RenderModel();
 
 		// --------------------------------------
 		// -----------BANCA BOLICHE--------------
@@ -1061,6 +1529,13 @@ int main()
 		model = glm::translate(model, glm::vec3(10.0f, 0.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		VynChino_Themis_M.RenderModel();
+
+		//Gato Basura
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-114.6f, 2.66f, 62.5f));
+		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Gato_Basura_M.RenderModel();
 
 		// --------------------------------------
 		// ------------PUESTO TACOS--------------
@@ -1086,6 +1561,140 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Bote_StarRail_M.RenderModel();
 
+		// --------------------------------------
+		// ------------PUESTO INAZUMA------------
+		// --------------------------------------
+
+		//Puesto de Comida de Inazuma
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-60.0f, 0.0f, 20.0f));
+		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		PuestoInazuma_M.RenderModel();
+
+		//Ixbalanque Genshin Impact
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-63.0f, 0.0f, 8.0f));
+		model = glm::rotate(model, -90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Ixbalanque_M.RenderModel();
+
+		//Lámpara Genshin Impact
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-55.0f, 0.0f, -13.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Lampara_Genshin_M.RenderModel();
+
+		//Gato Naranja
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-58.5f, 0.0f, -14.0f));
+		model = glm::rotate(model, -90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Gato_Naranja_M.RenderModel();
+
+		//Globos
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-60.0f, 0.0f, 10.0f));
+		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Globo_Enojado_M.RenderModel();
+
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-59.0f, 0.0f, 8.0f));
+		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Globo_Feliz_M.RenderModel();
+
+		// --------------------------------------
+		// ------------DECORACIONES--------------
+		// --------------------------------------
+
+		//Gato RuanMei
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(4.0f, 0.0f, 84.0f));
+		model = glm::rotate(model, -180 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Gato_RuanMei_M.RenderModel();
+
+		//Plataforma Dodoco
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-43.0f, 0.5f, -65.0f));
+		model = glm::rotate(model, -90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Plataforma_Genshin_M.RenderModel();
+
+		//Mesa de comida
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f, -45.0f));
+		model = glm::rotate(model, -180 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		MesaComida.RenderModel();
+
+		//Leche de Dango
+		LecheDango.RenderModel();
+
+		//Stand de madera en los Dardos
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(93.0f, 0.0f, -14.0f));
+		model = glm::rotate(model, -80 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Stand_Dardos_M.RenderModel();
+
+		//Stand de madera en los Hot Dogs
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(93.0f, 0.0f, -115.0f));
+		model = glm::rotate(model, -15 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Stand_HotDog_M.RenderModel();
+		
+		//Stand de madera en la taquilla
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(80.0f, 0.0f, 113.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Stand_Taquilla_M.RenderModel();
+
+		//Stand de madera en el carrusel
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(68.0f, 0.0f, -58.0f));
+		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Stand_Carrusel_M.RenderModel();
+
+		//Stand de madera en el carros
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-24.0f, 0.0f, -118.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Stand_Carros_M.RenderModel();
+
+		//Stand de madera en el de topos
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(55.0f, 0.0f, 66.5f));
+		model = glm::rotate(model, 180 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Stand_Topos_M.RenderModel();
+
+		//Stand de madera en dados
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-102.0f, 0.0f, -46.0f));
+		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Stand_Dados_M.RenderModel();
+
+		//Stand de madera en puesto inazuma
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-66.0f, 0.0f, 28.0f));
+		model = glm::rotate(model, -105 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Stand_Comida_M.RenderModel();
+
+		//Gato Herta
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-27.0f, 0.0f, -116.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Gato_Herta_M.RenderModel();
+		
+
+		
 		//-----------------¡¡TRANSPARENCIAS!!---------------------------------
 
 		// --------------------------------------
@@ -1146,7 +1755,263 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		PuestoBateo_M.RenderModel();
 
+		//------
+		//REJAS-
+		//------
+
+		//Derecha
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(130.0f, 0.0f, 0.0f));
+		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+
+		rejaTexture.UseTexture();
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		meshList[1]->RenderMesh();
+
+		model = glm::translate(model, glm::vec3(22.9f, 0.0f, 0.01f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		meshList[1]->RenderMesh();
+
+		model = glm::translate(model, glm::vec3(22.9f, 0.0f, 0.01f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		meshList[1]->RenderMesh();
+
+		model = glm::translate(model, glm::vec3(22.9f, 0.0f, 0.01f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		meshList[1]->RenderMesh();
+
+		model = glm::translate(model, glm::vec3(22.9f, 0.0f, 0.01f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		meshList[1]->RenderMesh();
+
+		model = glm::translate(model, glm::vec3(22.9f, 0.0f, 0.01f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		meshList[1]->RenderMesh();
+
+		model = glm::translate(model, glm::vec3(22.9f, 0.0f, 0.01f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		meshList[1]->RenderMesh();
+
+		model = glm::translate(model, glm::vec3(22.9f, 0.0f, 0.01f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		meshList[1]->RenderMesh();
+
+		model = glm::translate(model, glm::vec3(22.9f, 0.0f, 0.01f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		meshList[1]->RenderMesh();
+
+		model = glm::translate(model, glm::vec3(22.9f, 0.0f, 0.01f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		meshList[1]->RenderMesh();
+
+		//Detrás
+		model = glm::translate(model, glm::vec3(11.45f, 0.0f, -11.45));
+		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		meshList[1]->RenderMesh();
+
+		model = glm::translate(model, glm::vec3(22.9f, 0.0f, 0.01f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		meshList[1]->RenderMesh();
+
+		model = glm::translate(model, glm::vec3(22.9f, 0.0f, 0.01f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		meshList[1]->RenderMesh();
+
+		model = glm::translate(model, glm::vec3(22.9f, 0.0f, 0.01f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		meshList[1]->RenderMesh();
+
+		model = glm::translate(model, glm::vec3(22.9f, 0.0f, 0.01f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		meshList[1]->RenderMesh();
+
+		model = glm::translate(model, glm::vec3(22.9f, 0.0f, 0.01f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		meshList[1]->RenderMesh();
+
+		model = glm::translate(model, glm::vec3(22.9f, 0.0f, 0.01f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		meshList[1]->RenderMesh();
+
+		model = glm::translate(model, glm::vec3(22.9f, 0.0f, 0.01f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		meshList[1]->RenderMesh();
+
+		model = glm::translate(model, glm::vec3(22.9f, 0.0f, 0.01f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		meshList[1]->RenderMesh();
+
+		model = glm::translate(model, glm::vec3(22.9f, 0.0f, 0.01f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		meshList[1]->RenderMesh();
+
+		model = glm::translate(model, glm::vec3(22.9f, 0.0f, 0.01f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		meshList[1]->RenderMesh();
+
+		model = glm::translate(model, glm::vec3(22.9f, 0.0f, 0.01f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		meshList[1]->RenderMesh();
+
+		//Izquierda
+		model = glm::translate(model, glm::vec3(11.45f, 0.0f, -11.45));
+		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		meshList[1]->RenderMesh();
+
+		model = glm::translate(model, glm::vec3(22.9f, 0.0f, 0.01f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		meshList[1]->RenderMesh();
+
+		model = glm::translate(model, glm::vec3(22.9f, 0.0f, 0.01f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		meshList[1]->RenderMesh();
+
+		model = glm::translate(model, glm::vec3(22.9f, 0.0f, 0.01f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		meshList[1]->RenderMesh();
+
+		model = glm::translate(model, glm::vec3(22.9f, 0.0f, 0.01f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		meshList[1]->RenderMesh();
+
+		model = glm::translate(model, glm::vec3(22.9f, 0.0f, 0.01f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		meshList[1]->RenderMesh();
+
+		model = glm::translate(model, glm::vec3(22.9f, 0.0f, 0.01f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		meshList[1]->RenderMesh();
+
+		model = glm::translate(model, glm::vec3(22.9f, 0.0f, 0.01f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		meshList[1]->RenderMesh();
+
+		model = glm::translate(model, glm::vec3(22.9f, 0.0f, 0.01f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		meshList[1]->RenderMesh();
+
+		model = glm::translate(model, glm::vec3(22.9f, 0.0f, 0.01f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		meshList[1]->RenderMesh();
+
+		model = glm::translate(model, glm::vec3(22.9f, 0.0f, 0.01f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		meshList[1]->RenderMesh();
+
+		model = glm::translate(model, glm::vec3(22.9f, 0.0f, 0.01f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		meshList[1]->RenderMesh();
+
+		model = glm::translate(model, glm::vec3(22.9f, 0.0f, 0.01f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		meshList[1]->RenderMesh();
+
+		model = glm::translate(model, glm::vec3(22.9f, 0.0f, 0.01f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		meshList[1]->RenderMesh();
+
+		model = glm::translate(model, glm::vec3(22.9f, 0.0f, 0.01f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		meshList[1]->RenderMesh();
+
+		model = glm::translate(model, glm::vec3(22.9f, 0.0f, 0.01f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		meshList[1]->RenderMesh();
+
+		//Frente
+		model = glm::translate(model, glm::vec3(11.45f, 0.0f, -11.45));
+		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		meshList[1]->RenderMesh();
+
+		model = glm::translate(model, glm::vec3(22.9f, 0.0f, 0.01f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		meshList[1]->RenderMesh();
+
+		model = glm::translate(model, glm::vec3(22.9f, 0.0f, 0.01f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		meshList[1]->RenderMesh();
+
+		model = glm::translate(model, glm::vec3(22.9f, 0.0f, 0.01f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		meshList[1]->RenderMesh();
+
+		model = glm::translate(model, glm::vec3(22.9f, 0.0f, 0.01f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		meshList[1]->RenderMesh();
+
+		model = glm::translate(model, glm::vec3(22.9f, 0.0f, 0.01f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		meshList[1]->RenderMesh();
+
+		model = glm::translate(model, glm::vec3(22.9f, 0.0f, 0.01f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		meshList[1]->RenderMesh();
+
+		model = glm::translate(model, glm::vec3(22.9f, 0.0f, 0.01f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		meshList[1]->RenderMesh();
+
+		model = glm::translate(model, glm::vec3(22.9f, 0.0f, 0.01f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		meshList[1]->RenderMesh();
+
+		model = glm::translate(model, glm::vec3(22.9f, 0.0f, 0.01f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		meshList[1]->RenderMesh();
+
+		model = glm::translate(model, glm::vec3(45.8f, 0.0f, 0.01f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		meshList[1]->RenderMesh();
+
+		//Derecha
+		model = glm::translate(model, glm::vec3(11.45f, 0.0f, -11.45));
+		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		meshList[1]->RenderMesh();
+
+		model = glm::translate(model, glm::vec3(22.9f, 0.0f, 0.01f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		meshList[1]->RenderMesh();
+
+		model = glm::translate(model, glm::vec3(22.9f, 0.0f, 0.01f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		meshList[1]->RenderMesh();
+
+		model = glm::translate(model, glm::vec3(22.9f, 0.0f, 0.01f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		meshList[1]->RenderMesh();
+
+		model = glm::translate(model, glm::vec3(22.9f, 0.0f, 0.01f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		meshList[1]->RenderMesh();
+
+		model = glm::translate(model, glm::vec3(22.9f, 0.0f, 0.01f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		meshList[1]->RenderMesh();
+
+		model = glm::translate(model, glm::vec3(22.9f, 0.0f, 0.01f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		meshList[1]->RenderMesh();
+
+		model = glm::translate(model, glm::vec3(22.9f, 0.0f, 0.01f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		meshList[1]->RenderMesh();
+
+		model = glm::translate(model, glm::vec3(22.9f, 0.0f, 0.01f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		meshList[1]->RenderMesh();
+
+		model = glm::translate(model, glm::vec3(22.9f, 0.0f, 0.01f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		meshList[1]->RenderMesh();
+
 		glDisable(GL_BLEND);
+
+
 
 		/*
 		//Coche base
@@ -1256,7 +2121,7 @@ int main()
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		AgaveTexture.UseTexture();
-		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		meshList[3]->RenderMesh();
 		glDisable(GL_BLEND);
 		*/
