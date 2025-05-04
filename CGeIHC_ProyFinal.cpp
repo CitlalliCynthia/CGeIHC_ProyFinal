@@ -4,9 +4,15 @@ PROYECTO FINAL:
 	Cuadriello Valdés Diana Sinsuni     -- 422038870
 	Gutiérrez Ávila Tristan Bernardo    -- 319111347
 */
-//para cargar imagen
+
+// --------------------------------------
+// ----------IMPORTAR MÓDULOS------------
+// --------------------------------------
+
+//Para cargar imagen
 #define STB_IMAGE_IMPLEMENTATION
 
+//Otros
 #include <stdio.h>
 #include <string.h>
 #include <cmath>
@@ -19,8 +25,6 @@ PROYECTO FINAL:
 #include <glm.hpp>
 #include <gtc\matrix_transform.hpp>
 #include <gtc\type_ptr.hpp>
-//para probar el importer
-//#include<assimp/Importer.hpp>
 
 #include "Window.h"
 #include "Mesh.h"
@@ -28,45 +32,62 @@ PROYECTO FINAL:
 #include "Camera.h"
 #include "Texture.h"
 #include "Sphere.h"
-#include"Model.h"
+#include "Model.h"
 #include "Skybox.h"
 
-//para iluminación
+//Para iluminación
 #include "CommonValues.h"
 #include "DirectionalLight.h"
 #include "PointLight.h"
 #include "SpotLight.h"
 #include "Material.h"
-const float toRadians = 3.14159265f / 180.0f;
+
+// --------------------------------------
+// -----------DEFINIR VENTANA------------
+// --------------------------------------
 
 Window mainWindow;
+
+// --------------------------------------
+// ------------DEFINIR LISTAS------------
+// --------------------------------------
+
 std::vector<Mesh*> meshList;
 std::vector<Shader> shaderList;
 
+// --------------------------------------
+// -----------DEFINIR CÁMARAS------------
+// --------------------------------------
+
 Camera camera;
+
+// --------------------------------------
+// -----------DEFINIR TEXTURAS-----------
+// --------------------------------------
 
 Texture plainTexture;
 Texture pisoTexture;
 Texture rejaTexture;
+Texture caminoTexture;
 
-///////////////////
-//Definir modelos//
-///////////////////
+// --------------------------------------
+// -----------DEFINIR MODELOS------------
+// --------------------------------------
 
-// Rueda Fortuna
+//Rueda Fortuna
 Model RuedaFortuna_M;
 Model Neuvillette_Genshin_M;
 Model Furina_Genshin_M;
 
-// Puesto Helados
+//Puesto Helados
 Model PuestoHelado_M;
 Model MariusCasual_M;
 Model Sigwinne_Genshin_M;
 
-// Banca Puesto de Helados
+//Banca Puesto de Helados
 Model Wriothesley_Genshin_M;
 
-// Puesto Dardos
+//Puesto Dardos
 Model PuestoDardos_M;
 Model Globo1_M;
 Model Globo2_M;
@@ -75,83 +96,83 @@ Model Dardo_M;
 Model Firefly_StarRail_M;
 Model LukeNormal_M;
 
-// Carrusel
+//Carrusel
 Model Carrusel_Base_M;
 Model Carrusel_M;
 Model Lyney_M;
 
-// Baño Puesto Dardos
+//Baño Puesto Dardos
 Model Bano_M;
 Model MariusChino_M;
 
-// Puesto Hot Dogs
+//Puesto Hot Dogs
 Model PuestoHotDog_M;
 Model Jean_Genshin_M;
 Model VynNormal_M;
 
-// Banca Puesto de Hot Dogs
+//Banca Puesto de Hot Dogs
 Model Klee_Genshin_M;
 
-// Banca Puesto Palomitas
+//Banca Puesto Palomitas
 Model Sunday_StarRail_M;
 
-// Artem Protagonista
+//Artem Protagonista
 Model ArtemNormal_M;
 
-// Puesto Palomitas
+//Puesto Palomitas
 Model PuestoPalomitas_M;
 Model Feixiao_StarRail_M;
 
-// Puesto Lanzamiento Hacha
+//Puesto Lanzamiento Hacha
 Model LanzamientoHacha_M;
 Model Hacha_M;
 Model Wanderer_Genshin_M;
 
-// Puesto Dados
+//Puesto Dados
 Model MesaDados_M;
 Model Aventurine_StarRail_M;
 
-// Puesto Boliche
+//Puesto Boliche
 Model Boliche_M;
 Model Rendija_Boliche_M;
 Model Bolo_M;
 Model Bola_Boliche_M;
 Model Ayato_Genshin_M;
 
-// Puesto Golpear al Topo
+//Puesto Golpear al Topo
 Model GolpearTopo_M;
 Model Yanqing_StarRail_M;
 
-// Puesto Algodón Azúcar
+//Puesto Algodón Azúcar
 Model MaquinaAlgodon_M;
 Model Robin_StarRail_M;
 
-// Puesto Carros Chocones
+//Puesto Carros Chocones
 Model CarrosChocones_M;
 Model ArtemCasual_Themis_M;
 
-// Jaula Bateo
+//Jaula Bateo
 Model PuestoBateo_M;
 Model Bate_M;
 Model PelotaBateo_M;
 Model LukeCasual_Themis_M;
 
-// Baño Boliche
+//Baño Boliche
 Model Ratio_StarTail_M;
 
-// Puesto de Tickets
+//Puesto de Tickets
 Model PuestoTickets_M;
 
-// Banca Boliche
+//Banca Boliche
 Model Banca_Genshin_M;
 Model VynChino_Themis_M;
 
-// Puesto de Tacos
+//Puesto de Tacos
 Model PuestoTacos_M;
 Model Herta_StarTail_M;
 Model Xiao_Genshin_M;
 
-// Decoraciones
+//Decoraciones
 Model Lampara_Genshin_M;
 Model Bote_StarRail_M;
 
@@ -194,35 +215,59 @@ Model Gato_RuanMei_M;
 Model Gato_Herta_M;
 Model Gato_Verde_M;
 
+// --------------------------------------
+// ------------DEFINIR SKYBOX------------
+// --------------------------------------
+
 Skybox skybox;
 
-//materiales
+// --------------------------------------
+// ----------DEFINIR MATERIALES----------
+// --------------------------------------
+
 Material Material_brillante;
 Material Material_opaco;
 
+// -------------------------------------------------
+// ----------DEFINIR CONSTANTES Y VARIABLES---------
+// -------------------------------------------------
 
-//Sphere cabeza = Sphere(0.5, 20, 20);
 GLfloat deltaTime = 0.0f;
 GLfloat lastTime = 0.0f;
 static double limitFPS = 1.0 / 60.0;
 
-// luz direccional
+const float toRadians = 3.14159265f / 180.0f;
+
+// --------------------------------------
+// -------------DEFINIR LUCES------------
+// --------------------------------------
+
+//Luz direccional
 DirectionalLight mainLight;
-//para declarar varias luces de tipo pointlight
+
+//Para declarar varias luces
 PointLight pointLights[MAX_POINT_LIGHTS];
 SpotLight spotLights[MAX_SPOT_LIGHTS];
 
 PointLight pointLights1[MAX_POINT_LIGHTS];
 SpotLight spotLights1[MAX_SPOT_LIGHTS];
 
-// Vertex Shader
+// --------------------------------------
+// -----------DEFINIR SHADERS------------
+// --------------------------------------
+
+//Vertex Shader
 static const char* vShader = "shaders/shader_light.vert";
 
-// Fragment Shader
+//Fragment Shader
 static const char* fShader = "shaders/shader_light.frag";
 
 
-//función de calculo de normales por promedio de vértices 
+// --------------------------------------
+// -----------CÁLCULO NORMALES-----------
+// --------------------------------------
+
+//Función de calculo de normales por promedio de vértices 
 void calcAverageNormals(unsigned int* indices, unsigned int indiceCount, GLfloat* vertices, unsigned int verticeCount,
 	unsigned int vLength, unsigned int normalOffset)
 {
@@ -252,20 +297,27 @@ void calcAverageNormals(unsigned int* indices, unsigned int indiceCount, GLfloat
 }
 
 
+// --------------------------------------
+// ----------ESTABLECER OBJETOS----------
+// --------------------------------------
+
 void CreateObjects()
 {
+	//Piso
 	unsigned int floorIndices[] = {
 		0, 2, 1,
 		1, 2, 3
 	};
 
 	GLfloat floorVertices[] = {
-		-10.0f, 0.0f, -10.0f,	0.0f, 0.0f,		0.0f, -1.0f, 0.0f,
-		10.0f, 0.0f, -10.0f,	10.0f, 0.0f,	0.0f, -1.0f, 0.0f,
-		-10.0f, 0.0f, 10.0f,	0.0f, 10.0f,	0.0f, -1.0f, 0.0f,
-		10.0f, 0.0f, 10.0f,		10.0f, 10.0f,	0.0f, -1.0f, 0.0f
+		//	x      y      z			u	  v			nx	  ny    nz
+		-10.0f, 0.0f, -10.0f,	0.0f, 10.0f,		0.0f, -1.0f, 0.0f,
+		10.0f, 0.0f, -10.0f,	10.0f, 10.0f,		0.0f, -1.0f, 0.0f,
+		-10.0f, 0.0f, 10.0f,	0.0f, 0.0f,			0.0f, -1.0f, 0.0f,
+		10.0f, 0.0f, 10.0f,		10.0f, 0.0f,		0.0f, -1.0f, 0.0f
 	};
 
+	//Reja
 	unsigned int rejaIndices[] = {
 	   0, 1, 2,
 	   0, 2, 3,
@@ -279,18 +331,76 @@ void CreateObjects()
 
 	};
 
+	//Camino vertical largo (Derecha)
+	unsigned int caminoIndices[] = {
+		0, 2, 1,
+		1, 2, 3
+	};
+
+	GLfloat caminoVertices[] = {
+		-10.0f, 0.06f, -100.0f,	0.0f, 10.0f,	0.0f, -1.0f, 0.0f,
+		10.0f, 0.06f, -100.0f,	1.0f, 10.0f,	0.0f, -1.0f, 0.0f,
+		-10.0f, 0.06f, 125.0f,	0.0f, 0.0f,		0.0f, -1.0f, 0.0f,
+		10.0f, 0.06f, 125.0f,	1.0f, 0.0f,		0.0f, -1.0f, 0.0f
+
+	};
+
+	//Camino vertical corto (Centro e Izquierda)
+	unsigned int caminoIndices1[] = {
+		0, 2, 1,
+		1, 2, 3
+	};
+
+	GLfloat caminoVertices1[] = {
+		-10.0f, 0.06f, -100.0f,	0.0f, 7.0f,		0.0f, -1.0f, 0.0f,
+		10.0f, 0.06f, -100.0f,	1.0f, 7.0f,		0.0f, -1.0f, 0.0f,
+		-10.0f, 0.06f, 56.0f,	0.0f, 0.0f,		0.0f, -1.0f, 0.0f,
+		10.0f, 0.06f, 56.0f,	1.0f, 0.0f,		0.0f, -1.0f, 0.0f
+
+	};
+
+	//Camino horizontal (Frente y Detrás)
+	unsigned int caminoIndices2[] = {
+		0, 2, 1,
+		1, 2, 3
+	};
+
+	GLfloat caminoVertices2[] = {
+		-94.0f, 0.08f, -10.0f,	0.0f, 1.0f,		0.0f, -1.0f, 0.0f,
+		90.0f, 0.08f, -10.0f,	10.0f, 1.0f,	0.0f, -1.0f, 0.0f,
+		-94.0f, 0.08f, 10.0f,	0.0f, 0.015f,	0.0f, -1.0f, 0.0f,
+		90.0f, 0.08f, 10.0f,	10.0f, 0.015f,	0.0f, -1.0f, 0.0f
+
+	};
+
 	Mesh *obj1 = new Mesh();
 	obj1->CreateMesh(floorVertices, floorIndices, 32, 6);
 	meshList.push_back(obj1);
 
 	Mesh* obj2 = new Mesh();
-	obj2->CreateMesh(rejaVertices, rejaIndices, 31, 6);
+	obj2->CreateMesh(rejaVertices, rejaIndices, 32, 6);
 	meshList.push_back(obj2);
+
+	Mesh* obj3 = new Mesh();
+	obj3->CreateMesh(caminoVertices, caminoIndices, 32, 6);
+	meshList.push_back(obj3);
+
+	Mesh* obj4 = new Mesh();
+	obj4->CreateMesh(caminoVertices1, caminoIndices1, 32, 6);
+	meshList.push_back(obj4);
+
+	Mesh* obj5 = new Mesh();
+	obj5->CreateMesh(caminoVertices2, caminoIndices2, 32, 6);
+	meshList.push_back(obj5);
 
 	calcAverageNormals(rejaIndices, 6, rejaVertices, 32, 8, 5);
 
 }
 
+
+// --------------------------------------
+// ----------ESTABLECER SHADERS----------
+// --------------------------------------
 
 void CreateShaders()
 {
@@ -300,6 +410,9 @@ void CreateShaders()
 }
 
 
+// -------------------------------------------
+// --------------FUNCIÓN PRINCIPAL------------
+// -------------------------------------------
 
 int main()
 {
@@ -311,16 +424,22 @@ int main()
 
 	camera = Camera(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), -60.0f, 0.0f, 0.3f, 0.5f);
 
+	// --------------------------------------
+	// -----------CARGAR TEXTURAS------------
+	// --------------------------------------
+
 	plainTexture = Texture("Textures/plain.png");
 	plainTexture.LoadTextureA();
-	pisoTexture = Texture("Textures/piso.tga");
+	pisoTexture = Texture("Textures/Pasto.png");
 	pisoTexture.LoadTextureA();
 	rejaTexture = Texture("Textures/Reja.png");
 	rejaTexture.LoadTextureA();
+	caminoTexture = Texture("Textures/Camino.png");
+	caminoTexture.LoadTextureA();
 
-	//////////////////////
-	//Instanciar modelos//
-	//////////////////////
+	// --------------------------------------
+	// ------------CARGAR MODELOS------------
+	// --------------------------------------
 
 	//Rueda Fortuna
 	RuedaFortuna_M = Model();
@@ -579,15 +698,23 @@ int main()
 
 	//skybox = Skybox(skyboxFaces); ///BORRAR!!!!!!!
 	
+	// --------------------------------------
+	// -----------CREAR MATERIALES-----------
+	// --------------------------------------
+
 	Material_brillante = Material(4.0f, 256);
 	Material_opaco = Material(0.3f, 4);
 
+	// --------------------------------------
+	// -----------ESTABLECER LUCES-----------
+	// --------------------------------------
 
-	//luz direccional, sólo 1 y siempre debe de existir
-	mainLight = DirectionalLight(1.0f, 1.0f, 1.0f,
-		0.3f, 0.3f,
-		0.0f, 0.0f, -1.0f);
-	//contador de luces puntuales
+	//Luz direccional, sólo 1 y siempre debe de existir
+	mainLight = DirectionalLight(0.9843f, 0.9843f, 0.8980f,	//RGB
+		0.45f, 0.6f,				//Intensidad
+		0.0f, 0.0f, 1.0f);			//Dirección
+
+	//Contador de luces puntuales
 	unsigned int pointLightCount = 0;
 	unsigned int spotLightCount = 0;
 	
@@ -667,14 +794,21 @@ int main()
 	spotLightCount++;
 	*/
 
-
-	//se crean mas luces puntuales y spotlight 
+	// ---------------------------------------
+	// -------VAR. UNIFORM Y PROYECCIÓN-------
+	// ---------------------------------------
 
 	GLuint uniformProjection = 0, uniformModel = 0, uniformView = 0, uniformEyePosition = 0,
 		uniformSpecularIntensity = 0, uniformShininess = 0;
 	GLuint uniformColor = 0;
+
 	glm::mat4 projection = glm::perspective(45.0f, (GLfloat)mainWindow.getBufferWidth() / mainWindow.getBufferHeight(), 0.1f, 1000.0f);
-	////Loop mientras no se cierra la ventana
+	
+	// --------------------------------------
+	// ------------WHILE PRINCIPAL-----------
+	// --------------------------------------
+
+	//Loop mientras no se cierra la ventana
 	while (!mainWindow.getShouldClose())
 	{
 		GLfloat now = glfwGetTime();
@@ -682,28 +816,39 @@ int main()
 		deltaTime += (now - lastTime) / limitFPS;
 		lastTime = now;
 
+		// --------------------------------------
+		// ----------------SKYBOX----------------
+		// --------------------------------------
 
-		//Inicia el if para cambiar de skybox
-		//Se cambia solo una vez en lugar de cada vez dentro de un rango para ahorrar recursos
+		if (skyCount == 0) { //Amanecer
+			skybox = Skybox(skyboxFaces);  //Skybox de dia
 
-		if (skyCount == 0) { //Si es cero la variable contadora, entonces se pone el skybox de dia
-			skybox = Skybox(skyboxFaces);
+			//Recibe Color nuevo RGC, dirección nueva, ambientIntensity, diffuseIntensity
+			mainLight.SetLight(glm::vec3(0.9843f, 0.9843f, 0.8980f), glm::vec3(0.0f, 0.0f, 1.0f), 0.5f, 0.6f);
 		}
-		else if (skyCount == 10000) {//Si es x la variable contadora, entonces se pone el skybox de atardecer
-			skybox = Skybox(skyboxFacesAtard);
+		else if (skyCount == 1000) {//Medio día
+
+			//Recibe Color nuevo RGC, dirección nueva, ambientIntensity, diffuseIntensity
+			mainLight.SetLight(glm::vec3(1.0f, 0.9647f, 0.9333f), glm::vec3(0.0f, -1.0f, 0.0f), 0.43f, 0.37f);
 		}
-		else if (skyCount == 20000) { //Si es y la variable contadora, entonces se pone el skybox de noche
-			skybox = Skybox(skyboxFacesNoche);
+
+		else if (skyCount == 2000) {//Atardecer
+			skybox = Skybox(skyboxFacesAtard);  //Skybox de atardecer
+
+			//Recibe Color nuevo RGC, dirección nueva, ambientIntensity, diffuseIntensity
+			mainLight.SetLight(glm::vec3(0.9450f, 0.6274f, 0.4745f), glm::vec3(0.0f, 0.0f, -1.0f), 0.45f, 0.6f);
 		}
-		else if (skyCount == 30000) { //Si es z la variable contadora, entonces se pone el skybox de dia nuevamente para que se resetee
+		else if (skyCount == 3000) { //Noche
+			skybox = Skybox(skyboxFacesNoche);  //Skybox de noche
+
+			//Recibe Color nuevo RGC, dirección nueva, ambientIntensity, diffuseIntensity
+			mainLight.SetLight(glm::vec3(0.9176f, 0.9411f, 0.9686f), glm::vec3(0.0f, 0.0f, 1.0f), 0.6f, 0.45f);
+		}
+		else if (skyCount == 6000) { //Termina la noche
 			skyCount = -1; //Se le resta uno porque abajo se suma 1 y al sumarse 1 ya no queda en e para el reinicio
 		}
 
 		skyCount += 1; //La variable contadora aumenta en uno con cada ciclo del while que es lo que lleva la cuenta del tiempo
-
-		//Termina el cambio del skybox
-
-
 
 
 		//Recibir eventos del usuario
@@ -760,7 +905,9 @@ int main()
 		else shaderList[0].SetSpotLights(spotLights1, spotLightCount - 2);
 
 
-
+		// --------------------------------------
+		// ---------INICIALIZAR VECTORES---------
+		// --------------------------------------
 
 		glm::mat4 model(1.0);
 		glm::mat4 modelaux(1.0);
@@ -854,21 +1001,21 @@ int main()
 
 		//Puesto helado
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(65.0f, 0.0f, 25.0f));
+		model = glm::translate(model, glm::vec3(60.0f, 0.0f, 25.0f));
 		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		PuestoHelado_M.RenderModel();
 
 		//Marius Casual Tears of Themis
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(65.0f, 0.0f, 25.0f));
+		model = glm::translate(model, glm::vec3(60.0f, 0.0f, 25.0f));
 		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		MariusCasual_M.RenderModel();
 
 		//Sigwinne Genshin Impact
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(74.0f, 0.0f, 25.0f));
+		model = glm::translate(model, glm::vec3(69.0f, 0.0f, 25.0f));
 		model = glm::rotate(model, -90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Sigwinne_Genshin_M.RenderModel();
@@ -1185,6 +1332,7 @@ int main()
 		// --------------------------------------
 		// ----------ARTEM PROTAGONISTA----------
 		// --------------------------------------
+		
 		//Artem Normal Tears of Themis
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(-10.0f, 0.0f, -55.0f));
@@ -1192,12 +1340,13 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		ArtemNormal_M.RenderModel();
 
-		//Globos
+		//Globo
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(-8.0f, 0.0f, -50.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Globo_Feliz_M.RenderModel();
 
+		//Globo
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(8.0f, 0.0f, -50.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -1223,13 +1372,14 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Gato_DanHeng_M.RenderModel();
 
-		//Globos
+		//Globo
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(-106.0f, 0.0f, -117.0f));
 		model = glm::rotate(model, 15 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Globo_Naranja_M.RenderModel();
 
+		//Globo
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(-108.0f, 0.0f, -115.0f));
 		model = glm::rotate(model, 15 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
@@ -1400,17 +1550,19 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Robin_StarRail_M.RenderModel();
 
-		//Globos
+		//Globo
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(49.0f, 0.0f, 76.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Globo_Naranja_M.RenderModel();
 
+		//Globo
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(48.0f, 0.0f, 74.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Globo_Verde_M.RenderModel();
 
+		//Globo
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(47.0f, 0.0f, 76.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -1466,13 +1618,14 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Lampara_Genshin_M.RenderModel();
 
-		//Globos
+		//Globo
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(-123.0f, 0.0f, 79.0f));
 		model = glm::rotate(model, 75 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Globo_Verde_M.RenderModel();
 
+		//Globo
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(-121.0f, 0.0f, 76.0f));
 		model = glm::rotate(model, 75 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
@@ -1485,32 +1638,33 @@ int main()
 
 		//Puesto de Tickets
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(86.0f, 0.0f, 110.0f));
+		model = glm::translate(model, glm::vec3(73.0f, 0.0f, 110.0f));
 		model = glm::rotate(model, -180 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		PuestoTickets_M.RenderModel();
 
 		//Gato Blade
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(86.0f, 7.8f, 113.0f));
+		model = glm::translate(model, glm::vec3(73.0f, 7.8f, 113.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Gato_Blade_M.RenderModel();
 
 		//Lámpara Genshin Impact
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(80.0f, 0.0f, 105.0f));
+		model = glm::translate(model, glm::vec3(67.0f, 0.0f, 105.0f));
 		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Lampara_Genshin_M.RenderModel();
 
-		//Globos
+		//Globo
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(91.0f, 0.0f, 110.0f));
+		model = glm::translate(model, glm::vec3(78.0f, 0.0f, 110.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Globo_Enojado_M.RenderModel();
 
+		//Globo
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(80.0f, 0.0f, 109.0f));
+		model = glm::translate(model, glm::vec3(67.0f, 0.0f, 109.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Globo_Enojado_M.RenderModel();
 
@@ -1592,13 +1746,14 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Gato_Naranja_M.RenderModel();
 
-		//Globos
+		//Globo
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(-60.0f, 0.0f, 10.0f));
 		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Globo_Enojado_M.RenderModel();
 
+		//Globo
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(-59.0f, 0.0f, 8.0f));
 		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
@@ -1649,7 +1804,7 @@ int main()
 		
 		//Stand de madera en la taquilla
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(80.0f, 0.0f, 113.0f));
+		model = glm::translate(model, glm::vec3(67.0f, 0.0f, 113.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Stand_Taquilla_M.RenderModel();
 
@@ -1693,8 +1848,42 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Gato_Herta_M.RenderModel();
 		
+		// --------------------------------------
+		// --*----------PISO CAMINO--------------
+		// --------------------------------------
 
-		
+		//Derecha
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(80.0f, 0.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+
+		caminoTexture.UseTexture();
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		meshList[2]->RenderMesh();
+
+		//Centro
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		meshList[3]->RenderMesh();
+
+		//Izquierda
+		model = glm::translate(model, glm::vec3(-84.0f, 0.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		meshList[3]->RenderMesh();
+
+		//Frente
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f, -99.3f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		meshList[4]->RenderMesh();
+
+		//Detrás
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 49.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		meshList[4]->RenderMesh();
+
 		//-----------------¡¡TRANSPARENCIAS!!---------------------------------
 
 		// --------------------------------------
@@ -1755,9 +1944,9 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		PuestoBateo_M.RenderModel();
 
-		//------
-		//REJAS-
-		//------
+		//---------
+		//--REJAS--
+		//---------
 
 		//Derecha
 		model = glm::mat4(1.0);
