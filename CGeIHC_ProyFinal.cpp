@@ -710,9 +710,10 @@ int main()
 	// --------------------------------------
 
 	//Luz direccional, sólo 1 y siempre debe de existir
-	mainLight = DirectionalLight(1.0f, 1.0f, 1.0f,
-		0.3f, 0.3f,
-		0.0f, 0.0f, -1.0f);
+	mainLight = DirectionalLight(0.9843f, 0.9843f, 0.8980f,	//RGB
+		0.45f, 0.6f,				//Intensidad
+		0.0f, 0.0f, 1.0f);			//Dirección
+
 	//Contador de luces puntuales
 	unsigned int pointLightCount = 0;
 	unsigned int spotLightCount = 0;
@@ -819,27 +820,35 @@ int main()
 		// ----------------SKYBOX----------------
 		// --------------------------------------
 
-		//Inicia el if para cambiar de skybox
-		//Se cambia solo una vez en lugar de cada vez dentro de un rango para ahorrar recursos
+		if (skyCount == 0) { //Amanecer
+			skybox = Skybox(skyboxFaces);  //Skybox de dia
 
-		if (skyCount == 0) { //Si es cero la variable contadora, entonces se pone el skybox de dia
-			skybox = Skybox(skyboxFaces);
+			//Recibe Color nuevo RGC, dirección nueva, ambientIntensity, diffuseIntensity
+			mainLight.SetLight(glm::vec3(0.9843f, 0.9843f, 0.8980f), glm::vec3(0.0f, 0.0f, 1.0f), 0.5f, 0.6f);
 		}
-		else if (skyCount == 10000) {//Si es x la variable contadora, entonces se pone el skybox de atardecer
-			skybox = Skybox(skyboxFacesAtard);
+		else if (skyCount == 1000) {//Medio día
+
+			//Recibe Color nuevo RGC, dirección nueva, ambientIntensity, diffuseIntensity
+			mainLight.SetLight(glm::vec3(1.0f, 0.9647f, 0.9333f), glm::vec3(0.0f, -1.0f, 0.0f), 0.43f, 0.37f);
 		}
-		else if (skyCount == 20000) { //Si es y la variable contadora, entonces se pone el skybox de noche
-			skybox = Skybox(skyboxFacesNoche);
+
+		else if (skyCount == 2000) {//Atardecer
+			skybox = Skybox(skyboxFacesAtard);  //Skybox de atardecer
+
+			//Recibe Color nuevo RGC, dirección nueva, ambientIntensity, diffuseIntensity
+			mainLight.SetLight(glm::vec3(0.9450f, 0.6274f, 0.4745f), glm::vec3(0.0f, 0.0f, -1.0f), 0.45f, 0.6f);
 		}
-		else if (skyCount == 30000) { //Si es z la variable contadora, entonces se pone el skybox de dia nuevamente para que se resetee
+		else if (skyCount == 3000) { //Noche
+			skybox = Skybox(skyboxFacesNoche);  //Skybox de noche
+
+			//Recibe Color nuevo RGC, dirección nueva, ambientIntensity, diffuseIntensity
+			mainLight.SetLight(glm::vec3(0.9176f, 0.9411f, 0.9686f), glm::vec3(0.0f, 0.0f, 1.0f), 0.6f, 0.45f);
+		}
+		else if (skyCount == 6000) { //Termina la noche
 			skyCount = -1; //Se le resta uno porque abajo se suma 1 y al sumarse 1 ya no queda en e para el reinicio
 		}
 
 		skyCount += 1; //La variable contadora aumenta en uno con cada ciclo del while que es lo que lleva la cuenta del tiempo
-
-		//Termina el cambio del skybox
-
-
 
 
 		//Recibir eventos del usuario
