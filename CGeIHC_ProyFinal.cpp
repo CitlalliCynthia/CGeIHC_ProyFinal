@@ -9,10 +9,10 @@ PROYECTO FINAL:
 // ----------IMPORTAR MÓDULOS------------
 // --------------------------------------
 
-//Para cargar imagen
+
+//para cargar imagen
 #define STB_IMAGE_IMPLEMENTATION
 
-//Otros
 #include <stdio.h>
 #include <string.h>
 #include <cmath>
@@ -32,15 +32,16 @@ PROYECTO FINAL:
 #include "Camera.h"
 #include "Texture.h"
 #include "Sphere.h"
-#include "Model.h"
+#include"Model.h"
 #include "Skybox.h"
 
-//Para iluminación
+//para iluminación
 #include "CommonValues.h"
 #include "DirectionalLight.h"
 #include "PointLight.h"
 #include "SpotLight.h"
 #include "Material.h"
+const float toRadians = 3.14159265f / 180.0f;
 
 // --------------------------------------
 // -----------DEFINIR VENTANA------------
@@ -60,6 +61,9 @@ std::vector<Shader> shaderList;
 // --------------------------------------
 
 Camera camera;
+Camera camera2;
+Camera camera3;
+Camera cameraLibre;
 
 // --------------------------------------
 // -----------DEFINIR TEXTURAS-----------
@@ -162,6 +166,7 @@ Model Ratio_StarTail_M;
 
 //Puesto de Tickets
 Model PuestoTickets_M;
+Model PomPom_M;
 
 //Banca Boliche
 Model Banca_Genshin_M;
@@ -215,6 +220,22 @@ Model Gato_RuanMei_M;
 Model Gato_Herta_M;
 Model Gato_Verde_M;
 
+//Blade Star Rail
+Model Blade_Cuerpo;
+Model Blade_Cabeza;
+Model Blade_HombroDer;
+Model Blade_AntebrazoDer;
+Model Blade_ManoDer;
+Model Blade_HombroIzq;
+Model Blade_AntebrazoIzq;
+Model Blade_ManoIzq;
+Model Blade_PiernaDer;
+Model Blade_PantorrillaDer;
+Model Blade_PieDer;
+Model Blade_PiernaIzq;
+Model Blade_PantorrillaIzq;
+Model Blade_PieIzq;
+
 // --------------------------------------
 // ------------DEFINIR SKYBOX------------
 // --------------------------------------
@@ -236,7 +257,18 @@ GLfloat deltaTime = 0.0f;
 GLfloat lastTime = 0.0f;
 static double limitFPS = 1.0 / 60.0;
 
-const float toRadians = 3.14159265f / 180.0f;
+//Movimiento Blade Avatar
+float angulovaria = 0.0f;
+float angulovariaAux = 0.0f;
+float angulovaria2 = 0.0f;
+float angulovaria3 = 0.0f;
+
+//Para los skyboxes
+int skyCount = 0; //Se crea una variable contadora para que lleve la cuenta de vueltas que lleva el while y se vayan cambiando
+
+//Cámaras
+int banderaCamaraMovimiento = 0; //Para manejar los cambios en la camara de vistas estáticas a la general dinámica
+int banderaCamara = 0; //Indica si la camara se puede cambiar o no (en animación o no). 1 ocupado, 0 desocupado. INICIA EN 0
 
 // --------------------------------------
 // -------------DEFINIR LUCES------------
@@ -245,7 +277,7 @@ const float toRadians = 3.14159265f / 180.0f;
 //Luz direccional
 DirectionalLight mainLight;
 
-//Para declarar varias luces
+//para declarar varias luces
 PointLight pointLights[MAX_POINT_LIGHTS];
 SpotLight spotLights[MAX_SPOT_LIGHTS];
 
@@ -267,7 +299,7 @@ static const char* fShader = "shaders/shader_light.frag";
 // -----------CÁLCULO NORMALES-----------
 // --------------------------------------
 
-//Función de calculo de normales por promedio de vértices 
+//función de calculo de normales por promedio de vértices 
 void calcAverageNormals(unsigned int* indices, unsigned int indiceCount, GLfloat* vertices, unsigned int verticeCount,
 	unsigned int vLength, unsigned int normalOffset)
 {
@@ -373,7 +405,7 @@ void CreateObjects()
 
 	};
 
-	Mesh *obj1 = new Mesh();
+	Mesh* obj1 = new Mesh();
 	obj1->CreateMesh(floorVertices, floorIndices, 32, 6);
 	meshList.push_back(obj1);
 
@@ -422,8 +454,25 @@ int main()
 	CreateObjects();
 	CreateShaders();
 
-	camera = Camera(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), -60.0f, 0.0f, 0.3f, 0.5f);
+	// ----------------------------------
+	// --------------CÁMARAS-------------
+	// ----------------------------------
 
+	//1 Posición inicial; 2 No relevante; 3 Rotación hacia la izquierda o derecha en grados (+ o -)
+	//4 Rotación hacia arriba o abajo en grados (+ o -); 5 y 6 Velocidades para la camara
+	
+	//Camara Blade Avatar (F)
+	camera = Camera(glm::vec3(83.0f, 10.0f, 130.0f), glm::vec3(0.0f, 1.0f, 0.0f), -90.0f, 0.0f, 0.3f, 0.5f);
+
+	//Camara aerea (G)
+	camera2 = Camera(glm::vec3(0.0f, 270.0f, -10.0f), glm::vec3(0.0f, 1.0f, 0.0f), 90.0f, -90.0f, 0.3f, 0.5f);
+
+	//Camara stands (H,J,K,L,M,N)
+	camera3 = Camera(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), -60.0f, 0.0f, 0.3f, 0.5f);
+
+	//Cámara libre (Q)
+	cameraLibre = Camera(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), -90.0f, 0.0f, 0.3f, 0.5f);
+	
 	// --------------------------------------
 	// -----------CARGAR TEXTURAS------------
 	// --------------------------------------
@@ -578,6 +627,8 @@ int main()
 	//Puesto de Tickets
 	PuestoTickets_M = Model();
 	PuestoTickets_M.LoadModel("Models/PuestoTickets/PuestoTickets.obj");
+	PomPom_M = Model();
+	PomPom_M.LoadModel("Models/PomPom_StarRail/PomPom_StarRail.obj");
 
 	//Banca Boliche
 	Banca_Genshin_M = Model();
@@ -664,6 +715,41 @@ int main()
 	Gato_Herta_M.LoadModel("Models/Gato_StarRail/Gato_StarRail_Herta.obj");
 	Gato_Verde_M = Model();
 	Gato_Verde_M.LoadModel("Models/Gato_StarRail/Gato_StarRail_Verde.obj");
+
+	//Blade Star Rail
+	Blade_Cuerpo = Model();
+	Blade_Cuerpo.LoadModel("Models/Blade_StarRail/BladeCuerpo_StarRail.obj");
+
+	Blade_Cabeza = Model();
+	Blade_Cabeza.LoadModel("Models/Blade_StarRail/Blade_Cabeza.obj");
+
+	Blade_HombroDer = Model();
+	Blade_HombroDer.LoadModel("Models/Blade_StarRail/Blade_HombroDer.obj");
+	Blade_AntebrazoDer = Model();
+	Blade_AntebrazoDer.LoadModel("Models/Blade_StarRail/Blade_AntebrazoDer.obj");
+	Blade_ManoDer = Model();
+	Blade_ManoDer.LoadModel("Models/Blade_StarRail/Blade_ManoDer.obj");
+
+	Blade_HombroIzq = Model();
+	Blade_HombroIzq.LoadModel("Models/Blade_StarRail/Blade_HombroIzq.obj");
+	Blade_AntebrazoIzq = Model();
+	Blade_AntebrazoIzq.LoadModel("Models/Blade_StarRail/Blade_AntebrazoIzq.obj");
+	Blade_ManoIzq = Model();
+	Blade_ManoIzq.LoadModel("Models/Blade_StarRail/Blade_ManoIzq.obj");
+
+	Blade_PiernaDer = Model();
+	Blade_PiernaDer.LoadModel("Models/Blade_StarRail/Blade_PiernaDer.obj");
+	Blade_PantorrillaDer = Model();
+	Blade_PantorrillaDer.LoadModel("Models/Blade_StarRail/Blade_PantorrillaDer.obj");
+	Blade_PieDer = Model();
+	Blade_PieDer.LoadModel("Models/Blade_StarRail/Blade_PieDer.obj");
+
+	Blade_PiernaIzq = Model();
+	Blade_PiernaIzq.LoadModel("Models/Blade_StarRail/Blade_PiernaIzq.obj");
+	Blade_PantorrillaIzq = Model();
+	Blade_PantorrillaIzq.LoadModel("Models/Blade_StarRail/Blade_PantorrillaIzq.obj");
+	Blade_PieIzq = Model();
+	Blade_PieIzq.LoadModel("Models/Blade_StarRail/Blade_PieIzq.obj");
 	
 	// --------------------------------------
 	// -----------SKYBOX TEXTURAS------------
@@ -693,10 +779,6 @@ int main()
 	skyboxFacesNoche.push_back("Textures/Skybox/Night_Arriba.tga");
 	skyboxFacesNoche.push_back("Textures/Skybox/Night_Detras.tga");
 	skyboxFacesNoche.push_back("Textures/Skybox/Night_Enfrente.tga");
-
-	int skyCount = 0; //Se crea una variable contadora para que lleve la cuenta de vueltas que lleva el while y se vayan cambiando
-
-	//skybox = Skybox(skyboxFaces); ///BORRAR!!!!!!!
 	
 	// --------------------------------------
 	// -----------CREAR MATERIALES-----------
@@ -714,7 +796,7 @@ int main()
 		0.45f, 0.6f,				//Intensidad
 		0.0f, 0.0f, 1.0f);			//Dirección
 
-	//Contador de luces puntuales
+	//contador de luces puntuales
 	unsigned int pointLightCount = 0;
 	unsigned int spotLightCount = 0;
 	
@@ -794,6 +876,7 @@ int main()
 	spotLightCount++;
 	*/
 
+
 	// ---------------------------------------
 	// -------VAR. UNIFORM Y PROYECCIÓN-------
 	// ---------------------------------------
@@ -803,12 +886,13 @@ int main()
 	GLuint uniformColor = 0;
 
 	glm::mat4 projection = glm::perspective(45.0f, (GLfloat)mainWindow.getBufferWidth() / mainWindow.getBufferHeight(), 0.1f, 1000.0f);
-	
+
+
 	// --------------------------------------
 	// ------------WHILE PRINCIPAL-----------
 	// --------------------------------------
 
-	//Loop mientras no se cierra la ventana
+	////Loop mientras no se cierra la ventana
 	while (!mainWindow.getShouldClose())
 	{
 		GLfloat now = glfwGetTime();
@@ -850,33 +934,126 @@ int main()
 
 		skyCount += 1; //La variable contadora aumenta en uno con cada ciclo del while que es lo que lleva la cuenta del tiempo
 
+		// --------------------------------------
+		// ---------------CÁMARAS----------------
+		// --------------------------------------
 
-		//Recibir eventos del usuario
-		glfwPollEvents();
-		camera.keyControl(mainWindow.getsKeys(), deltaTime);
-		camera.mouseControl(mainWindow.getXChange(), mainWindow.getYChange());
+		if (banderaCamara == 0){
 
-		// Clear the window
-		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		skybox.DrawSkybox(camera.calculateViewMatrix(), projection);
-		shaderList[0].UseShader();
-		uniformModel = shaderList[0].GetModelLocation();
-		uniformProjection = shaderList[0].GetProjectionLocation();
-		uniformView = shaderList[0].GetViewLocation();
-		uniformEyePosition = shaderList[0].GetEyePositionLocation();
-		uniformColor = shaderList[0].getColorLocation();
-		
+			if (mainWindow.getarticulacion1() == 1.0) { //Vista Blade
+				banderaCamaraMovimiento = 0;
+			}
+			else if (mainWindow.getarticulacion2() == 1.0) { //Vista aerea
+				camera3 = camera2;
+				banderaCamaraMovimiento = 1;
+			}
+			else if (mainWindow.getarticulacion3() == 1.0) { //Stand hacha
+				camera3 = Camera(glm::vec3(-106.0f, 8.0f, -78.0f), glm::vec3(0.0f, 1.0f, 0.0f), 180.0f, 0.0f, 0.3f, 0.5f);
+				banderaCamaraMovimiento = 1;
+			}
+			else if (mainWindow.getarticulacion4() == 1.0) { //Stand boliche
+				camera3 = Camera(glm::vec3(-52.0f, 11.0f, 62.0f), glm::vec3(0.0f, 1.0f, 0.0f), 90.0f, -15.0f, 0.3f, 0.5f);
+				banderaCamaraMovimiento = 1;
+			}
+			else if (mainWindow.getarticulacion5() == 1.0) { //Stand dados
+				camera3 = Camera(glm::vec3(-102.0f, 9.0f, -35.0f), glm::vec3(0.0f, 1.0f, 0.0f), 180.0f, -30.0f, 0.3f, 0.5f);
+				banderaCamaraMovimiento = 1;
+			}
+			else if (mainWindow.getarticulacion6() == 1.0) { //Stand bateo
+				camera3 = Camera(glm::vec3(-03.0f, 9.0f, 93.0f), glm::vec3(0.0f, 1.0f, 0.0f), 90.0f, 0.0f, 0.3f, 0.5f);
+				banderaCamaraMovimiento = 1;
+			}
+			else if (mainWindow.getarticulacion7() == 1.0) { //Stand dardos
+				camera3 = Camera(glm::vec3(91.5f, 8.5f, -26.0f), glm::vec3(0.0f, 1.0f, 0.0f), 0.0f, -5.0f, 0.3f, 0.5f);
+				banderaCamaraMovimiento = 1;
+			}
+			else if (mainWindow.getarticulacion8() == 1.0) { //Stand topo
+				camera3 = Camera(glm::vec3(61.0f, 9.0f, 62.5f), glm::vec3(0.0f, 1.0f, 0.0f), 90.0f, -30.0f, 0.3f, 0.5f);
+				banderaCamaraMovimiento = 1;
+			}
+			else if (mainWindow.getarticulacion11() == 1.0) { //Camara Libre (EXTRA)
+				banderaCamaraMovimiento = 2;
+			}
+		}
 
+		//Para  clear Window según se ocupe o no que se pueda mover la cámara
+		if (banderaCamaraMovimiento == 0) {
+			//CAMARA 1 (VISTA BLADE CON MOVIMIENTO)
+			glfwPollEvents();
+			//camera.keyControl(mainWindow.getsKeys(), deltaTime);
+			camera.mouseControl(mainWindow.getXChange(), mainWindow.getYChange());
 
+			// Clear the window
+			glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			skybox.DrawSkybox(camera.calculateViewMatrix(), projection);
+			shaderList[0].UseShader();
+			uniformModel = shaderList[0].GetModelLocation();
+			uniformProjection = shaderList[0].GetProjectionLocation();
+			uniformView = shaderList[0].GetViewLocation();
+			uniformEyePosition = shaderList[0].GetEyePositionLocation();
+			uniformColor = shaderList[0].getColorLocation();
 
-		//información en el shader de intensidad especular y brillo
-		uniformSpecularIntensity = shaderList[0].GetSpecularIntensityLocation();
-		uniformShininess = shaderList[0].GetShininessLocation();
+			//información en el shader de intensidad especular y brillo
+			uniformSpecularIntensity = shaderList[0].GetSpecularIntensityLocation();
+			uniformShininess = shaderList[0].GetShininessLocation();
 
-		glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(projection));
-		glUniformMatrix4fv(uniformView, 1, GL_FALSE, glm::value_ptr(camera.calculateViewMatrix()));
-		glUniform3f(uniformEyePosition, camera.getCameraPosition().x, camera.getCameraPosition().y, camera.getCameraPosition().z);
+			glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(projection));
+			glUniformMatrix4fv(uniformView, 1, GL_FALSE, glm::value_ptr(camera.calculateViewMatrix()));
+			glUniform3f(uniformEyePosition, camera.getCameraPosition().x, camera.getCameraPosition().y, camera.getCameraPosition().z);
+		}
+		else if (banderaCamaraMovimiento == 2) {
+			//CAMARA LIBRE (VISTA EXTRA CON MOVIMIENTO )
+			glfwPollEvents();
+			cameraLibre.keyControl(mainWindow.getsKeys(), deltaTime);
+			cameraLibre.mouseControl(mainWindow.getXChange(), mainWindow.getYChange());
+
+			// Clear the window
+			glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			skybox.DrawSkybox(cameraLibre.calculateViewMatrix(), projection);
+			shaderList[0].UseShader();
+			uniformModel = shaderList[0].GetModelLocation();
+			uniformProjection = shaderList[0].GetProjectionLocation();
+			uniformView = shaderList[0].GetViewLocation();
+			uniformEyePosition = shaderList[0].GetEyePositionLocation();
+			uniformColor = shaderList[0].getColorLocation();
+
+			//información en el shader de intensidad especular y brillo
+			uniformSpecularIntensity = shaderList[0].GetSpecularIntensityLocation();
+			uniformShininess = shaderList[0].GetShininessLocation();
+
+			glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(projection));
+			glUniformMatrix4fv(uniformView, 1, GL_FALSE, glm::value_ptr(cameraLibre.calculateViewMatrix()));
+			glUniform3f(uniformEyePosition, cameraLibre.getCameraPosition().x, cameraLibre.getCameraPosition().y, cameraLibre.getCameraPosition().z);
+		}
+		else {
+			//CAMARA 2 Y 3 (VISTA AEREA Y CADA STAND. SIN MOVIMIENTO)
+			glfwPollEvents();
+
+			// Clear the window
+			glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			skybox.DrawSkybox(camera3.calculateViewMatrix(), projection);
+			shaderList[0].UseShader();
+			uniformModel = shaderList[0].GetModelLocation();
+			uniformProjection = shaderList[0].GetProjectionLocation();
+			uniformView = shaderList[0].GetViewLocation();
+			uniformEyePosition = shaderList[0].GetEyePositionLocation();
+			uniformColor = shaderList[0].getColorLocation();
+
+			//información en el shader de intensidad especular y brillo
+			uniformSpecularIntensity = shaderList[0].GetSpecularIntensityLocation();
+			uniformShininess = shaderList[0].GetShininessLocation();
+
+			glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(projection));
+			glUniformMatrix4fv(uniformView, 1, GL_FALSE, glm::value_ptr(camera3.calculateViewMatrix()));
+			glUniform3f(uniformEyePosition, camera3.getCameraPosition().x, camera3.getCameraPosition().y, camera3.getCameraPosition().z);
+		}
+
+		// --------------------------------------
+		// ----------------LUCES-----------------
+		// --------------------------------------
 
 		/*
 		// luz ligada a la cámara de tipo flash
@@ -903,7 +1080,6 @@ int main()
 		//Movimiento hacia atrás
 		else if (mainWindow.getarticulacion10() == 0.5) shaderList[0].SetSpotLights(spotLights1, spotLightCount - 1);
 		else shaderList[0].SetSpotLights(spotLights1, spotLightCount - 2);
-
 
 		// --------------------------------------
 		// ---------INICIALIZAR VECTORES---------
@@ -1001,21 +1177,21 @@ int main()
 
 		//Puesto helado
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(60.0f, 0.0f, 25.0f));
+		model = glm::translate(model, glm::vec3(65.0f, 0.0f, 25.0f));
 		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		PuestoHelado_M.RenderModel();
 
 		//Marius Casual Tears of Themis
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(60.0f, 0.0f, 25.0f));
+		model = glm::translate(model, glm::vec3(65.0f, 0.0f, 25.0f));
 		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		MariusCasual_M.RenderModel();
 
 		//Sigwinne Genshin Impact
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(69.0f, 0.0f, 25.0f));
+		model = glm::translate(model, glm::vec3(74.0f, 0.0f, 25.0f));
 		model = glm::rotate(model, -90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Sigwinne_Genshin_M.RenderModel();
@@ -1332,7 +1508,6 @@ int main()
 		// --------------------------------------
 		// ----------ARTEM PROTAGONISTA----------
 		// --------------------------------------
-		
 		//Artem Normal Tears of Themis
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(-10.0f, 0.0f, -55.0f));
@@ -1340,13 +1515,12 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		ArtemNormal_M.RenderModel();
 
-		//Globo
+		//Globos
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(-8.0f, 0.0f, -50.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Globo_Feliz_M.RenderModel();
 
-		//Globo
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(8.0f, 0.0f, -50.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -1372,14 +1546,13 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Gato_DanHeng_M.RenderModel();
 
-		//Globo
+		//Globos
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(-106.0f, 0.0f, -117.0f));
 		model = glm::rotate(model, 15 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Globo_Naranja_M.RenderModel();
 
-		//Globo
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(-108.0f, 0.0f, -115.0f));
 		model = glm::rotate(model, 15 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
@@ -1550,19 +1723,17 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Robin_StarRail_M.RenderModel();
 
-		//Globo
+		//Globos
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(49.0f, 0.0f, 76.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Globo_Naranja_M.RenderModel();
 
-		//Globo
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(48.0f, 0.0f, 74.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Globo_Verde_M.RenderModel();
 
-		//Globo
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(47.0f, 0.0f, 76.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -1618,14 +1789,13 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Lampara_Genshin_M.RenderModel();
 
-		//Globo
+		//Globos
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(-123.0f, 0.0f, 79.0f));
 		model = glm::rotate(model, 75 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Globo_Verde_M.RenderModel();
 
-		//Globo
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(-121.0f, 0.0f, 76.0f));
 		model = glm::rotate(model, 75 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
@@ -1642,6 +1812,9 @@ int main()
 		model = glm::rotate(model, -180 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		PuestoTickets_M.RenderModel();
+
+		//Pom Pom Star Rail
+		PomPom_M.RenderModel();
 
 		//Gato Blade
 		model = glm::mat4(1.0);
@@ -1746,14 +1919,13 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Gato_Naranja_M.RenderModel();
 
-		//Globo
+		//Globos
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(-60.0f, 0.0f, 10.0f));
 		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Globo_Enojado_M.RenderModel();
 
-		//Globo
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(-59.0f, 0.0f, 8.0f));
 		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
@@ -1849,7 +2021,7 @@ int main()
 		Gato_Herta_M.RenderModel();
 		
 		// --------------------------------------
-		// --*----------PISO CAMINO--------------
+		// -------------PISO CAMINO--------------
 		// --------------------------------------
 
 		//Derecha
@@ -1883,6 +2055,139 @@ int main()
 		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 49.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		meshList[4]->RenderMesh();
+		
+		// --------------------------------------
+		// ----------BLADE JERARQUICO------------
+		// --------------------------------------
+
+		if (mainWindow.getAvanzaBlade() == 1) {
+
+			angulovaria += 2.2f * deltaTime;
+			angulovariaAux += 2.2f * deltaTime;
+			if (sin(glm::radians(angulovariaAux)) > 0) {
+				angulovaria2 = 0.0f;
+			}
+			else {
+				angulovaria2 = angulovariaAux;
+			}
+			if (sin(glm::radians(angulovariaAux)) < 0) {
+				angulovaria3 = 0.0f;
+			}
+			else {
+				angulovaria3 = -angulovariaAux;
+			}
+			//std::cout << "angulovaria = " << sin(glm::radians(angulovaria2)) << std::endl;
+
+		}
+
+		if ((sin(glm::radians(angulovaria)) > 0.1 && mainWindow.getAvanzaBlade() == 0) || (sin(glm::radians(angulovaria)) < -0.1 && mainWindow.getAvanzaBlade() == 0)) {
+			angulovaria += 3.0f * deltaTime;
+			angulovariaAux += 3.0f * deltaTime;
+			if (sin(glm::radians(angulovariaAux)) > 0) {
+				angulovaria2 = 0.0f;
+			}
+			else {
+				angulovaria2 = angulovariaAux;
+			}
+			if (sin(glm::radians(angulovariaAux)) < 0) {
+				angulovaria3 = 0.0f;
+			}
+			else {
+				angulovaria3 = -angulovariaAux;
+			}
+			//std::cout << "angulovaria = " << sin(glm::radians(angulovaria)) << std::endl;
+		}
+		
+		//Cuerpo
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(83.0f + mainWindow.getarticulacion10(), 6.463f, 120.0f + mainWindow.getarticulacion9()));
+		model = glm::rotate(model, 180 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Blade_Cuerpo.RenderModel();
+		modelaux = model;
+
+		//Cabeza 
+		model = glm::translate(model, glm::vec3(0.0f, 1.552f, -0.207f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Blade_Cabeza.RenderModel();
+
+		//---Brazo derecho
+		//Hombro Derecho
+		model = modelaux;
+		model = glm::translate(model, glm::vec3(-0.897f, 0.997f, -0.3f));
+		model = glm::rotate(model, 42 * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+		model = glm::rotate(model, 1.0f * sin(glm::radians(angulovaria)), glm::vec3(1.0f, 0.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Blade_HombroDer.RenderModel();
+
+		//Antebrazo Derecho
+		model = glm::translate(model, glm::vec3(-0.925f, -0.71f, 0.02f));
+		model = glm::rotate(model, 0.5f * -sin(glm::radians(angulovaria2)), glm::vec3(0.0f, 0.0f, 1.0f));
+
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Blade_AntebrazoDer.RenderModel();
+
+		//Mano Derecha
+		model = glm::translate(model, glm::vec3(-0.960f, -0.697f, 0.041f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Blade_ManoDer.RenderModel();
+
+		//---Brazo Izquierdo
+		//Hombro Izquierdo
+		model = modelaux;
+		model = glm::translate(model, glm::vec3(0.874f, 0.941f, -0.285f));
+		model = glm::rotate(model, -42 * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+		model = glm::rotate(model, 1.0f * -sin(glm::radians(angulovaria)), glm::vec3(1.0f, 0.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Blade_HombroIzq.RenderModel();
+
+		//Antebrazo Izquierdo
+		model = glm::translate(model, glm::vec3(0.939f, -0.616f, 0.005f));
+		model = glm::rotate(model, 0.5f * sin(glm::radians(angulovaria3)), glm::vec3(0.0f, 0.0f, 1.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Blade_AntebrazoIzq.RenderModel();
+
+		//Mano Izquierda
+		model = glm::translate(model, glm::vec3(0.952f, -0.719f, 0.036f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Blade_ManoIzq.RenderModel();
+
+		//---Pierna Derecha
+		//Pierna Derecha
+		model = modelaux;
+		model = glm::translate(model, glm::vec3(-0.424f, -1.452f, -0.12f));
+		model = glm::rotate(model, 0.45f * -sin(glm::radians(angulovaria)), glm::vec3(1.0f, 0.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Blade_PiernaDer.RenderModel();
+
+		model = glm::translate(model, glm::vec3(-0.062f, -1.991f, -0.106));
+		model = glm::rotate(model, 0.5f * -sin(glm::radians(angulovaria3)), glm::vec3(1.0f, 0.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Blade_PantorrillaDer.RenderModel();
+
+		model = glm::translate(model, glm::vec3(-0.047f, -2.442f, 0.031f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Blade_PieDer.RenderModel();
+
+		//---Pierna Izquierda
+		//Pierna Izquierda
+		model = modelaux;
+		model = glm::translate(model, glm::vec3(0.417f, -1.458f, -0.107f));
+		model = glm::rotate(model, 0.45f * sin(glm::radians(angulovaria)), glm::vec3(1.0f, 0.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Blade_PiernaIzq.RenderModel();
+
+		model = glm::translate(model, glm::vec3(0.061f, -1.974f, -0.119f));
+		model = glm::rotate(model, 0.5f * -sin(glm::radians(angulovaria2)), glm::vec3(1.0f, 0.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Blade_PantorrillaIzq.RenderModel();
+
+		model = glm::translate(model, glm::vec3(0.046f, -2.434f, -0.01f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Blade_PieIzq.RenderModel();
+
+		//Se liga la cámara al Avatar
+		camera.setPositionCamara(glm::vec3(83.0f + mainWindow.getarticulacion10(), 10.0f, 130.0f + mainWindow.getarticulacion9()));
 
 		//-----------------¡¡TRANSPARENCIAS!!---------------------------------
 
@@ -1913,9 +2218,16 @@ int main()
 		LukeCasual_Themis_M.RenderModel();
 
 		//Bate
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-3.5f, 6.0f, 96.0f));
+		model = glm::rotate(model, 30 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));//+30 grados
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Bate_M.RenderModel();
 
 		//Pelota de Baseball
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-3.5f, 7.0f, 115.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		PelotaBateo_M.RenderModel();
 
 		//Basura Honkai Star Rail
@@ -1944,9 +2256,9 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		PuestoBateo_M.RenderModel();
 
-		//---------
-		//--REJAS--
-		//---------
+		//------
+		//REJAS-
+		//------
 
 		//Derecha
 		model = glm::mat4(1.0);
