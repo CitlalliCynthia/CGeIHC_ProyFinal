@@ -489,7 +489,7 @@ int main()
 	// --------------------------------------
 	// ------------CARGAR MODELOS------------
 	// --------------------------------------
-	/*
+	
 	//Rueda Fortuna
 	RuedaFortuna_M = Model();
 	RuedaFortuna_M.LoadModel("Models/RuedaFortuna/RuedaFortuna.obj");
@@ -609,7 +609,7 @@ int main()
 	CarrosChocones_M.LoadModel("Models/PuestoCarrosChocones/puestoCarrosChocones.obj");
 	ArtemCasual_Themis_M = Model();
 	ArtemCasual_Themis_M.LoadModel("Models/ArtemCasual_Themis/artemCasual.obj");
-	*/
+	
 	//Jaula Bateo
 	PuestoBateo_M = Model();
 	PuestoBateo_M.LoadModel("Models/PuestoBateo/puestoBateo.obj");
@@ -620,17 +620,17 @@ int main()
 	LukeCasual_Themis_M = Model();
 	LukeCasual_Themis_M.LoadModel("Models/LukeCasual_Themis/LukeCasual.obj");
 
-	/*
+	
 	//Baño Boliche
 	Ratio_StarTail_M = Model();
 	Ratio_StarTail_M.LoadModel("Models/Ratio_StarRail/Ratio_StarRail.obj");
-	*/
+	
 	//Puesto de Tickets
 	PuestoTickets_M = Model();
 	PuestoTickets_M.LoadModel("Models/PuestoTickets/PuestoTickets.obj");
 	PomPom_M = Model();
 	PomPom_M.LoadModel("Models/PomPom_StarRail/PomPom_StarRail.obj");
-	/*
+	
 	//Banca Boliche
 	Banca_Genshin_M = Model();
 	Banca_Genshin_M.LoadModel("Models/BancaTexturizada/BancaTexturizada.obj");
@@ -716,7 +716,7 @@ int main()
 	Gato_Herta_M.LoadModel("Models/Gato_StarRail/Gato_StarRail_Herta.obj");
 	Gato_Verde_M = Model();
 	Gato_Verde_M.LoadModel("Models/Gato_StarRail/Gato_StarRail_Verde.obj");
-	*/
+	
 	//Blade Star Rail
 	Blade_Cuerpo = Model();
 	Blade_Cuerpo.LoadModel("Models/Blade_StarRail/BladeCuerpo_StarRail.obj");
@@ -1109,7 +1109,7 @@ int main()
 		// --------------------------------------
 		// ------------RUEDA FORTUNA-------------
 		// --------------------------------------
-		/*
+		
 		//Rueda Fortuna
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
@@ -1803,7 +1803,7 @@ int main()
 		model = glm::rotate(model, 75 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Globo_Naranja_M.RenderModel();
-		*/
+		
 		// --------------------------------------
 		// ---------PUESTO DE TICKETS------------
 		// --------------------------------------
@@ -1817,7 +1817,7 @@ int main()
 
 		//Pom Pom Star Rail
 		PomPom_M.RenderModel();
-		/*
+		
 		//Gato Blade
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(73.0f, 7.8f, 113.0f));
@@ -2057,7 +2057,7 @@ int main()
 		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 49.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		meshList[4]->RenderMesh();
-		*/
+		
 		// --------------------------------------
 		// ----------BLADE JERARQUICO------------
 		// --------------------------------------
