@@ -16,6 +16,12 @@ Window::Window(GLint windowWidth, GLint windowHeight)
 	rotax = 0.0f;
 	rotay = 0.0f;
 	rotaz = 0.0f;
+	AvanzaBladeW = 0.0f;
+	AvanzaBladeA = 0.0f;
+	AvanzaBladeS = 0.0f;
+	AvanzaBladeD = 0.0f;
+	AvanzaBlade = 0.0f;
+	MueveBlade = 0.0f;
 	articulacion1 = 0.0f;
 	articulacion2 = 0.0f;
 	articulacion3 = 0.0f;
@@ -27,7 +33,7 @@ Window::Window(GLint windowWidth, GLint windowHeight)
 	articulacion9 = 0.0f;
 	articulacion10 = 0.0f;
 
-	
+
 	for (size_t i = 0; i < 1024; i++)
 	{
 		keys[i] = 0;
@@ -80,9 +86,9 @@ int Window::Initialise()
 	}
 
 	glEnable(GL_DEPTH_TEST); //HABILITAR BUFFER DE PROFUNDIDAD
-							 // Asignar valores de la ventana y coordenadas
-							 
-							 //Asignar Viewport
+	// Asignar valores de la ventana y coordenadas
+
+	//Asignar Viewport
 	glViewport(0, 0, bufferWidth, bufferHeight);
 	//Callback para detectar que se está usando la ventana
 	glfwSetWindowUserPointer(mainWindow, this);
@@ -117,7 +123,7 @@ void Window::ManejaTeclado(GLFWwindow* window, int key, int code, int action, in
 		glfwSetWindowShouldClose(window, GL_TRUE);
 	}
 
-	
+
 	if (key == GLFW_KEY_E)
 	{
 		theWindow->rotax += 10.0;
@@ -130,6 +136,63 @@ void Window::ManejaTeclado(GLFWwindow* window, int key, int code, int action, in
 	{
 		theWindow->rotaz += 10.0;
 	}
+	//Avance Blade
+	if (key == GLFW_KEY_W) {
+		if (action == GLFW_PRESS) {
+			theWindow->AvanzaBladeW = 1.0f;
+			theWindow->AvanzaBlade = 1.0f;
+
+
+		}
+		else if (action == GLFW_RELEASE) {
+			theWindow->AvanzaBladeW = 0.0f;
+			theWindow->AvanzaBlade = 1.0f;
+
+		}
+	}
+	if (key == GLFW_KEY_A) {
+		if (action == GLFW_PRESS) {
+			theWindow->AvanzaBladeA = 1.0f;
+			theWindow->AvanzaBlade = 1.0f;
+
+
+		}
+		else if (action == GLFW_RELEASE) {
+			theWindow->AvanzaBladeA = 0.0f;
+			theWindow->AvanzaBlade = 1.0f;
+
+		}
+	}
+	if (key == GLFW_KEY_S) {
+		if (action == GLFW_PRESS) {
+			theWindow->AvanzaBladeS = 1.0f;
+			theWindow->AvanzaBlade = 1.0f;
+
+
+		}
+		else if (action == GLFW_RELEASE) {
+			theWindow->AvanzaBladeS = 0.0f;
+			theWindow->AvanzaBlade = 1.0f;
+
+		}
+	}
+	if (key == GLFW_KEY_D) {
+		if (action == GLFW_PRESS) {
+			theWindow->AvanzaBladeD = 1.0f;
+			theWindow->AvanzaBlade = 1.0f;
+
+		}
+		else if (action == GLFW_RELEASE) {
+			theWindow->AvanzaBladeD = 0.0f;
+			theWindow->AvanzaBlade = 1.0f;
+
+		}
+	}
+	if (key == GLFW_KEY_W)
+	{
+		theWindow->MueveBlade -= 0.2;
+	}
+
 	//Cámara Blade
 	if (key == GLFW_KEY_F && action == GLFW_PRESS)
 	{
@@ -198,16 +261,7 @@ void Window::ManejaTeclado(GLFWwindow* window, int key, int code, int action, in
 	{
 		theWindow->articulacion10 += 0.5;
 	}
-	//Movimiento brazos y piernas Avatar
-	if (key == GLFW_KEY_W || key == GLFW_KEY_S || key == GLFW_KEY_D || key == GLFW_KEY_A) {
-		if (action == GLFW_PRESS) {
-			theWindow->AvanzaBlade = 1.0f;
-
-		}
-		else if (action == GLFW_RELEASE) {
-			theWindow->AvanzaBlade = 0.0f;
-		}
-	}
+	
 	//Cámara libre
 	if (key == GLFW_KEY_Q && action == GLFW_PRESS)
 	{
