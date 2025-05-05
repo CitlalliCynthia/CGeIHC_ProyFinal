@@ -489,7 +489,7 @@ int main()
 	// --------------------------------------
 	// ------------CARGAR MODELOS------------
 	// --------------------------------------
-
+	/*
 	//Rueda Fortuna
 	RuedaFortuna_M = Model();
 	RuedaFortuna_M.LoadModel("Models/RuedaFortuna/RuedaFortuna.obj");
@@ -609,7 +609,7 @@ int main()
 	CarrosChocones_M.LoadModel("Models/PuestoCarrosChocones/puestoCarrosChocones.obj");
 	ArtemCasual_Themis_M = Model();
 	ArtemCasual_Themis_M.LoadModel("Models/ArtemCasual_Themis/artemCasual.obj");
-
+	*/
 	//Jaula Bateo
 	PuestoBateo_M = Model();
 	PuestoBateo_M.LoadModel("Models/PuestoBateo/puestoBateo.obj");
@@ -620,16 +620,17 @@ int main()
 	LukeCasual_Themis_M = Model();
 	LukeCasual_Themis_M.LoadModel("Models/LukeCasual_Themis/LukeCasual.obj");
 
+	/*
 	//Baño Boliche
 	Ratio_StarTail_M = Model();
 	Ratio_StarTail_M.LoadModel("Models/Ratio_StarRail/Ratio_StarRail.obj");
-
+	*/
 	//Puesto de Tickets
 	PuestoTickets_M = Model();
 	PuestoTickets_M.LoadModel("Models/PuestoTickets/PuestoTickets.obj");
 	PomPom_M = Model();
 	PomPom_M.LoadModel("Models/PomPom_StarRail/PomPom_StarRail.obj");
-
+	/*
 	//Banca Boliche
 	Banca_Genshin_M = Model();
 	Banca_Genshin_M.LoadModel("Models/BancaTexturizada/BancaTexturizada.obj");
@@ -715,7 +716,7 @@ int main()
 	Gato_Herta_M.LoadModel("Models/Gato_StarRail/Gato_StarRail_Herta.obj");
 	Gato_Verde_M = Model();
 	Gato_Verde_M.LoadModel("Models/Gato_StarRail/Gato_StarRail_Verde.obj");
-
+	*/
 	//Blade Star Rail
 	Blade_Cuerpo = Model();
 	Blade_Cuerpo.LoadModel("Models/Blade_StarRail/BladeCuerpo_StarRail.obj");
@@ -893,6 +894,7 @@ int main()
 	// --------------------------------------
 
 	////Loop mientras no se cierra la ventana
+	glm::vec3 bladePosition = glm::vec3(97.0f, 6.463f, 120.0f);
 	while (!mainWindow.getShouldClose())
 	{
 		GLfloat now = glfwGetTime();
@@ -1107,7 +1109,7 @@ int main()
 		// --------------------------------------
 		// ------------RUEDA FORTUNA-------------
 		// --------------------------------------
-
+		/*
 		//Rueda Fortuna
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
@@ -1801,7 +1803,7 @@ int main()
 		model = glm::rotate(model, 75 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Globo_Naranja_M.RenderModel();
-
+		*/
 		// --------------------------------------
 		// ---------PUESTO DE TICKETS------------
 		// --------------------------------------
@@ -1815,7 +1817,7 @@ int main()
 
 		//Pom Pom Star Rail
 		PomPom_M.RenderModel();
-
+		/*
 		//Gato Blade
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(73.0f, 7.8f, 113.0f));
@@ -2055,7 +2057,7 @@ int main()
 		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 49.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		meshList[4]->RenderMesh();
-		
+		*/
 		// --------------------------------------
 		// ----------BLADE JERARQUICO------------
 		// --------------------------------------
@@ -2098,13 +2100,48 @@ int main()
 			//std::cout << "angulovaria = " << sin(glm::radians(angulovaria)) << std::endl;
 		}
 		
-		//Cuerpo
-		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(83.0f + mainWindow.getarticulacion10(), 6.463f, 120.0f + mainWindow.getarticulacion9()));
-		model = glm::rotate(model, 180 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		// Variables persistentes (deberían estar fuera del loop si no lo están ya)
+
+		float bladeSpeed = 1.0f;
+
+		// En el render loop o función de actualización:
+
+		// 1. Dirección de la cámara (sin componente Y para que no suba/baje el personaje)
+		glm::vec3 cameraForward = glm::normalize(glm::vec3(camera.getCameraDirection().x, 0.0f, camera.getCameraDirection().z));
+		glm::vec3 right = glm::normalize(glm::cross(cameraForward, glm::vec3(0.0f, 1.0f, 0.0f))); // vector a la derecha
+
+		// 2. Rotación del personaje basada en la cámara
+		float bladeAngle = atan2(cameraForward.x, cameraForward.z); // Yaw en radianes
+
+		// 3. Movimiento si se presiona tecla
+		if (mainWindow.getAvanzaBladeW() == 1) {
+			bladePosition += cameraForward * bladeSpeed * deltaTime;
+		}
+		if (mainWindow.getAvanzaBladeA() == 1) {
+			bladePosition -= right * bladeSpeed * deltaTime;
+		}
+		if (mainWindow.getAvanzaBladeS() == 1) {
+			bladePosition -= cameraForward * bladeSpeed * deltaTime;
+		}
+		if (mainWindow.getAvanzaBladeD() == 1) {
+			bladePosition += right * bladeSpeed * deltaTime;
+		}
+
+		// 4. Construcción de la matriz del personaje
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, bladePosition);
+		model = glm::rotate(model, bladeAngle, glm::vec3(0.0f, 1.0f, 0.0f)); // rotación en eje Y
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Blade_Cuerpo.RenderModel();
 		modelaux = model;
+
+		// 5. Cámara que sigue al personaje desde atrás
+		glm::vec3 cameraOffset = -cameraForward * 10.0f + glm::vec3(0.0f, 5.0f, 0.0f); // detrás y arriba
+		glm::vec3 cameraPosition = bladePosition + cameraOffset;
+		camera.setPosition(cameraPosition);
+
+		glm::vec3 lookTarget = bladePosition + glm::vec3(0.0f, 2.0f, 0.0f); // mira al torso
+		camera.setFront(glm::normalize(lookTarget - cameraPosition));
 
 		//Cabeza 
 		model = glm::translate(model, glm::vec3(0.0f, 1.552f, -0.207f));
@@ -2186,9 +2223,7 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Blade_PieIzq.RenderModel();
 
-		//Se liga la cámara al Avatar
-		camera.setPositionCamara(glm::vec3(83.0f + mainWindow.getarticulacion10(), 10.0f, 130.0f + mainWindow.getarticulacion9()));
-
+		
 		//-----------------¡¡TRANSPARENCIAS!!---------------------------------
 
 		// --------------------------------------
