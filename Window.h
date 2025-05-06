@@ -12,7 +12,8 @@ public:
 	GLfloat getBufferWidth() { return bufferWidth; }
 	GLfloat getBufferHeight() { return bufferHeight; }
 	bool getShouldClose() {
-		return  glfwWindowShouldClose(mainWindow);}
+		return  glfwWindowShouldClose(mainWindow);
+	}
 	bool* getsKeys() { return keys; }
 	GLfloat getXChange();
 	GLfloat getYChange();
@@ -31,14 +32,20 @@ public:
 	GLfloat getarticulacion9() { return articulacion9; }
 	GLfloat getarticulacion10() { return articulacion10; }
 	GLfloat getAvanzaBlade() { return AvanzaBlade; }
+	GLfloat getAvanzaBladeW() { return AvanzaBladeW; }
+	GLfloat getAvanzaBladeA() { return AvanzaBladeA; }
+	GLfloat getAvanzaBladeS() { return AvanzaBladeS; }
+	GLfloat getAvanzaBladeD() { return AvanzaBladeD; }
+	GLfloat getMueveBlade() { return MueveBlade; }
 	GLfloat getarticulacion11() { return articulacion11; }
 
 
 	~Window();
-private: 
-	GLFWwindow *mainWindow;
+private:
+	GLFWwindow* mainWindow;
 	GLint width, height;
-	GLfloat rotax,rotay,rotaz, articulacion1, articulacion2, articulacion3, articulacion4, articulacion5, articulacion6, articulacion7, articulacion8, articulacion9, articulacion10, AvanzaBlade, articulacion11;
+	GLfloat rotax, rotay, rotaz, articulacion1, articulacion2, articulacion3, articulacion4, articulacion5, articulacion6, articulacion7, articulacion8, articulacion9, articulacion10, 
+		AvanzaBladeW, AvanzaBladeS, AvanzaBladeD, AvanzaBladeA, AvanzaBlade, MueveBlade, articulacion11;
 	bool keys[1024];
 	GLint bufferWidth, bufferHeight;
 	GLfloat lastX;
@@ -50,4 +57,3 @@ private:
 	static void ManejaTeclado(GLFWwindow* window, int key, int code, int action, int mode);
 	static void ManejaMouse(GLFWwindow* window, double xPos, double yPos);
 };
-

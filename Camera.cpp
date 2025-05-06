@@ -19,6 +19,15 @@ void Camera::setPositionCamara(glm::vec3 PositionNuevo) {
 	position = PositionNuevo;
 }
 
+void Camera::setPosition(glm::vec3 newPos) {
+	position = newPos;
+}
+
+void Camera::setFront(glm::vec3 newFront) {
+	front = newFront;
+	update();
+}
+
 
 void Camera::keyControl(bool* keys, GLfloat deltaTime)
 {
