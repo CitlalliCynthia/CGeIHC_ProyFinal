@@ -16,12 +16,6 @@ Window::Window(GLint windowWidth, GLint windowHeight)
 	rotax = 0.0f;
 	rotay = 0.0f;
 	rotaz = 0.0f;
-	AvanzaBladeW = 0.0f;
-	AvanzaBladeA = 0.0f;
-	AvanzaBladeS = 0.0f;
-	AvanzaBladeD = 0.0f;
-	AvanzaBlade = 0.0f;
-	MueveBlade = 0.0f;
 	articulacion1 = 0.0f;
 	articulacion2 = 0.0f;
 	articulacion3 = 0.0f;
@@ -30,10 +24,16 @@ Window::Window(GLint windowWidth, GLint windowHeight)
 	articulacion6 = 0.0f;
 	articulacion7 = 0.0f;
 	articulacion8 = 0.0f;
-	articulacion9 = 0.0f;
-	articulacion10 = 0.0f;
-
-
+	articulacion9 = 1;
+	articulacion10 = 1;
+	articulacion11 = 0.0f;
+	AvanzaBladeW = 0.0f;
+	AvanzaBladeA = 0.0f;
+	AvanzaBladeS = 0.0f;
+	AvanzaBladeD = 0.0f;
+	AvanzaBlade = 0.0f;
+	MueveBlade = 0.0f;
+	
 	for (size_t i = 0; i < 1024; i++)
 	{
 		keys[i] = 0;
@@ -252,7 +252,7 @@ void Window::ManejaTeclado(GLFWwindow* window, int key, int code, int action, in
 	{
 		theWindow->articulacion8 = 1.0;
 	}
-	else theWindow->articulacion8 = 0.0;	
+	else theWindow->articulacion8 = 0.0;
 	//Cámara libre
 	if (key == GLFW_KEY_Q && action == GLFW_PRESS)
 	{
@@ -260,6 +260,17 @@ void Window::ManejaTeclado(GLFWwindow* window, int key, int code, int action, in
 	}
 	else theWindow->articulacion11 = 0.0;
 
+	//Luz Inazuma
+	if (key == GLFW_KEY_O && action == GLFW_PRESS)
+	{
+		theWindow->articulacion9 += 1;
+	}
+
+	//Luz Hot Dogs
+	if (key == GLFW_KEY_P && action == GLFW_PRESS)
+	{
+		theWindow->articulacion10 += 1;
+	}
 
 	if (key == GLFW_KEY_D && action == GLFW_PRESS)
 	{
@@ -280,6 +291,7 @@ void Window::ManejaTeclado(GLFWwindow* window, int key, int code, int action, in
 			//printf("se solto la tecla %d'\n", key);
 		}
 	}
+
 }
 
 void Window::ManejaMouse(GLFWwindow* window, double xPos, double yPos)

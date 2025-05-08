@@ -80,7 +80,9 @@ Texture caminoTexture;
 
 //Rueda Fortuna
 Model RuedaFortuna_M;
-Model Neuvillette_Genshin_M;
+Model NeuvilletteCuerpo_Genshin_M;
+Model NeuvilletteHombro_Genshin_M;
+Model NeuvilletteBrazo_Genshin_M;
 Model Furina_Genshin_M;
 
 //Puesto Helados
@@ -129,7 +131,9 @@ Model Klee_Genshin_M;
 Model Sunday_StarRail_M;
 
 //Artem Protagonista
-Model ArtemNormal_M;
+Model ArtemNormalCuerpo_M;
+Model ArtemNormalBrazo_M;
+Model ArtemNormalHoja_M;
 
 //Puesto Palomitas
 Model PuestoPalomitas_M;
@@ -251,6 +255,7 @@ Model Blade_PieDer;
 Model Blade_PiernaIzq;
 Model Blade_PantorrillaIzq;
 Model Blade_PieIzq;
+
 Model BrazoDerecho;
 Model BrazoDerecho_Sur;
 Model BrazoDerecho_Derecha;
@@ -283,6 +288,13 @@ Skybox skybox;
 Material Material_brillante;
 Material Material_opaco;
 
+Material Material_Avatar;
+Material Material_Madera;
+Material Material_Reja;
+Material Material_Terciopelo;
+Material Material_MaderaPulida;
+Material Material_Plastico;
+
 // -------------------------------------------------
 // ----------DEFINIR CONSTANTES Y VARIABLES---------
 // -------------------------------------------------
@@ -291,6 +303,27 @@ GLfloat deltaTime = 0.0f;
 GLfloat lastTime = 0.0f;
 static double limitFPS = 1.0 / 60.0;
 
+//Para los skyboxes
+int skyCount = 0; //Se crea una variable contadora para que lleve la cuenta de vueltas que lleva el while y se vayan cambiando
+
+//Cámaras
+int banderaCamaraMovimiento = 0; //Para manejar los cambios en la camara de vistas estáticas a la general dinámica
+int banderaCamara = 0; //Indica si la camara se puede cambiar o no (en animación o no). 1 ocupado, 0 desocupado. INICIA EN 0
+int camaraAnimacion = 0; //Indica qué stand se muestra
+
+//Luces
+int luzContador = 0;		//Rueda Fortuna
+int luzContador2 = 0;		//Carrusel
+float luzContador3 = 0.0f;	//Carritos Chocones
+float luzContador4 = 0.0f;	//Carritos Chocones
+int banderaLuz = 0;			//Carritos Chocones
+float luzContador5 = 0.0f;	//Puesto Tickets
+int banderaLuz1 = 0;		//Puesto Tickets
+float luzContador6 = 0.0f;	//Lámpara
+int banderaLuz2 = 0;		//Lámpara
+int contadorTopos = 0;		//Animación Topos
+int contadorBate = 0;		//Animación Bate
+
 //Movimiento Blade Avatar
 float angulovaria = 0.0f;
 float angulovariaAux = 0.0f;
@@ -298,7 +331,6 @@ float angulovaria2 = 0.0f;
 float angulovaria3 = 0.0f;
 
 //Animación Entrega moneda
-int camaraAnimacion = 0;
 float brazoVariacion = 20.0f;
 float brazoVariacion1 = 100.0f;
 float timerBateo = 0.0;
@@ -344,7 +376,6 @@ float Bangulovaria3 = 0.0f;
 float BanguloAvanza = 0.0f;
 float BanguloMira = 0.0f;
 float senoAnterior = 0.0f;
-float contadorInicioPrograma = 0.0f;
 const float epsilon = 0.01f; // Umbral de cercanía a los extremos
 bool yaCambio = false;
 
@@ -356,15 +387,23 @@ float BrazoMartillo = 20.0f;
 //Animacion Dados
 float TiroDado = 0.0f;
 
-//Contador para DeltaTime
-int ContadorInicioPrograma = 0;
+//Movimiento Neuvillette (Otro Protagonista)
+float NeuviHombro = 0.0f;
+float NeuviBrazoY = 0.0f;
+int banderaNeuvi = 0;
+int banderaNeuvi2 = 0;
 
-//Para los skyboxes
-int skyCount = 0; //Se crea una variable contadora para que lleve la cuenta de vueltas que lleva el while y se vayan cambiando
+//Movimiento Artem (Otro Protagonista)
+int banderaArtem = 0;
+float ArtemBrazo = 0.0f;
+float ArtemHoja = 0.0f;
+float ArtemHoja2 = 0.0f;
 
-//Cámaras
-int banderaCamaraMovimiento = 0; //Para manejar los cambios en la camara de vistas estáticas a la general dinámica
-int banderaCamara = 0; //Indica si la camara se puede cambiar o no (en animación o no). 1 ocupado, 0 desocupado. INICIA EN 0
+//General, timing de comienzo de programa
+int contadorInicioPrograma = 0;
+int contadorInicioPrograma2 = 0;
+int contadorInicioPrograma3 = 0;
+int contadorInicioPrograma4 = 0;
 
 // --------------------------------------
 // -------------DEFINIR LUCES------------
@@ -374,11 +413,38 @@ int banderaCamara = 0; //Indica si la camara se puede cambiar o no (en animación
 DirectionalLight mainLight;
 
 //para declarar varias luces
-PointLight pointLights[MAX_POINT_LIGHTS];
-SpotLight spotLights[MAX_SPOT_LIGHTS];
+PointLight pointLightsDia[MAX_POINT_LIGHTS];
+SpotLight spotLightsDia[MAX_SPOT_LIGHTS];
 
-PointLight pointLights1[MAX_POINT_LIGHTS];
-SpotLight spotLights1[MAX_SPOT_LIGHTS];
+PointLight pointLightsDia2[MAX_POINT_LIGHTS]; // Para las luces interactivas con teclado
+
+PointLight pointLightsNoche[MAX_POINT_LIGHTS];
+SpotLight spotLightsNoche[MAX_SPOT_LIGHTS];
+
+//Luz Hacha
+SpotLight spotLightsDiaHacha[MAX_SPOT_LIGHTS];
+SpotLight spotLightsNocheHacha[MAX_SPOT_LIGHTS];
+
+//Luz Boliche
+SpotLight spotLightsDiaBoliche[MAX_SPOT_LIGHTS];
+SpotLight spotLightsNocheBoliche[MAX_SPOT_LIGHTS];
+
+//Luz Dados
+SpotLight spotLightsDiaDados[MAX_SPOT_LIGHTS];
+SpotLight spotLightsNocheDados[MAX_SPOT_LIGHTS];
+
+//Luz Bateo
+SpotLight spotLightsDiaBateo[MAX_SPOT_LIGHTS];
+SpotLight spotLightsNocheBateo[MAX_SPOT_LIGHTS];
+
+//Luz Dardos
+SpotLight spotLightsDiaDardos[MAX_SPOT_LIGHTS];
+SpotLight spotLightsNocheDardos[MAX_SPOT_LIGHTS];
+
+//Luz Topos
+SpotLight spotLightsDiaTopos[MAX_SPOT_LIGHTS];
+SpotLight spotLightsNocheTopos[MAX_SPOT_LIGHTS];
+
 
 // --------------------------------------
 // -----------DEFINIR SHADERS------------
@@ -556,7 +622,7 @@ int main()
 
 	//1 Posición inicial; 2 No relevante; 3 Rotación hacia la izquierda o derecha en grados (+ o -)
 	//4 Rotación hacia arriba o abajo en grados (+ o -); 5 y 6 Velocidades para la camara
-	
+
 	//Camara Blade Avatar (F)
 	camera = Camera(glm::vec3(83.0f, 11.5f, 140.0f), glm::vec3(0.0f, 1.0f, 0.0f), -90.0f, 0.0f, 0.3f, 0.5f);
 
@@ -585,12 +651,16 @@ int main()
 	// --------------------------------------
 	// ------------CARGAR MODELOS------------
 	// --------------------------------------
-	
+
 	//Rueda Fortuna
 	RuedaFortuna_M = Model();
 	RuedaFortuna_M.LoadModel("Models/RuedaFortuna/RuedaFortuna.obj");
-	Neuvillette_Genshin_M = Model();
-	Neuvillette_Genshin_M.LoadModel("Models/Neuvillette_Genshin/Neuvillette_Genshin.obj");
+	NeuvilletteCuerpo_Genshin_M = Model();
+	NeuvilletteCuerpo_Genshin_M.LoadModel("Models/Neuvillette_Genshin/NeuvilletteCuerpo_Genshin.obj");
+	NeuvilletteHombro_Genshin_M = Model();
+	NeuvilletteHombro_Genshin_M.LoadModel("Models/Neuvillette_Genshin/NeuvilletteHombro_Genshin.obj");
+	NeuvilletteBrazo_Genshin_M = Model();
+	NeuvilletteBrazo_Genshin_M.LoadModel("Models/Neuvillette_Genshin/NeuvilletteBrazo_Genshin.obj");
 	Furina_Genshin_M = Model();
 	Furina_Genshin_M.LoadModel("Models/Furina_Genshin/Furina_Genshin.obj");
 
@@ -644,7 +714,7 @@ int main()
 	Carrusel_M.LoadModel("Models/Carrusel/Carrusel.obj");
 	Lyney_M = Model();
 	Lyney_M.LoadModel("Models/Lyney_Genshin/Lyney_Genshin.obj");
-	
+
 	//Baño Puesto Dardos
 	Bano_M = Model();
 	Bano_M.LoadModel("Models/PuestoBano/puestoBano.obj");
@@ -668,15 +738,19 @@ int main()
 	Sunday_StarRail_M.LoadModel("Models/Sunday_StarRail/Sunday.obj");
 
 	//Artem Normal
-	ArtemNormal_M = Model();
-	ArtemNormal_M.LoadModel("Models/ArtemNormal_Themis/artemNormal.obj");
+	ArtemNormalCuerpo_M = Model();
+	ArtemNormalCuerpo_M.LoadModel("Models/ArtemNormal_Themis/artemNormal_Cuerpo.obj");
+	ArtemNormalBrazo_M = Model();
+	ArtemNormalBrazo_M.LoadModel("Models/ArtemNormal_Themis/artemNormal_Brazo.obj");
+	ArtemNormalHoja_M = Model();
+	ArtemNormalHoja_M.LoadModel("Models/ArtemNormal_Themis/artemNormal_hoja.obj");
 
 	//Puesto Palomitas
 	PuestoPalomitas_M = Model();
 	PuestoPalomitas_M.LoadModel("Models/PuestoPalomitas/PuestoPalomitas.obj");
 	Feixiao_StarRail_M = Model();
 	Feixiao_StarRail_M.LoadModel("Models/Feixiao_StarRail/Feixiao_StarRail.obj");
-	
+
 	//Lanzamiento de Hacha
 	LanzamientoHacha_M = Model();
 	LanzamientoHacha_M.LoadModel("Models/LanzamientoHacha/LanzamientoHacha.obj");
@@ -684,7 +758,7 @@ int main()
 	Hacha_M.LoadModel("Models/LanzamientoHacha/Hacha.obj");
 	Wanderer_Genshin_M = Model();
 	Wanderer_Genshin_M.LoadModel("Models/Wanderer_Genshin/Wanderer_Genshin.obj");
-	
+
 	//Puesto Dados
 	MesaDados_M = Model();
 	MesaDados_M.LoadModel("Models/MesaDados/MesaDados.obj");
@@ -696,7 +770,7 @@ int main()
 	MesaDados_DadosMesa_M.LoadModel("Models/MesaDados/DadosEnMesa.obj");
 	Aventurine_StarRail_M = Model();
 	Aventurine_StarRail_M.LoadModel("Models/Aventurine_StarRail/Aventurine_StarRail.obj");
-	
+
 	//Puesto Boliche
 	Boliche_M = Model();
 	Boliche_M.LoadModel("Models/Boliche/Boliche.obj");
@@ -708,7 +782,7 @@ int main()
 	Bola_Boliche_M.LoadModel("Models/Boliche/Bola.obj");
 	Ayato_Genshin_M = Model();
 	Ayato_Genshin_M.LoadModel("Models/Ayato_Genshin/Ayato_Genshin.obj");
-	
+
 	//Puesto Golpear al Topo
 	GolpearTopo_M = Model();
 	GolpearTopo_M.LoadModel("Models/GolpearAlTopo/GolpearAlTopo.obj");
@@ -726,7 +800,7 @@ int main()
 	MaquinaAlgodon_M.LoadModel("Models/MaquinaAlgodon/MaquinaAlgodon.obj");
 	Robin_StarRail_M = Model();
 	Robin_StarRail_M.LoadModel("Models/Robin_StarRail/Robin_StarRail.obj");
-	
+
 	//Puesto Carros Chocones
 	CarrosChocones_M = Model();
 	CarrosChocones_M.LoadModel("Models/PuestoCarrosChocones/puestoCarrosChocones.obj");
@@ -736,7 +810,7 @@ int main()
 	Carro_Azul_M.LoadModel("Models/PuestoCarrosChocones/CarroAzul.obj");
 	Carro_Naranja_M = Model();
 	Carro_Naranja_M.LoadModel("Models/PuestoCarrosChocones/CarroNaranja.obj");
-	
+
 	//Jaula Bateo
 	PuestoBateo_M = Model();
 	PuestoBateo_M.LoadModel("Models/PuestoBateo/puestoBateo.obj");
@@ -746,7 +820,7 @@ int main()
 	PelotaBateo_M.LoadModel("Models/PuestoBateo/batePelota.obj");
 	LukeCasual_Themis_M = Model();
 	LukeCasual_Themis_M.LoadModel("Models/LukeCasual_Themis/LukeCasual.obj");
-	
+
 	//Baño Boliche
 	Ratio_StarTail_M = Model();
 	Ratio_StarTail_M.LoadModel("Models/Ratio_StarRail/Ratio_StarRail.obj");
@@ -804,7 +878,7 @@ int main()
 	Stand_Dados_M.LoadModel("Models/StandMadera/standMadera_MariusCasino.obj");
 	Stand_Topos_M = Model();
 	Stand_Topos_M.LoadModel("Models/StandMadera/standMadera_VynTopos.obj");
-	
+
 	//Puesto Inazuma
 	PuestoInazuma_M = Model();
 	PuestoInazuma_M.LoadModel("Models/PuestoInazuma/puestoInazumaPulpo.obj");
@@ -840,10 +914,9 @@ int main()
 	Gato_RuanMei_M.LoadModel("Models/Gato_StarRail/Gato_StarRail_RuanMei.obj");
 	Gato_Herta_M = Model();
 	Gato_Herta_M.LoadModel("Models/Gato_StarRail/Gato_StarRail_Herta.obj");
-
 	Gato_Verde_M = Model();
 	Gato_Verde_M.LoadModel("Models/Gato_StarRail/Gato_StarRail_Verde.obj");
-	
+
 	//Blade Star Rail
 	Blade_Cuerpo = Model();
 	Blade_Cuerpo.LoadModel("Models/Blade_StarRail/BladeCuerpo_StarRail.obj");
@@ -914,7 +987,7 @@ int main()
 	Destino_Genshin.LoadModel("Models/DestinoEntrelazado_Genshin/DestinoEntrelazado_Genshin.obj");
 	Ticket_StarRail = Model();
 	Ticket_StarRail.LoadModel("Models/Ticket/Ticket.obj");
-	
+
 	// --------------------------------------
 	// -----------SKYBOX TEXTURAS------------
 	// --------------------------------------
@@ -951,6 +1024,13 @@ int main()
 	Material_brillante = Material(4.0f, 256);
 	Material_opaco = Material(0.3f, 4);
 
+	Material_Avatar = Material(0.1f, 10);
+	Material_Madera = Material(0.4f, 10);
+	Material_Reja = Material(0.8f, 50);
+	Material_Terciopelo = Material(0.1f, 5);
+	Material_MaderaPulida = Material(0.7f, 50);
+	Material_Plastico = Material(0.8f, 30);
+
 	// --------------------------------------
 	// -----------ESTABLECER LUCES-----------
 	// --------------------------------------
@@ -960,85 +1040,289 @@ int main()
 		0.45f, 0.6f,				//Intensidad
 		0.0f, 0.0f, 1.0f);			//Dirección
 
-	//contador de luces puntuales
-	unsigned int pointLightCount = 0;
-	unsigned int spotLightCount = 0;
+	//Contador de luces
+	unsigned int pointLightDiaCount = 0;
+	unsigned int spotLightDiaCount = 0;
+
+	unsigned int pointLightNocheCount = 0;
+	unsigned int spotLightNocheCount = 0;
 	
-	//Luz fija Cofre
-	spotLights[0] = SpotLight(0.5f, 0.0f, 0.5f, //RGB
-		1.0f, 1.0f,
-		10.0f, 3.0f, -5.0f, //Posición (de dónde sale la luz)
-		1.0f, 0.0f, 0.0f, //Dirección (hacia dónde apunta)
-		0.4f, 0.1f, 0.0f, //Constante, lineal, exponencial
-		45.0f);
-	spotLightCount++;
+	// --------------------------------------
+	// ---------------LUCES DÍA--------------
+	// --------------------------------------
 
-	//Luz fija Coche frente
-	spotLights[1] = SpotLight(0.0f, 0.0f, 1.0f, //RGB
-		1.0f, 1.0f,
-		10.0f, 0.5f, -5.0f, //Posición (de dónde sale la luz)
-		1.0f, 0.0f, 0.0f, //Dirección (hacia dónde apunta)
-		0.4f, 0.1f, 0.0f,
-		45.0f);
-	spotLightCount++;
+	// ---POINT LIGHTS---
 
-	//Luz fija Coche detrás
-	spotLights[2] = SpotLight(0.0f, 0.0f, 1.0f, //RGB
-		1.0f, 1.0f,
-		-10.0f, 0.5f, -5.0f, //Posición (de dónde sale la luz)
-		-1.0f, 0.0f, 0.0f, //Dirección (hacia dónde apunta)
-		0.4f, 0.1f, 0.0f,
-		45.0f);
-	spotLightCount++;
+	//Luz Rueda Fortuna
+	pointLightsDia[0] = PointLight(0.9843f, 0.0862f, 0.8705f, //RGB
+		1.0f, 1.5f,
+		0.0f, 67.0f, 0.0f, //Posición de la luz
+		0.05f, 0.1f, 0.0f);
+	pointLightDiaCount++;
 
-	spotLights1[0] = spotLights[0]; //Luz fija Cofre
-	spotLights1[1] = spotLights[2]; //Luz fija Coche detrás
-	spotLights1[2] = spotLights[1]; //Luz fija Coche frente
+	//Luz Hot Dogs
+	pointLightsDia[1] = PointLight(0.9607f, 0.4352f, 0.3137f, //RGB
+		0.7f, 0.6f,
+		82.0f, 9.6f, -119.5f, //Posición de la luz
+		0.0f, 0.0f, 0.05f);
+	pointLightDiaCount++;
 
-	//Luz puntual Lámpara
-	pointLights[0] = PointLight(1.0f, 1.0f, 1.0f, //RGB
-		0.4f, 0.5f,
-		13.0f, 10.0f, -5.0f, //Posición de la luz
-		0.4f, 0.0f, 0.01f);
-	pointLightCount++;
+	//Luz Puesto Inazuma
+	pointLightsDia[2] = PointLight(0.7294f, 0.4352f, 1.0f, //RGB
+		0.4f, 0.1f,
+		-60.0f, 8.0f, 19.5f, //Posición de la luz
+		0.0f, 0.1f, 0.0f);
+	pointLightDiaCount++;
 
-	//Luz puntual Slime
-	pointLights[1] = PointLight(1.0f, 1.0f, 0.0f, //RGB
-		0.4f, 0.2f,
-		0.0f, 5.0f, 6.0f, //Posición de la luz
-		0.0f, 0.06f, 0.01f);
-	pointLightCount++;
+	// ---SPOT LIGHTS---
 
-	pointLights1[0] = pointLights[1]; //Luz puntual Slime
-	pointLights1[1] = pointLights[0]; //Luz puntual Lámpara
-
-	/*
-	//Declaración de primer luz puntual
-	pointLights[0] = PointLight(1.0f, 0.0f, 0.0f,
-		0.0f, 1.0f,
-		-6.0f, 1.5f, 1.5f,
-		0.3f, 0.2f, 0.1f);
-	pointLightCount++;
-
-	//unsigned int spotLightCount = 0;
-	//linterna
-	spotLights[0] = SpotLight(1.0f, 1.0f, 1.0f,
-		0.0f, 2.0f,
-		0.0f, 0.0f, 0.0f,
-		0.0f, -1.0f, 0.0f,
-		1.0f, 0.0f, 0.0f,
-		5.0f);
-	spotLightCount++;
-
-	//luz fija
-	spotLights[1] = SpotLight(0.0f, 1.0f, 0.0f,
+	//Luz Carrusel
+	spotLightsDia[0] = SpotLight(1.0f, 0.0f, 0.0f, //RGB
 		1.0f, 2.0f,
-		5.0f, 10.0f, 0.0f,
-		0.0f, -5.0f, 0.0f,
-		1.0f, 0.0f, 0.0f,
+		43.0f, 25.0f, -65.0f, //Posición (de dónde sale la luz)
+		0.0f, -1.0f, 0.0f, //Dirección (hacia dónde apunta)
+		0.0f, 0.1f, 0.0f,
+		60.0f);
+	spotLightDiaCount++;
+
+	//Luz Carros Chocones
+	spotLightsDia[1] = SpotLight(0.6156f, 0.5803f, 0.9921f, //RGB
+		1.0f, 1.0f,
+		0.0f, 25.0f, -145.0f, //Posición (de dónde sale la luz)
+		0.0f, -1.0f, 0.0f, //Dirección (hacia dónde apunta)
+		0.0f, 0.05f, 0.0f,
+		25.0f);
+	spotLightDiaCount++;
+
+	//Luz Puesto de Tickets
+	spotLightsDia[2] = SpotLight(0.9607f, 0.1294f, 0.0784f, //RGB
+		1.0f, 1.0f,
+		73.0f, 10.0f, -114.0f, //Posición (de dónde sale la luz)
+		0.0f, -1.0f, 0.0f, //Dirección (hacia dónde apunta)
+		0.0f, 0.04f, 0.0f,
+		20.0f);
+	spotLightDiaCount++;
+
+	// --------------------------------------
+	// -------------LUCES NOCHE--------------
+	// --------------------------------------
+
+	// ---POINT LIGHTS---
+
+	pointLightsNoche[0] = pointLightsDia[0];	//Rueda Fortuna
+	pointLightNocheCount++;
+
+	//Luz Lámpara Izquierda
+	pointLightsNoche[1] = PointLight(0.9607f, 0.4352f, 0.3137f, //RGB
+		0.5f, 0.5f,
+		-108.0f, 17.0f, -107.0f, //Posición de la luz
+		0.0f, 0.1f, 0.0f);
+	pointLightNocheCount++;
+
+	//Luz Lámpara Centro
+	pointLightsNoche[2] = PointLight(0.9607f, 0.4352f, 0.3137f, //RGB
+		0.4f, 0.5f,
+		-33.0f, 17.0f, 77.0f, //Posición de la luz
+		0.0f, 0.1f, 0.0f);
+	pointLightNocheCount++;
+
+    pointLightsNoche[3] = pointLightsDia[2];	//Puesto Inazuma
+	pointLightNocheCount++;
+
+
+	// ---SPOT LIGHTS---
+
+	//Luz Tacos
+	spotLightsNoche[0] = SpotLight(0.9607f, 0.4352f, 0.3137f, //RGB
+		0.5f, 0.5f,
+		-118.0f, 12.0f, 8.5f, //Posición (de dónde sale la luz)
+		0.0f, -1.0f, 0.0f, //Dirección (hacia dónde apunta)
+		0.0f, 0.04f, 0.0f,
+		60.0f);
+	spotLightNocheCount++;
+
+	spotLightsNoche[1] = spotLightsDia[0];		//Carrusel
+	spotLightNocheCount++;
+
+	spotLightsNoche[2] = spotLightsDia[2];		//Puesto de Tickets
+	spotLightNocheCount++;
+
+	// --------------------------------------
+	// -------------LUCES HACHA--------------
+	// --------------------------------------
+
+	// ---SPOT LIGHTS---
+
+					//Dia///
+
+	spotLightsDiaHacha[0] = spotLightsDia[0]; // Carrusel
+
+	spotLightsDiaHacha[1] = spotLightsDia[2]; // Puesto de Tickets
+
+	//Luz Hacha
+	spotLightsDiaHacha[2] = SpotLight(1.0f, 1.0f, 1.0f, //RGB
+		0.3f, 0.4f,
+		-125.0f, 12.5f, -78.0f, //Posición (de dónde sale la luz)
+		0.0f, -1.0f, 0.0f, //Dirección (hacia dónde apunta)
+		0.0f, 0.04f, 0.0f,
+		20.0f);
+	
+					//Noche///
+	
+	spotLightsNocheHacha[0] = spotLightsNoche[0]; //Tacos
+
+	spotLightsNocheHacha[1] = spotLightsDia[0];  //Carrusel
+
+	spotLightsNocheHacha[2] = spotLightsDiaHacha[2];  //Hacha
+
+	// ----------------------------------------
+	// -------------LUCES BOLICHE--------------
+	// ----------------------------------------
+
+	// ---SPOT LIGHTS---
+
+					//Dia///
+
+	spotLightsDiaBoliche[0] = spotLightsDia[0]; // Carrusel
+
+	spotLightsDiaBoliche[1] = spotLightsDia[2]; // Puesto de Tickets
+
+	//Luz Boliche
+	spotLightsDiaBoliche[2] = SpotLight(1.0f, 1.0f, 1.0f, //RGB
+		0.3f, 0.4f,
+		-54.0f, 15.0f, 110.0f, //Posición (de dónde sale la luz)
+		0.0f, -1.0f, 0.0f, //Dirección (hacia dónde apunta)
+		0.0f, 0.04f, 0.0f,
+		20.0f);
+
+					//Noche///
+
+	spotLightsNocheBoliche[0] = spotLightsNoche[0]; //Tacos
+
+	spotLightsNocheBoliche[1] = spotLightsDia[0];  //Carrusel
+
+	spotLightsNocheBoliche[2] = spotLightsDiaBoliche[2];  //Boliche
+
+	// --------------------------------------
+	// -------------LUCES DADOS--------------
+	// --------------------------------------
+
+	// ---SPOT LIGHTS---
+
+					//Dia///
+
+	spotLightsDiaDados[0] = spotLightsDia[0]; // Carrusel
+
+	spotLightsDiaDados[1] = spotLightsDia[2]; // Puesto de Tickets
+
+	//Luz Dados
+	spotLightsDiaDados[2] = SpotLight(1.0f, 1.0f, 1.0f, //RGB
+		0.4f, 0.3f,
+		-110.0f, 13.0f, -35.0f, //Posición (de dónde sale la luz)
+		0.0f, -1.0f, 0.0f, //Dirección (hacia dónde apunta)
+		0.0f, 0.05f, 0.0f,
+		30.0f);
+
+					//Noche///
+
+	spotLightsNocheDados[0] = spotLightsNoche[0]; //Tacos
+
+	spotLightsNocheDados[1] = spotLightsDia[0];  //Carrusel
+
+	spotLightsNocheDados[2] = spotLightsDiaDados[2];  //Dados
+
+	// --------------------------------------
+	// -------------LUCES BATEO--------------
+	// --------------------------------------
+
+	// ---SPOT LIGHTS---
+
+					//Dia///
+
+	spotLightsDiaBateo[0] = spotLightsDia[0]; // Carrusel
+
+	spotLightsDiaBateo[1] = spotLightsDia[2]; // Puesto de Tickets
+
+	//Luz Bateo
+	spotLightsDiaBateo[2] = SpotLight(1.0f, 1.0f, 1.0f, //RGB
+		0.4f, 0.3f,
+		-6.0f, 13.0f, 112.0f, //Posición (de dónde sale la luz)
+		0.0f, -1.0f, 0.0f, //Dirección (hacia dónde apunta)
+		0.0f, 0.04f, 0.0f,
+		30.0f);
+
+					//Noche///
+
+	spotLightsNocheBateo[0] = spotLightsNoche[0]; //Tacos
+
+	spotLightsNocheBateo[1] = spotLightsDia[0];  //Carrusel
+
+	spotLightsNocheBateo[2] = spotLightsDiaBateo[2];  //Bateo
+
+	// ---------------------------------------
+	// -------------LUCES DARDOS--------------
+	// ---------------------------------------
+
+	// ---SPOT LIGHTS---
+
+					//Dia///
+
+	spotLightsDiaDardos[0] = spotLightsDia[0]; // Carrusel
+
+	spotLightsDiaDardos[1] = spotLightsDia[2]; // Puesto de Tickets
+
+	//Luz Dardos
+	spotLightsDiaDardos[2] = SpotLight(1.0f, 1.0f, 1.0f, //RGB
+		0.3f, 0.4f,
+		112.0f, 16.0f, -25.0f, //Posición (de dónde sale la luz)
+		0.0f, -1.0f, 0.0f, //Dirección (hacia dónde apunta)
+		0.0f, 0.04f, 0.0f,
+		20.0f);
+
+					//Noche///
+
+	spotLightsNocheDardos[0] = spotLightsNoche[0]; //Tacos
+
+	spotLightsNocheDardos[1] = spotLightsDia[0];  //Carrusel
+
+	spotLightsNocheDardos[2] = spotLightsDiaDardos[2];  //Dardos
+
+	// ---------------------------------------
+	// --------------LUCES TOPOS--------------
+	// ---------------------------------------
+
+	// ---SPOT LIGHTS---
+
+					//Dia///
+
+	spotLightsDiaTopos[0] = spotLightsDia[0]; // Carrusel
+
+	spotLightsDiaTopos[1] = spotLightsDia[2]; // Puesto de Tickets
+
+	//Luz Topo
+	spotLightsDiaTopos[2] = SpotLight(1.0f, 1.0f, 1.0f, //RGB
+		0.3f, 0.4f,
+		61.0f, 13.0f, 69.0f, //Posición (de dónde sale la luz)
+		0.0f, -1.0f, 0.0f, //Dirección (hacia dónde apunta)
+		0.0f, 0.065f, 0.0f,
 		15.0f);
-	spotLightCount++;
-	*/
+
+	//Noche///
+
+	spotLightsNocheTopos[0] = spotLightsDia[2]; //Puesto de Tickets
+
+	spotLightsNocheTopos[1] = spotLightsDia[0];  //Carrusel
+
+	spotLightsNocheTopos[2] = spotLightsDiaTopos[2];  //Topo
+	
+	// ----------------------------------------
+	// -----------LUCES DÍA TECLADO------------
+	// ----------------------------------------
+
+	//Agregar el segundo arreglo de día (interacción con teclado Puesto Inazuma y Hot Dogs)
+	pointLightsDia2[0] = pointLightsDia[0];
+	pointLightsDia2[1] = pointLightsDia[2];
+	pointLightsDia2[2] = pointLightsDia[1];
 
 
 	// ---------------------------------------
@@ -1051,14 +1335,13 @@ int main()
 
 	glm::mat4 projection = glm::perspective(45.0f, (GLfloat)mainWindow.getBufferWidth() / mainWindow.getBufferHeight(), 0.1f, 1000.0f);
 
+	glm::vec3 bladePosition = glm::vec3(83.0f, 6.463f, 130.0f);
 
 	// --------------------------------------
 	// ------------WHILE PRINCIPAL-----------
 	// --------------------------------------
 
 	////Loop mientras no se cierra la ventana
-	glm::vec3 bladePosition = glm::vec3(83.0f, 6.463f, 130.0f);
-
 	while (!mainWindow.getShouldClose())
 	{
 		GLfloat now = glfwGetTime();
@@ -1069,8 +1352,6 @@ int main()
 		// --------------------------------------
 		// ----------------SKYBOX----------------
 		// --------------------------------------
-
-		if (contadorInicioPrograma == 0) contadorInicioPrograma++;
 
 		if (skyCount == 0) { //Amanecer
 			skybox = Skybox(skyboxFaces);  //Skybox de dia
@@ -1094,7 +1375,7 @@ int main()
 			skybox = Skybox(skyboxFacesNoche);  //Skybox de noche
 
 			//Recibe Color nuevo RGC, dirección nueva, ambientIntensity, diffuseIntensity
-			mainLight.SetLight(glm::vec3(0.9176f, 0.9411f, 0.9686f), glm::vec3(0.0f, 0.0f, 1.0f), 0.6f, 0.45f);
+			mainLight.SetLight(glm::vec3(0.9176f, 0.9411f, 0.9686f), glm::vec3(0.0f, 0.0f, 1.0f), 0.5f, 0.4f);
 		}
 		else if (skyCount == 6000) { //Termina la noche
 			skyCount = -1; //Se le resta uno porque abajo se suma 1 y al sumarse 1 ya no queda en e para el reinicio
@@ -1106,7 +1387,7 @@ int main()
 		// ---------------CÁMARAS----------------
 		// --------------------------------------
 
-		if (banderaCamara == 0){
+		if (banderaCamara == 0) {
 
 			if (mainWindow.getarticulacion1() == 1.0) { //Vista Blade
 				banderaCamaraMovimiento = 0;
@@ -1225,35 +1506,256 @@ int main()
 			glUniform3f(uniformEyePosition, camera3.getCameraPosition().x, camera3.getCameraPosition().y, camera3.getCameraPosition().z);
 		}
 
+
 		// --------------------------------------
 		// ----------------LUCES-----------------
 		// --------------------------------------
 
-		/*
-		// luz ligada a la cámara de tipo flash
-		//sirve para que en tiempo de ejecución (dentro del while) se cambien propiedades de la luz
-		glm::vec3 lowerLight = camera.getCameraPosition();
-		lowerLight.y -= 0.3f;
-		spotLights[0].SetFlash(lowerLight, camera.getCameraDirection());
-		*/
+		//Rueda Fortuna
+		if (luzContador == 0) {
+			//Color, posición, constante, lineal, exponencial (Rosa)
+			pointLightsDia[0].SetLight(glm::vec3(0.9843f, 0.0862f, 0.8705f), glm::vec3(0.0f, 67.0f, 0.0f));
+		}
+		else if (luzContador == 150) {
+			//Color, posición, constante, lineal, exponencial (Azul)
+			pointLightsDia[0].SetLight(glm::vec3(0.1529f, 0.8862f, 1.0f), glm::vec3(0.0f, 67.0f, 0.0f));
+		}
+		else if (luzContador == 300) {
+			//Color, posición, constante, lineal, exponencial (Morado)
+			pointLightsDia[0].SetLight(glm::vec3(0.7333f, 0.2156f, 0.9764f), glm::vec3(0.0f, 67.0f, 0.0f));
+		}
+		else if (luzContador == 450) {
+			//Color, posición, constante, lineal, exponencial (Amarillo)
+			pointLightsDia[0].SetLight(glm::vec3(0.9764f, 0.9725f, 0.2156f), glm::vec3(0.0f, 67.0f, 0.0f));
+		}
+		else if (luzContador == 600) {
+			luzContador = -1;
+		}
+		luzContador += 1;
 
-		//información al shader de fuentes de iluminación
+
+		//Carrusel
+		if (luzContador2 == 0) {
+			//Color nuevo (Rojo)
+			spotLightsDia[0].SetColor(glm::vec3(1.0f, 0.0f, 0.0f));
+		}
+		else if (luzContador2 == 50) {
+			//Color nuevo (Amarillo)
+			spotLightsDia[0].SetColor(glm::vec3(0.9921f, 0.9921f, 0.5333f));
+		}
+		else if (luzContador2 == 100) {
+			luzContador2 = -1;
+		}
+		luzContador2 += 1;
+
+
+		//Carritos chocones
+		if (banderaLuz == 0 && luzContador3 < 20.0f) {
+			//Recibe nueva posición
+			spotLightsDia[1].SetPos(glm::vec3(0.0f + luzContador3, 25.0f, -145.0f - luzContador3));
+			luzContador3 += 0.1;
+			luzContador4 += 0.1;
+		}
+		else if (banderaLuz == 0 && luzContador4 >= -20.0f) {
+			//Recibe nueva posición
+			spotLightsDia[1].SetPos(glm::vec3(0.0f + luzContador4, 25.0f, -145.0f - luzContador3));
+			luzContador4 -= 0.1;
+		}
+		else if (banderaLuz == 1 && luzContador3 <= 0.0f) {
+			banderaLuz = 0;
+		}
+		else {
+			//Recibe nueva posición
+			spotLightsDia[1].SetPos(glm::vec3(0.0f + luzContador4, 25.0f, -145.0f - luzContador3));
+			luzContador3 -= 0.1;
+			luzContador4 += 0.1;
+			banderaLuz = 1;
+		}
+
+
+		//Puesto de Tickets
+		if (banderaLuz1 == 0 && luzContador5 < 10.0f) {
+			//Recibe nueva posición
+			spotLightsDia[2].SetPos(glm::vec3(73.0f + luzContador5, 20.0f, 114.0f));
+			luzContador5 += 0.1;
+		}
+		else if (luzContador5 > -10.0f) {
+			//Recibe nueva posición
+			spotLightsDia[2].SetPos(glm::vec3(73.0f + luzContador5, 20.0f, 114.0f));
+			luzContador5 -= 0.1;
+			banderaLuz1 = 1;
+		}
+		else {
+			banderaLuz1 = 0;
+		}
+
+
+		//Lámpara (Parpadea)
+		if (banderaLuz2 == 0 && luzContador6 < 0.5f) {
+			//Recibe nueva posición
+			pointLightsNoche[1].SetIntensity(0.5f - luzContador6, 0.5f - luzContador6);
+			luzContador6 += 0.09;
+		}
+		else if (luzContador6 > -0.5f) {
+			//Recibe nueva posición
+			pointLightsNoche[1].SetIntensity(0.5f - luzContador6, 0.5f - luzContador6);
+			luzContador6 -= 0.09;
+			banderaLuz2 = 1;
+		}
+		else {
+			banderaLuz2 = 0;
+		}
+
+		//Luz Topos Animación
+		if (camaraAnimacion == 6) {
+			if (contadorTopos < 50) {
+				spotLightsDiaTopos[2].SetColor(glm::vec3(1.0f, 1.0f, 1.0f));
+				spotLightsNocheTopos[2] = spotLightsDiaTopos[2];  //Topo
+				contadorTopos++;
+			}
+			else if (contadorTopos < 100) {
+				spotLightsDiaTopos[2].SetColor(glm::vec3(0.4784f, 0.4078f, 1.0f));
+				spotLightsNocheTopos[2] = spotLightsDiaTopos[2];  //Topo
+				contadorTopos++;
+			}
+			else contadorTopos = 0;
+		}
+
+		//Luz Topos Animación
+		if (camaraAnimacion == 4) {
+			if (contadorBate < 50) {
+				spotLightsDiaBateo[2].SetColor(glm::vec3(1.0f, 1.0f, 1.0f));
+				spotLightsNocheBateo[2] = spotLightsDiaBateo[2];  //Bate
+				contadorBate++;
+			}
+			else if (contadorBate < 100) {
+				spotLightsDiaBateo[2].SetColor(glm::vec3(0.4784f, 0.4078f, 1.0f));
+				spotLightsNocheBateo[2] = spotLightsDiaBateo[2];  //Bate
+				contadorBate++;
+			}
+			else contadorBate = 0;
+		}
+
+		
+
+		//Actualizar el segundo arreglo de día (para encender y apagar Inazuma y Hot Dogs)
+		pointLightsDia2[0] = pointLightsDia[0];
+		pointLightsDia2[1] = pointLightsDia[2];
+		pointLightsDia2[2] = pointLightsDia[1];
+
+		//Actualizar los arreglos de noche
+		pointLightsNoche[0] = pointLightsDia[0];	//Rueda Fortuna
+		pointLightsNoche[3] = pointLightsDia[2];	//Puesto Inazuma
+
+		spotLightsNoche[1] = spotLightsDia[0];		//Carrusel
+		spotLightsNoche[2] = spotLightsDia[2];		//Puesto de Tickets
+
+		//Actualizar los arreglos de Hacha
+		spotLightsDiaHacha[0] = spotLightsDia[0];	// Carrusel
+		spotLightsDiaHacha[1] = spotLightsDia[2];	// Puesto de Tickets
+		spotLightsNocheHacha[1] = spotLightsDia[0];  //Carrusel Noche
+
+		//Actualizar los arreglos de Boliche
+		spotLightsDiaBoliche[0] = spotLightsDia[0]; // Carrusel
+		spotLightsDiaBoliche[1] = spotLightsDia[2]; // Puesto de Tickets
+		spotLightsNocheBoliche[1] = spotLightsDia[0];  //Carrusel Noche
+
+		//Actualizar los arreglos de Dados
+		spotLightsDiaDados[0] = spotLightsDia[0]; // Carrusel
+		spotLightsDiaDados[1] = spotLightsDia[2]; // Puesto de Tickets
+		spotLightsNocheDados[1] = spotLightsDia[0];  //Carrusel Noche
+
+		//Actualizar los arreglos de Bateo
+		spotLightsDiaBateo[0] = spotLightsDia[0]; // Carrusel
+		spotLightsDiaBateo[1] = spotLightsDia[2]; // Puesto de Tickets
+		spotLightsNocheBateo[1] = spotLightsDia[0];  //Carrusel Noche
+
+		//Actualizar los arreglos de Dardos
+		spotLightsDiaDardos[0] = spotLightsDia[0]; // Carrusel
+		spotLightsDiaDardos[1] = spotLightsDia[2]; // Puesto de Tickets
+		spotLightsNocheDardos[1] = spotLightsDia[0];  //Carrusel Noche
+
+		//Actualizar los arreglos de Topos
+		spotLightsDiaTopos[0] = spotLightsDia[0]; // Carrusel
+		spotLightsDiaTopos[1] = spotLightsDia[2]; // Puesto de Tickets
+		spotLightsNocheTopos[0] = spotLightsDia[2]; //Puesto de Tickets Noche
+		spotLightsNocheTopos[1] = spotLightsDia[0];  //Carrusel Noche
+
+
+		//Información al shader de fuentes de iluminación
 		shaderList[0].SetDirectionalLight(&mainLight);
 
-		if (mainWindow.getarticulacion4() == 0.0 && mainWindow.getarticulacion5() == 0.0) //ambas encendidas
-			shaderList[0].SetPointLights(pointLights, pointLightCount -2);
-		else if (mainWindow.getarticulacion4() == 1.0 && mainWindow.getarticulacion5() == 1.0) //ambas apagadas
-			shaderList[0].SetPointLights(pointLights, pointLightCount);
-		else if (mainWindow.getarticulacion4() == 0.0 && mainWindow.getarticulacion5() == 1.0) //slime encendido
-			shaderList[0].SetPointLights(pointLights1, pointLightCount - 1);
-		else if (mainWindow.getarticulacion4() == 1.0 && mainWindow.getarticulacion5() == 0.0) //lámpara encendida
-			shaderList[0].SetPointLights(pointLights, pointLightCount - 1);
+		if (skyCount < 3000) { //Es de día
+			//POINT LIGHTS
+			if ( mainWindow.getarticulacion9() % 2 == 0 && mainWindow.getarticulacion10() % 2 == 0) { //Luz inazuma apagada (tecla O) y Luz Hot Dogs apagada (tecla P)
+				shaderList[0].SetPointLights(pointLightsDia, pointLightDiaCount - 2);
+			}
+			else if (mainWindow.getarticulacion9() % 2 != 0 && mainWindow.getarticulacion10() % 2 == 0) { //Luz inazuma encendida (tecla O) y Luz Hot Dogs apagada (tecla P)
+				shaderList[0].SetPointLights(pointLightsDia2, pointLightDiaCount - 1);
+			}
+			else if (mainWindow.getarticulacion9() % 2 == 0 && mainWindow.getarticulacion10() % 2 != 0) { //Luz inazuma apagada (tecla O) y Luz Hot Dogs encendida (tecla P)
+				shaderList[0].SetPointLights(pointLightsDia, pointLightDiaCount - 1);
+			}
+			else if(mainWindow.getarticulacion9() % 2 != 0 && mainWindow.getarticulacion10() % 2 != 0) { //Luz inazuma encendida (tecla O) y Luz Hot Dogs encendida (tecla P)
+				shaderList[0].SetPointLights(pointLightsDia, pointLightDiaCount);
+			}
 
-		//Movimiento hacia adelante
-		if (mainWindow.getarticulacion10() == 1.0) shaderList[0].SetSpotLights(spotLights, spotLightCount -1);
-		//Movimiento hacia atrás
-		else if (mainWindow.getarticulacion10() == 0.5) shaderList[0].SetSpotLights(spotLights1, spotLightCount - 1);
-		else shaderList[0].SetSpotLights(spotLights1, spotLightCount - 2);
+			//SPOT LIGHTS
+			if (camaraAnimacion == 1) { // Luz Puesto Lanzamiento de Hacha
+				shaderList[0].SetSpotLights(spotLightsDiaHacha, spotLightDiaCount);
+			}
+			else if (camaraAnimacion == 2) { // Luz Puesto Boliche
+				shaderList[0].SetSpotLights(spotLightsDiaBoliche, spotLightDiaCount);
+			} 
+			else if (camaraAnimacion == 3) { // Luz Puesto Dados
+				shaderList[0].SetSpotLights(spotLightsDiaDados, spotLightDiaCount);
+			}
+			else if (camaraAnimacion == 4) { // Luz Puesto Bateo
+				shaderList[0].SetSpotLights(spotLightsDiaBateo, spotLightDiaCount);
+			}
+			else if (camaraAnimacion == 5) { // Luz Puesto Dardos
+				shaderList[0].SetSpotLights(spotLightsDiaDardos, spotLightDiaCount);
+			}
+			else if (camaraAnimacion == 6) { // Luz Puesto Topos
+				shaderList[0].SetSpotLights(spotLightsDiaTopos, spotLightDiaCount);
+			}
+			else { //Cámaras normales
+				shaderList[0].SetSpotLights(spotLightsDia, spotLightDiaCount);
+			}
+
+		}
+		else {	//Es de noche
+			//POINT LIGHTS
+			if (mainWindow.getarticulacion9() % 2 == 0) { //Luz inazuma apagada (tecla O)
+				shaderList[0].SetPointLights(pointLightsNoche, pointLightNocheCount - 1);
+			}
+			else if (mainWindow.getarticulacion9() % 2 != 0) {
+				shaderList[0].SetPointLights(pointLightsNoche, pointLightNocheCount); //Luz inazuma encendida (tecla O)
+			}
+
+			//SPOT LIGHTS
+			if (camaraAnimacion == 1) { // Luz Puesto Lanzamiento de Hacha
+				shaderList[0].SetSpotLights(spotLightsNocheHacha, spotLightNocheCount);
+			}
+			else if (camaraAnimacion == 2) { // Luz Puesto Boliche
+				shaderList[0].SetSpotLights(spotLightsNocheBoliche, spotLightNocheCount);
+			} 
+			else if (camaraAnimacion == 3) { // Luz Puesto Dados
+				shaderList[0].SetSpotLights(spotLightsNocheDados, spotLightNocheCount);
+			}
+			else if (camaraAnimacion == 4) { // Luz Puesto Bateo
+				shaderList[0].SetSpotLights(spotLightsNocheBateo, spotLightNocheCount);
+			}
+			else if (camaraAnimacion == 5) { // Luz Puesto Dardos
+				shaderList[0].SetSpotLights(spotLightsNocheDardos, spotLightNocheCount);
+			}
+			else if (camaraAnimacion == 6) { // Luz Puesto Topos
+				shaderList[0].SetSpotLights(spotLightsNocheTopos, spotLightNocheCount);
+			}
+			else { //Cámaras normales
+				shaderList[0].SetSpotLights(spotLightsNoche, spotLightNocheCount);
+			}
+		}
 
 		// --------------------------------------
 		// ---------INICIALIZAR VECTORES---------
@@ -1264,18 +1766,17 @@ int main()
 		glm::mat4 modelaux2(1.0);
 		glm::vec3 color = glm::vec3(1.0f, 1.0f, 1.0f);
 
-		
 		// --------------------------------------
 		// ----------ANIMACIONES STANDS----------
 		// --------------------------------------
-		
+
 		if (camaraAnimacion == 1) { //Stand hacha 3
 			banderaCamara = 1; //Para que la camara no se pueda mover hasta que se acabe la animación. Al final debe volver a 0.
 
 			if (timerBateo < 670.0) { //Timpo que va a durar la animación general del stand
-				
+
 				//INICIO ANIMACIÓN DE LA MONEDA
-				
+
 				if (brazoVariacion <= 100.0) {
 					//Antebrazo derecho
 					model = glm::mat4(1.0);
@@ -1395,7 +1896,7 @@ int main()
 
 						movBateoPelota += 0.7f * deltaTime;
 					}
-					if (movBateoRegreso < 14.5 && movBateoPelota >= 45.0 && movBateoPelotaRegreso >= 10.0 && movBateo >= 30.0 && 
+					if (movBateoRegreso < 14.5 && movBateoPelota >= 45.0 && movBateoPelotaRegreso >= 10.0 && movBateo >= 30.0 &&
 						inicioBrazo >= 100.0) { //Avanza el hacha y la gira
 						//Antebrazo derecho
 						model = glm::mat4(1.0);
@@ -1409,7 +1910,7 @@ int main()
 						model = glm::mat4(1.0);
 						model = glm::translate(model, glm::vec3(-109.0f - movBateoRegreso, 4.0f + (inicioBrazo * 0.03), -78.5f));
 						model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
-						model = glm::rotate(model, ((movBateo - movBateoPelota) - movBateoRegreso*50) * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
+						model = glm::rotate(model, ((movBateo - movBateoPelota) - movBateoRegreso * 50) * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
 						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 						Hacha_M.RenderModel();
 
@@ -1464,7 +1965,7 @@ int main()
 			banderaCamara = 1; //Para que la camara no se pueda mover hasta que se acabe la animación. Al final debe volver a 0.
 
 			if (timerBateo < 1650.0) { //Timpo que va a durar la animación general del stand
-				
+
 				//INICIO ANIMACIÓN DE LA MONEDA
 
 				if (brazoVariacion <= 100.0) {
@@ -1539,7 +2040,7 @@ int main()
 
 						//Rendija Boliche
 						model = glm::mat4(1.0);
-						model = glm::translate(model, glm::vec3(-60.0f, 0.0f + (inicioBrazo*0.04), 93.0f));
+						model = glm::translate(model, glm::vec3(-60.0f, 0.0f + (inicioBrazo * 0.04), 93.0f));
 						model = glm::rotate(model, -180 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 						Rendija_Boliche_M.RenderModel();
@@ -1582,7 +2083,7 @@ int main()
 
 						//Bola Boliche
 						model = glm::mat4(1.0);
-						model = glm::translate(model, glm::vec3(-54.0f, 6.3f +(inicioBrazo * 0.03), 66.0f));
+						model = glm::translate(model, glm::vec3(-54.0f, 6.3f + (inicioBrazo * 0.03), 66.0f));
 						model = glm::rotate(model, -180 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 						Bola_Boliche_M.RenderModel();
@@ -1689,7 +2190,7 @@ int main()
 
 						//Bola Boliche
 						model = glm::mat4(1.0);
-						model = glm::translate(model, glm::vec3(-54.0f, 6.3f + (inicioBrazo * 0.03) - (movBateo * 0.5), 66.0f + movBateo + (movBateoPelota*1.2)));
+						model = glm::translate(model, glm::vec3(-54.0f, 6.3f + (inicioBrazo * 0.03) - (movBateo * 0.5), 66.0f + movBateo + (movBateoPelota * 1.2)));
 						model = glm::rotate(model, -180 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 						model = glm::rotate(model, -(movBateoPelota * 100) * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
 						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -1964,7 +2465,7 @@ int main()
 
 						//Bola Boliche
 						model = glm::mat4(1.0);
-						model = glm::translate(model, glm::vec3(-54.0f - movDardoNuevoMovimiento*0.26, 6.3f + (movDardoNuevo * 0.03) - (movDardoNuevoMovimiento * 0.5), 66.0f + movDardoNuevoMovimiento));
+						model = glm::translate(model, glm::vec3(-54.0f - movDardoNuevoMovimiento * 0.26, 6.3f + (movDardoNuevo * 0.03) - (movDardoNuevoMovimiento * 0.5), 66.0f + movDardoNuevoMovimiento));
 						model = glm::rotate(model, -180 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 						model = glm::rotate(model, -(movDardoNuevoMovimiento * 100) * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
 						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -2037,7 +2538,7 @@ int main()
 						model = glm::rotate(model, -(movDardoNuevo - moverDardoAbajo) * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));//mueve arriba (-) o abajo (+)
 						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 						BrazoDerecho_Sur.RenderModel();
-						
+
 						//Rendija Boliche
 						model = glm::mat4(1.0);
 						model = glm::translate(model, glm::vec3(-60.0f, 0.0f + ((movDardoNuevo - moverDardoAbajo) * 0.04), 93.0f));
@@ -2268,7 +2769,7 @@ int main()
 				//model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));//mueve hacia derecha o izquierda
 				//model = glm::rotate(model, 90 * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));//mueve arriba o abajo
 
-				if (brazoVariacion <= 100.0){
+				if (brazoVariacion <= 100.0) {
 					//Antebrazo derecho
 					model = glm::mat4(1.0);
 					model = glm::translate(model, glm::vec3(-3.6f, 8.0f, 94.2f));
@@ -2309,7 +2810,7 @@ int main()
 				///AQUI VA LA ANIMACIÓN DE CADA STAND
 
 				if (brazoVariacion1 <= 20.0 && brazoVariacion >= 100 && timerBateo > 250.0) {
-					
+
 					if (inicioBrazo < 100.0) {
 						//Antebrazo derecho
 						model = glm::mat4(1.0);
@@ -2322,7 +2823,7 @@ int main()
 
 						//Bate
 						model = glm::mat4(1.0);
-						model = glm::translate(model, glm::vec3(-3.5f, 0.0f + inicioBrazo*0.082, 96.0f));
+						model = glm::translate(model, glm::vec3(-3.5f, 0.0f + inicioBrazo * 0.082, 96.0f));
 						model = glm::rotate(model, 30 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));//+30 grados
 						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 						Bate_M.RenderModel();
@@ -2344,13 +2845,13 @@ int main()
 						model = glm::mat4(1.0);
 						model = glm::translate(model, glm::vec3(-3.5f - movBateo, 8.2f, 96.0f));
 						model = glm::rotate(model, 30 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));//+30 grados
-						model = glm::rotate(model, (movBateo*50) * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+						model = glm::rotate(model, (movBateo * 50) * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
 						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 						Bate_M.RenderModel();
 
 						movBateo += 0.005f * deltaTime;
 					}
-					if (movBateo >= 0.8 && movBateoPelota < 16.0){
+					if (movBateo >= 0.8 && movBateoPelota < 16.0) {
 						//Antebrazo derecho
 						model = glm::mat4(1.0);
 						model = glm::translate(model, glm::vec3(-3.6f - movBateo, 8.0f, 94.2f));
@@ -2362,7 +2863,7 @@ int main()
 
 						//Bate
 						model = glm::mat4(1.0);
-						model = glm::translate(model, glm::vec3(-3.5f -movBateo, 8.2f, 96.0f));
+						model = glm::translate(model, glm::vec3(-3.5f - movBateo, 8.2f, 96.0f));
 						model = glm::rotate(model, 30 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));//+30 grados
 						model = glm::rotate(model, (movBateo * 50) * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
 						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -2370,7 +2871,7 @@ int main()
 
 						//Pelota de Baseball
 						model = glm::mat4(1.0);
-						model = glm::translate(model, glm::vec3(-3.5f - (movBateoPelota*0.5), 7.0f + (movBateoPelota*0.4), 115.0f - movBateoPelota));
+						model = glm::translate(model, glm::vec3(-3.5f - (movBateoPelota * 0.5), 7.0f + (movBateoPelota * 0.4), 115.0f - movBateoPelota));
 						model = glm::rotate(model, (movBateoPelota * 30) * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
 						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 						PelotaBateo_M.RenderModel();
@@ -2418,7 +2919,7 @@ int main()
 						model = glm::mat4(1.0);
 						model = glm::translate(model, glm::vec3(-3.5f - movBateo + movBateoRegreso, 8.2f, 96.0f));
 						model = glm::rotate(model, 30 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));//+30 grados
-						model = glm::rotate(model, ((movBateo * 50) - (movBateoRegreso* 50)) * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+						model = glm::rotate(model, ((movBateo * 50) - (movBateoRegreso * 50)) * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
 						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 						Bate_M.RenderModel();
 
@@ -2453,7 +2954,7 @@ int main()
 			banderaCamara = 1; //Para que la camara no se pueda mover hasta que se acabe la animación. Al final debe volver a 0.
 
 			if (timerBateo < 980.0) { //Timpo que va a durar la animación general del stand
-				
+
 				//INICIO ANIMACIÓN DE LA MONEDA
 
 				if (brazoVariacion <= 100.0) {
@@ -2586,7 +3087,7 @@ int main()
 
 						//Dardo
 						model = glm::mat4(1.0);
-						model = glm::translate(model, glm::vec3(109.5f, 1.2f + movBateo * 0.05 , -25.7f));//98
+						model = glm::translate(model, glm::vec3(109.5f, 1.2f + movBateo * 0.05, -25.7f));//98
 						model = glm::rotate(model, -90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 						Dardo_M.RenderModel();
@@ -2618,7 +3119,7 @@ int main()
 
 						//Dardo
 						model = glm::mat4(1.0);
-						model = glm::translate(model, glm::vec3(109.5f + movBateoPelota, 1.2f + movBateo * 0.05, -25.7f -(movBateoPelota * 0.2) ));//98
+						model = glm::translate(model, glm::vec3(109.5f + movBateoPelota, 1.2f + movBateo * 0.05, -25.7f - (movBateoPelota * 0.2)));//98
 						model = glm::rotate(model, -90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 						Dardo_M.RenderModel();
@@ -3030,6 +3531,7 @@ int main()
 			}
 		}
 
+
 		// --------------------------------------
 		// -----------------PISO-----------------
 		// --------------------------------------
@@ -3048,24 +3550,54 @@ int main()
 		// --------------------------------------
 		// ------------RUEDA FORTUNA-------------
 		// --------------------------------------
-		
+
 		//Rueda Fortuna
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		RuedaFortuna_M.RenderModel();
-
-		//Gato 7 de Marzo
-		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(0.0f, 4.0f, 10.0f));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Gato_March_M.RenderModel();
 		
-		//Neuvillette Genshin Impact
-		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(13.0f, 0.0f, 20.0f));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Neuvillette_Genshin_M.RenderModel();
+		if (contadorInicioPrograma == 1) {
+
+			//Neuvillette (cuerpo) Genshin Impact
+			model = glm::mat4(1.0);
+			model = glm::translate(model, glm::vec3(13.0f, 0.0f, 20.0f));
+			glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+			NeuvilletteCuerpo_Genshin_M.RenderModel();
+
+			//Neuvillette hombro
+			if (banderaNeuvi == 0 && NeuviHombro > -24.0f) {
+				NeuviHombro -= 0.1f * deltaTime;
+			}
+			else if (NeuviHombro < 0.0f) {
+				NeuviHombro += 0.1f * deltaTime;
+				banderaNeuvi = 1;
+			}
+			else banderaNeuvi = 0;
+
+			model = glm::translate(model, glm::vec3(-0.82f, 7.47f, -0.13f));
+			model = glm::rotate(model, NeuviHombro * toRadians, glm::vec3(1.0f, 0.0f, 0.0f)); //-24 * toRadians
+			glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+			NeuvilletteHombro_Genshin_M.RenderModel();
+
+			//Neuvillette brazo Y
+			if (banderaNeuvi2 == 0 && NeuviBrazoY < 24.0f) {
+				NeuviBrazoY += 0.1f * deltaTime;
+			}
+			else if (NeuviBrazoY > 0.0f) {
+				NeuviBrazoY -= 0.1f * deltaTime;
+				banderaNeuvi2 = 1;
+			}
+			else banderaNeuvi2 = 0;
+
+			model = glm::translate(model, glm::vec3(-0.32f, -0.93f, 0.136f));
+			model = glm::rotate(model, NeuviBrazoY * toRadians, glm::vec3(0.0f, 1.0f, 0.0f)); //24 * toRadians
+			model = glm::rotate(model, -5 * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
+			model = glm::rotate(model, -8 * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+			glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+			NeuvilletteBrazo_Genshin_M.RenderModel();
+		}
+		else contadorInicioPrograma++;
 
 		//Furina Genshin Impact
 		model = glm::mat4(1.0);
@@ -3073,6 +3605,12 @@ int main()
 		model = glm::rotate(model, -20 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Furina_Genshin_M.RenderModel();
+
+		//Gato 7 de Marzo
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(0.0f, 4.0f, 10.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Gato_March_M.RenderModel();
 
 		//Basura Honkai Star Rail
 		model = glm::mat4(1.0);
@@ -3111,7 +3649,7 @@ int main()
 		model = glm::translate(model, glm::vec3(-34.0f, 0.0f, 21.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Globo_Verde_M.RenderModel();
-		
+
 		// --------------------------------------
 		// -----------PUESTO HELADOS-------------
 		// --------------------------------------
@@ -3122,7 +3660,7 @@ int main()
 		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		PuestoHelado_M.RenderModel();
-		
+
 		//Marius Casual Tears of Themis Cuerpo
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(66.5f, 0.0f, 24.0f));
@@ -3131,7 +3669,7 @@ int main()
 		MariusCasual_M.RenderModel();
 
 
-		if (ContadorInicioPrograma == 1) {
+		if (contadorInicioPrograma2 == 1) {
 			//Marius brazo
 			if (banderaMarius == 0 && MariusBrazo < 40.0f) {
 				MariusBrazo += 0.2 * deltaTime;
@@ -3146,7 +3684,7 @@ int main()
 			}
 			else {
 				banderaMarius = 0;
-				MariusContador2 ++;
+				MariusContador2++;
 				if (MariusContador < 2) MariusContador += 1;
 				else MariusContador = 0;
 			}
@@ -3207,9 +3745,8 @@ int main()
 				glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 				BolaHelado_Arriba_M.RenderModel();//tercera bola
 			}
-
-
-		}else ContadorInicioPrograma++;
+		}
+		else contadorInicioPrograma2++;
 
 		//Sigwinne Genshin Impact
 		model = glm::mat4(1.0);
@@ -3224,7 +3761,7 @@ int main()
 		model = glm::rotate(model, -180 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Lampara_Genshin_M.RenderModel();
-		
+
 		// --------------------------------------
 		// --------BANCA PUESTO HELADOS----------
 		// --------------------------------------
@@ -3263,14 +3800,18 @@ int main()
 		// --------------------------------------
 		// -----------PUESTO DE DARDOS-----------
 		// --------------------------------------
-		
+
+		Material_Madera.UseMaterial(uniformSpecularIntensity, uniformShininess);
+
 		//Puesto Dardos
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(110.0f, 0.0f, -25.0f));
 		model = glm::rotate(model, -90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		PuestoDardos_M.RenderModel();
-		
+
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+
 		if (camaraAnimacion != 5) {
 			//Globo1
 			Globo1_M.RenderModel();
@@ -3302,7 +3843,7 @@ int main()
 		model = glm::rotate(model, -90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		LukeNormal_M.RenderModel();
-		
+
 		//Globos izquierda
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(102.0f, 0.0f, -43.0f));
@@ -3529,12 +4070,54 @@ int main()
 		// --------------------------------------
 		// ----------ARTEM PROTAGONISTA----------
 		// --------------------------------------
-		//Artem Normal Tears of Themis
+		
+		//Artem Normal (cuerpo) Tears of Themis
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(-10.0f, 0.0f, -55.0f));
-		model = glm::rotate(model, -180 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		ArtemNormal_M.RenderModel();
+		ArtemNormalCuerpo_M.RenderModel();
+
+		if (contadorInicioPrograma3 == 1) {
+			
+			//Artem brazo
+			if (banderaArtem == 0 && ArtemBrazo > -35.0f) {
+				ArtemBrazo -= 0.2f * deltaTime;
+			}
+			else if (ArtemBrazo < 0.0f) {
+				ArtemBrazo += 0.2f * deltaTime;
+				banderaArtem = 1;
+			}
+			else banderaArtem = 0;
+						
+			model = glm::translate(model, glm::vec3(-0.65f, 7.613f, 0.27f));
+			model = glm::rotate(model, ArtemBrazo * toRadians, glm::vec3(0.0f, 1.0f, 0.0f)); //-35
+			glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+			ArtemNormalBrazo_M.RenderModel();
+
+			//Hoja Libro
+			if (ArtemHoja > -60.0f && banderaArtem == 0) {
+				model = glm::mat4(1.0); //hoja izquierda
+				model = glm::translate(model, glm::vec3(-9.84f, 6.7f, -56.41f));
+				model = glm::rotate(model, ArtemHoja * toRadians, glm::vec3(0.0f, 0.0f, 1.0f)); //-60
+				glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+				ArtemNormalHoja_M.RenderModel();
+				ArtemHoja -= 0.62f * deltaTime;
+			}
+			else if (ArtemHoja2 < 58.0f && banderaArtem == 0) {
+				model = glm::mat4(1.0);
+				model = glm::translate(model, glm::vec3(-9.8f, 6.7f, -56.41f));
+				model = glm::rotate(model, (73 - ArtemHoja2) * toRadians, glm::vec3(0.0f, 0.0f, 1.0f)); //5
+				model = glm::rotate(model, -180 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+				glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+				ArtemNormalHoja_M.RenderModel();
+				ArtemHoja2 += 0.73f * deltaTime;
+			}
+			else {
+				ArtemHoja = 0.0f;
+				ArtemHoja2 = 0.0f;
+			}
+		}
+		else contadorInicioPrograma3++;
 
 		//Globos
 		model = glm::mat4(1.0);
@@ -3584,6 +4167,8 @@ int main()
 		// ----------PUESTO TIRO DADOS-----------
 		// --------------------------------------
 
+		Material_Terciopelo.UseMaterial(uniformSpecularIntensity, uniformShininess);
+
 		//Puesto de Tiro de Dados
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(-113.0f, 0.0f, -35.0f));
@@ -3591,9 +4176,11 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		MesaDados_M.RenderModel();
 
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+
 		//Aventurine Honkai Star Rail
 		Aventurine_StarRail_M.RenderModel();
-		
+
 		//Lámpara Genshin Impact
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(-120.0f, 0.0f, -20.0f));
@@ -3638,11 +4225,13 @@ int main()
 		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Globo_Naranja_M.RenderModel();
-		
+
 		// --------------------------------------
 		// -----------PUESTO BOLICHE-------------
 		// --------------------------------------
 		
+		Material_MaderaPulida.UseMaterial(uniformSpecularIntensity, uniformShininess);
+
 		//Puesto Boliche
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(-60.0f, 0.0f, 93.0f));
@@ -3650,11 +4239,13 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Boliche_M.RenderModel();
 
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+
 		if (camaraAnimacion != 2) {
 			//Rendija Boliche
 			Rendija_Boliche_M.RenderModel();
 		}
-		
+
 		//Ayato Genshin Impact
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(-25.0f, 0.0f, 83.0f));
@@ -3705,6 +4296,8 @@ int main()
 		// -----------GOLPEAR AL TOPO------------
 		// --------------------------------------
 
+		Material_Plastico.UseMaterial(uniformSpecularIntensity, uniformShininess);
+
 		//Puesto Golpear al Topo
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(65.0f, 0.0f, 70.0f));
@@ -3712,6 +4305,7 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		GolpearTopo_M.RenderModel();
 
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
 
 		//Yanqing Honkai Star Rail
 		model = glm::translate(model, glm::vec3(-3.0f, 0.0f, 0.0f));
@@ -3774,7 +4368,7 @@ int main()
 		// --------------------------------------
 		// -----------CARROS CHOCONES------------
 		// --------------------------------------
-		
+
 		//Puesto de Carros Chocones
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(0.0f, 4.0f, -125.0f));
@@ -4101,7 +4695,13 @@ int main()
 		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 49.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		meshList[4]->RenderMesh();
-		
+
+		// --------------------------------------
+		// ----------BLADE JERARQUICO------------
+		// --------------------------------------
+
+		Material_Avatar.UseMaterial(uniformSpecularIntensity, uniformShininess);
+
 		// --------------------------------------
 		// ----------BLADE JERARQUICO------------
 		// --------------------------------------
@@ -4267,11 +4867,13 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Blade_PieIzq.RenderModel();
 
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+
 		// --------------------------------------
 		// -----------BOTE CAMINANTE-------------
 		// --------------------------------------
 
-		if (contadorInicioPrograma == 1) {
+		if (contadorInicioPrograma4 == 1) {
 
 			Bangulovaria += 2.2f * deltaTime;
 			BanguloAvanza += 0.2f * deltaTime;
@@ -4352,9 +4954,10 @@ int main()
 			glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 			Bote_PantorrillaIzq.RenderModel();
 		}
+		else contadorInicioPrograma4++;
 
 		//-----------------¡¡TRANSPARENCIAS!!---------------------------------
-		
+
 		// --------------------------------------
 		// ----------LANZAMIENTO HACHA-----------
 		// --------------------------------------
@@ -4363,7 +4966,7 @@ int main()
 		// --------------------------------------
 		// -----------JAULA DE BATEO-------------
 		// --------------------------------------
-		
+
 		//Wanderer Genshin Impact
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(-105.0f, 0.0f, -90.0f));
@@ -4389,25 +4992,27 @@ int main()
 
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		
+
+		Material_Reja.UseMaterial(uniformSpecularIntensity, uniformShininess);
+
 		//Puesto de Lanzamiento de Hacha
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(-105.0f, 0.0f, -78.0f));
 		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		LanzamientoHacha_M.RenderModel();
-		
+
 		//Jaula Bateo
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 85.0f));
 		model = glm::rotate(model, -180 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		PuestoBateo_M.RenderModel();
-		
+
 		//------
 		//REJAS-
 		//------
-		
+
 		//Derecha
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(130.0f, 0.0f, 0.0f));
@@ -4659,6 +5264,7 @@ int main()
 		meshList[1]->RenderMesh();
 
 		glDisable(GL_BLEND);
+
 
 		glUseProgram(0);
 
