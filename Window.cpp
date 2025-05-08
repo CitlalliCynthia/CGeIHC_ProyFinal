@@ -136,61 +136,73 @@ void Window::ManejaTeclado(GLFWwindow* window, int key, int code, int action, in
 	{
 		theWindow->rotaz += 10.0;
 	}
+
 	//Avance Blade
 	if (key == GLFW_KEY_W) {
 		if (action == GLFW_PRESS) {
 			theWindow->AvanzaBladeW = 1.0f;
-			theWindow->AvanzaBlade = 1.0f;
+			//theWindow->AvanzaBlade = 1.0f;
 
 
 		}
 		else if (action == GLFW_RELEASE) {
 			theWindow->AvanzaBladeW = 0.0f;
-			theWindow->AvanzaBlade = 1.0f;
+			//theWindow->AvanzaBlade = 1.0f;
 
 		}
 	}
 	if (key == GLFW_KEY_A) {
 		if (action == GLFW_PRESS) {
 			theWindow->AvanzaBladeA = 1.0f;
-			theWindow->AvanzaBlade = 1.0f;
+			//theWindow->AvanzaBlade = 1.0f;
 
 
 		}
 		else if (action == GLFW_RELEASE) {
 			theWindow->AvanzaBladeA = 0.0f;
-			theWindow->AvanzaBlade = 1.0f;
+			//theWindow->AvanzaBlade = 1.0f;
 
 		}
 	}
 	if (key == GLFW_KEY_S) {
 		if (action == GLFW_PRESS) {
 			theWindow->AvanzaBladeS = 1.0f;
-			theWindow->AvanzaBlade = 1.0f;
+			//theWindow->AvanzaBlade = 1.0f;
 
 
 		}
 		else if (action == GLFW_RELEASE) {
 			theWindow->AvanzaBladeS = 0.0f;
-			theWindow->AvanzaBlade = 1.0f;
+			//theWindow->AvanzaBlade = 1.0f;
 
 		}
 	}
 	if (key == GLFW_KEY_D) {
 		if (action == GLFW_PRESS) {
 			theWindow->AvanzaBladeD = 1.0f;
-			theWindow->AvanzaBlade = 1.0f;
+			//theWindow->AvanzaBlade = 1.0f;
 
 		}
 		else if (action == GLFW_RELEASE) {
 			theWindow->AvanzaBladeD = 0.0f;
-			theWindow->AvanzaBlade = 1.0f;
+			//theWindow->AvanzaBlade = 1.0f;
 
 		}
 	}
 	if (key == GLFW_KEY_W)
 	{
 		theWindow->MueveBlade -= 0.2;
+	}
+
+	//Movimiento brazos y piernas Avatar
+	if (key == GLFW_KEY_W || key == GLFW_KEY_S || key == GLFW_KEY_D || key == GLFW_KEY_A) {
+		if (action == GLFW_PRESS) {
+			theWindow->AvanzaBlade = 1.0f;
+
+		}
+		else if (action == GLFW_RELEASE) {
+			theWindow->AvanzaBlade = 0.0f;
+		}
 	}
 
 	//Cámara Blade
@@ -240,111 +252,13 @@ void Window::ManejaTeclado(GLFWwindow* window, int key, int code, int action, in
 	{
 		theWindow->articulacion8 = 1.0;
 	}
-	else theWindow->articulacion8 = 0.0;
-	//Movimiento frente Avatar
-	if (key == GLFW_KEY_W)
-	{
-		theWindow->articulacion9 -= 0.5;
-	}
-	//Movimiento izquierda Avatar
-	if (key == GLFW_KEY_A)
-	{
-		theWindow->articulacion10 -= 0.5;
-	}
-	//Movimiento derecha Avatar
-	if (key == GLFW_KEY_S)
-	{
-		theWindow->articulacion9 += 0.5;
-	}
-	//Movimiento detrás Avatar
-	if (key == GLFW_KEY_D)
-	{
-		theWindow->articulacion10 += 0.5;
-	}
-	
+	else theWindow->articulacion8 = 0.0;	
 	//Cámara libre
 	if (key == GLFW_KEY_Q && action == GLFW_PRESS)
 	{
 		theWindow->articulacion11 = 1.0;
 	}
 	else theWindow->articulacion11 = 0.0;
-
-	/*
-	if (key == GLFW_KEY_O)
-	{
-		theWindow->articulacion10 += 10.0;
-	}
-	*/
-
-
-
-
-	/*
-	if (key == GLFW_KEY_G)
-	{
-		if (theWindow->articulacion2 < 60.0) theWindow->articulacion2 += 10.0;
-	}
-	if (key == GLFW_KEY_H)
-	{
-		if (theWindow->articulacion2 > -60.0) theWindow->articulacion2 -= 10.0;
-	}
-	if (key == GLFW_KEY_J)
-	{
-		if (theWindow->articulacion3 < 30.0) theWindow->articulacion3 += 10.0;
-	}
-	if (key == GLFW_KEY_K)
-	{
-		if (theWindow->articulacion3 > -30.0) theWindow->articulacion3 -= 10.0;
-	}
-	if (key == GLFW_KEY_L)
-	{
-		if (theWindow->articulacion4 < 5.0) theWindow->articulacion4 += 1.0;
-	}
-	if (key == GLFW_KEY_M)
-	{
-		if (theWindow->articulacion4 > -10.0) theWindow->articulacion4 -= 2.0;
-	}
-	if (key == GLFW_KEY_N)
-	{
-		if (theWindow->articulacion5 < 45.0) theWindow->articulacion5 += 9.0;
-	}
-	if (key == GLFW_KEY_B)
-	{
-		if (theWindow->articulacion5 > -45.0) theWindow->articulacion5 -= 9.0;
-	}
-	if (key == GLFW_KEY_V)
-	{
-		if (theWindow->articulacion6 < 45.0) theWindow->articulacion6 += 9.0;
-	}
-	if (key == GLFW_KEY_C)
-	{
-		if (theWindow->articulacion6 > -45.0) theWindow->articulacion6 -= 9.0;
-	}
-	if (key == GLFW_KEY_X)
-	{
-		if (theWindow->articulacion7 < 45.0) theWindow->articulacion7 += 9.0;
-	}
-	if (key == GLFW_KEY_Z)
-	{
-		if (theWindow->articulacion7 > -45.0) theWindow->articulacion7 -= 9.0;
-	}
-	if (key == GLFW_KEY_P)
-	{
-		if (theWindow->articulacion8 < 45.0) theWindow->articulacion8 += 9.0;
-	}
-	if (key == GLFW_KEY_O)
-	{
-		if (theWindow->articulacion8 > -45.0) theWindow->articulacion8 -= 9.0;
-	}
-	if (key == GLFW_KEY_I)
-	{
-		theWindow->articulacion9 += 10.0;
-	}
-	if (key == GLFW_KEY_U)
-	{
-		theWindow->articulacion10 += 10.0;
-	}
-	*/
 
 
 	if (key == GLFW_KEY_D && action == GLFW_PRESS)
