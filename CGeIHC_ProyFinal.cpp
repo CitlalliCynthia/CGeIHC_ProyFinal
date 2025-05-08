@@ -9,10 +9,10 @@ PROYECTO FINAL:
 // ----------IMPORTAR MÓDULOS------------
 // --------------------------------------
 
-//Para cargar imagen
+
+//para cargar imagen
 #define STB_IMAGE_IMPLEMENTATION
 
-//Otros
 #include <stdio.h>
 #include <string.h>
 #include <cmath>
@@ -32,15 +32,16 @@ PROYECTO FINAL:
 #include "Camera.h"
 #include "Texture.h"
 #include "Sphere.h"
-#include "Model.h"
+#include"Model.h"
 #include "Skybox.h"
 
-//Para iluminación
+//para iluminación
 #include "CommonValues.h"
 #include "DirectionalLight.h"
 #include "PointLight.h"
 #include "SpotLight.h"
 #include "Material.h"
+const float toRadians = 3.14159265f / 180.0f;
 
 // --------------------------------------
 // -----------DEFINIR VENTANA------------
@@ -60,6 +61,9 @@ std::vector<Shader> shaderList;
 // --------------------------------------
 
 Camera camera;
+Camera camera2;
+Camera camera3;
+Camera cameraLibre;
 
 // --------------------------------------
 // -----------DEFINIR TEXTURAS-----------
@@ -83,6 +87,14 @@ Model Furina_Genshin_M;
 Model PuestoHelado_M;
 Model MariusCasual_M;
 Model Sigwinne_Genshin_M;
+Model MariusCasualBrazo_M;
+Model BolaHelado_Suelta_M;
+Model BolaHelado_Arriba_M;
+Model BolaHelado_Derecha_M;
+Model BolaHelado_Izquierda_M;
+
+Model BolaHelado_Suelta_Naranja_M;
+Model BolaHelado_Suelta_Morada_M;
 
 //Banca Puesto de Helados
 Model Wriothesley_Genshin_M;
@@ -130,6 +142,9 @@ Model Wanderer_Genshin_M;
 
 //Puesto Dados
 Model MesaDados_M;
+Model MesaDados_Dados1_M;
+Model MesaDados_Dados2_M;
+Model MesaDados_DadosMesa_M;
 Model Aventurine_StarRail_M;
 
 //Puesto Boliche
@@ -141,6 +156,9 @@ Model Ayato_Genshin_M;
 
 //Puesto Golpear al Topo
 Model GolpearTopo_M;
+Model GolpearTopo_Topos1_M;
+Model GolpearTopo_Topos2_M;
+Model GolpearTopo_MazaHerta_M;
 Model Yanqing_StarRail_M;
 
 //Puesto Algodón Azúcar
@@ -150,6 +168,8 @@ Model Robin_StarRail_M;
 //Puesto Carros Chocones
 Model CarrosChocones_M;
 Model ArtemCasual_Themis_M;
+Model Carro_Azul_M;
+Model Carro_Naranja_M;
 
 //Jaula Bateo
 Model PuestoBateo_M;
@@ -162,6 +182,7 @@ Model Ratio_StarTail_M;
 
 //Puesto de Tickets
 Model PuestoTickets_M;
+Model PomPom_M;
 
 //Banca Boliche
 Model Banca_Genshin_M;
@@ -215,6 +236,40 @@ Model Gato_RuanMei_M;
 Model Gato_Herta_M;
 Model Gato_Verde_M;
 
+//Blade Star Rail
+Model Blade_Cuerpo;
+Model Blade_Cabeza;
+Model Blade_HombroDer;
+Model Blade_AntebrazoDer;
+Model Blade_ManoDer;
+Model Blade_HombroIzq;
+Model Blade_AntebrazoIzq;
+Model Blade_ManoIzq;
+Model Blade_PiernaDer;
+Model Blade_PantorrillaDer;
+Model Blade_PieDer;
+Model Blade_PiernaIzq;
+Model Blade_PantorrillaIzq;
+Model Blade_PieIzq;
+Model BrazoDerecho;
+Model BrazoDerecho_Sur;
+Model BrazoDerecho_Derecha;
+Model BrazoDerecho_Izquierda;
+
+//Bote
+Model Bote_Cuerpo;
+Model Bote_HombroIzq;
+Model Bote_AntebrazoIzq;
+Model Bote_PiernaDer;
+Model Bote_PantorrillaDer;
+Model Bote_PiernaIzq;
+Model Bote_PantorrillaIzq;
+
+//Moneda Juegos
+Model Tear_Themis;
+Model Destino_Genshin;
+Model Ticket_StarRail;
+
 // --------------------------------------
 // ------------DEFINIR SKYBOX------------
 // --------------------------------------
@@ -236,7 +291,80 @@ GLfloat deltaTime = 0.0f;
 GLfloat lastTime = 0.0f;
 static double limitFPS = 1.0 / 60.0;
 
-const float toRadians = 3.14159265f / 180.0f;
+//Movimiento Blade Avatar
+float angulovaria = 0.0f;
+float angulovariaAux = 0.0f;
+float angulovaria2 = 0.0f;
+float angulovaria3 = 0.0f;
+
+//Animación Entrega moneda
+int camaraAnimacion = 0;
+float brazoVariacion = 20.0f;
+float brazoVariacion1 = 100.0f;
+float timerBateo = 0.0;
+
+//Animación Bateo
+float movBateo = 0.0;
+float movBateoPelota = 0.0;
+float movBateoPelotaRegreso = 0.0;
+float movBateoRegreso = 0.0;
+float inicioBrazo = 0.0;
+
+//Animación Dardos
+float movDardoNuevo = 0.0;
+float movDardoNuevoMovimiento = 0.0f;
+float movDardoRegreso = 0.0f;
+float moverDardoAbajo = 0.0f;
+float movDardoNuevoArriba = 0.0f;
+float movDardoNuevoMovimiento2 = 0.0f;
+float movDardoRegreso2 = 0.0f;
+
+//Animación Marius helados
+int banderaMarius = 0;
+float MariusBrazo = 0.0;
+int MariusContador = 0;
+int MariusContador2 = 0;
+int helado1 = 0;
+int helado2 = 0;
+int helado3 = 0;
+
+//Animación Carros Chocones
+int banderaCarro1 = 0;
+float CarroAzul = 0.0f;
+int banderaCarro2 = 0;
+float CarroNaranja = 0.0f;
+float CarroAzul1 = 0.0f;
+float CarroAzul2 = 0.0f;
+
+//Movimiento Bote 
+float Bangulovaria = 0.0f;
+float BangulovariaAux = 0.0f;
+float Bangulovaria2 = 0.0f;
+float Bangulovaria3 = 0.0f;
+float BanguloAvanza = 0.0f;
+float BanguloMira = 0.0f;
+float senoAnterior = 0.0f;
+float contadorInicioPrograma = 0.0f;
+const float epsilon = 0.01f; // Umbral de cercanía a los extremos
+bool yaCambio = false;
+
+//Animacion Topos
+float ToposY1 = 0.0f;
+float ToposY2 = 0.0f;
+float BrazoMartillo = 20.0f;
+
+//Animacion Dados
+float TiroDado = 0.0f;
+
+//Contador para DeltaTime
+int ContadorInicioPrograma = 0;
+
+//Para los skyboxes
+int skyCount = 0; //Se crea una variable contadora para que lleve la cuenta de vueltas que lleva el while y se vayan cambiando
+
+//Cámaras
+int banderaCamaraMovimiento = 0; //Para manejar los cambios en la camara de vistas estáticas a la general dinámica
+int banderaCamara = 0; //Indica si la camara se puede cambiar o no (en animación o no). 1 ocupado, 0 desocupado. INICIA EN 0
 
 // --------------------------------------
 // -------------DEFINIR LUCES------------
@@ -245,7 +373,7 @@ const float toRadians = 3.14159265f / 180.0f;
 //Luz direccional
 DirectionalLight mainLight;
 
-//Para declarar varias luces
+//para declarar varias luces
 PointLight pointLights[MAX_POINT_LIGHTS];
 SpotLight spotLights[MAX_SPOT_LIGHTS];
 
@@ -267,7 +395,7 @@ static const char* fShader = "shaders/shader_light.frag";
 // -----------CÁLCULO NORMALES-----------
 // --------------------------------------
 
-//Función de calculo de normales por promedio de vértices 
+//función de calculo de normales por promedio de vértices 
 void calcAverageNormals(unsigned int* indices, unsigned int indiceCount, GLfloat* vertices, unsigned int verticeCount,
 	unsigned int vLength, unsigned int normalOffset)
 {
@@ -373,7 +501,7 @@ void CreateObjects()
 
 	};
 
-	Mesh *obj1 = new Mesh();
+	Mesh* obj1 = new Mesh();
 	obj1->CreateMesh(floorVertices, floorIndices, 32, 6);
 	meshList.push_back(obj1);
 
@@ -422,8 +550,25 @@ int main()
 	CreateObjects();
 	CreateShaders();
 
-	camera = Camera(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), -60.0f, 0.0f, 0.3f, 0.5f);
+	// ----------------------------------
+	// --------------CÁMARAS-------------
+	// ----------------------------------
 
+	//1 Posición inicial; 2 No relevante; 3 Rotación hacia la izquierda o derecha en grados (+ o -)
+	//4 Rotación hacia arriba o abajo en grados (+ o -); 5 y 6 Velocidades para la camara
+	
+	//Camara Blade Avatar (F)
+	camera = Camera(glm::vec3(83.0f, 11.5f, 140.0f), glm::vec3(0.0f, 1.0f, 0.0f), -90.0f, 0.0f, 0.3f, 0.5f);
+
+	//Camara aerea (G)
+	camera2 = Camera(glm::vec3(0.0f, 270.0f, -10.0f), glm::vec3(0.0f, 1.0f, 0.0f), 90.0f, -90.0f, 0.3f, 0.5f);
+
+	//Camara stands (H,J,K,L,M,N)
+	camera3 = Camera(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), -60.0f, 0.0f, 0.3f, 0.5f);
+
+	//Cámara libre (Q)
+	cameraLibre = Camera(glm::vec3(83.0f, 11.5f, 140.0f), glm::vec3(0.0f, 1.0f, 0.0f), -90.0f, 0.0f, 0.3f, 0.5f);
+	
 	// --------------------------------------
 	// -----------CARGAR TEXTURAS------------
 	// --------------------------------------
@@ -440,7 +585,7 @@ int main()
 	// --------------------------------------
 	// ------------CARGAR MODELOS------------
 	// --------------------------------------
-
+	
 	//Rueda Fortuna
 	RuedaFortuna_M = Model();
 	RuedaFortuna_M.LoadModel("Models/RuedaFortuna/RuedaFortuna.obj");
@@ -456,6 +601,21 @@ int main()
 	MariusCasual_M.LoadModel("Models/MariusCasual_Themis/mariusCasual.obj");
 	Sigwinne_Genshin_M = Model();
 	Sigwinne_Genshin_M.LoadModel("Models/Sigwinne_Genshin/Sigwinne.obj");
+	MariusCasualBrazo_M = Model();
+	MariusCasualBrazo_M.LoadModel("Models/MariusCasual_Themis/mariusCasual_Brazo.obj");
+	BolaHelado_Suelta_M = Model();
+	BolaHelado_Suelta_M.LoadModel("Models/MariusCasual_Themis/BolaSuelta.obj");
+	BolaHelado_Arriba_M = Model();
+	BolaHelado_Arriba_M.LoadModel("Models/MariusCasual_Themis/BolaArriba.obj");
+	BolaHelado_Derecha_M = Model();
+	BolaHelado_Derecha_M.LoadModel("Models/MariusCasual_Themis/BolaDerecha.obj");
+	BolaHelado_Izquierda_M = Model();
+	BolaHelado_Izquierda_M.LoadModel("Models/MariusCasual_Themis/BolaIzquierda.obj");
+
+	BolaHelado_Suelta_Naranja_M = Model();
+	BolaHelado_Suelta_Naranja_M.LoadModel("Models/MariusCasual_Themis/BolaSueltaNaranja.obj");
+	BolaHelado_Suelta_Morada_M = Model();
+	BolaHelado_Suelta_Morada_M.LoadModel("Models/MariusCasual_Themis/BolaSueltaMorada.obj");
 
 	//Banca Puesto de Helados
 	Wriothesley_Genshin_M = Model();
@@ -484,7 +644,7 @@ int main()
 	Carrusel_M.LoadModel("Models/Carrusel/Carrusel.obj");
 	Lyney_M = Model();
 	Lyney_M.LoadModel("Models/Lyney_Genshin/Lyney_Genshin.obj");
-
+	
 	//Baño Puesto Dardos
 	Bano_M = Model();
 	Bano_M.LoadModel("Models/PuestoBano/puestoBano.obj");
@@ -516,7 +676,7 @@ int main()
 	PuestoPalomitas_M.LoadModel("Models/PuestoPalomitas/PuestoPalomitas.obj");
 	Feixiao_StarRail_M = Model();
 	Feixiao_StarRail_M.LoadModel("Models/Feixiao_StarRail/Feixiao_StarRail.obj");
-
+	
 	//Lanzamiento de Hacha
 	LanzamientoHacha_M = Model();
 	LanzamientoHacha_M.LoadModel("Models/LanzamientoHacha/LanzamientoHacha.obj");
@@ -524,13 +684,19 @@ int main()
 	Hacha_M.LoadModel("Models/LanzamientoHacha/Hacha.obj");
 	Wanderer_Genshin_M = Model();
 	Wanderer_Genshin_M.LoadModel("Models/Wanderer_Genshin/Wanderer_Genshin.obj");
-
+	
 	//Puesto Dados
 	MesaDados_M = Model();
 	MesaDados_M.LoadModel("Models/MesaDados/MesaDados.obj");
+	MesaDados_Dados1_M = Model();
+	MesaDados_Dados1_M.LoadModel("Models/MesaDados/Dados1.obj");
+	MesaDados_Dados2_M = Model();
+	MesaDados_Dados2_M.LoadModel("Models/MesaDados/Dados2.obj");
+	MesaDados_DadosMesa_M = Model();
+	MesaDados_DadosMesa_M.LoadModel("Models/MesaDados/DadosEnMesa.obj");
 	Aventurine_StarRail_M = Model();
 	Aventurine_StarRail_M.LoadModel("Models/Aventurine_StarRail/Aventurine_StarRail.obj");
-
+	
 	//Puesto Boliche
 	Boliche_M = Model();
 	Boliche_M.LoadModel("Models/Boliche/Boliche.obj");
@@ -542,10 +708,16 @@ int main()
 	Bola_Boliche_M.LoadModel("Models/Boliche/Bola.obj");
 	Ayato_Genshin_M = Model();
 	Ayato_Genshin_M.LoadModel("Models/Ayato_Genshin/Ayato_Genshin.obj");
-
+	
 	//Puesto Golpear al Topo
 	GolpearTopo_M = Model();
 	GolpearTopo_M.LoadModel("Models/GolpearAlTopo/GolpearAlTopo.obj");
+	GolpearTopo_Topos1_M = Model();
+	GolpearTopo_Topos1_M.LoadModel("Models/GolpearAlTopo/GolpearAlTopo_Topos1.obj");
+	GolpearTopo_Topos2_M = Model();
+	GolpearTopo_Topos2_M.LoadModel("Models/GolpearAlTopo/GolpearAlTopo_Topos2.obj");
+	GolpearTopo_MazaHerta_M = Model();
+	GolpearTopo_MazaHerta_M.LoadModel("Models/GolpearAlTopo/MazaHertaTopos.obj");
 	Yanqing_StarRail_M = Model();
 	Yanqing_StarRail_M.LoadModel("Models/Yanqing_StarRail/Yanqing_StarRail.obj");
 
@@ -554,13 +726,17 @@ int main()
 	MaquinaAlgodon_M.LoadModel("Models/MaquinaAlgodon/MaquinaAlgodon.obj");
 	Robin_StarRail_M = Model();
 	Robin_StarRail_M.LoadModel("Models/Robin_StarRail/Robin_StarRail.obj");
-
+	
 	//Puesto Carros Chocones
 	CarrosChocones_M = Model();
 	CarrosChocones_M.LoadModel("Models/PuestoCarrosChocones/puestoCarrosChocones.obj");
 	ArtemCasual_Themis_M = Model();
 	ArtemCasual_Themis_M.LoadModel("Models/ArtemCasual_Themis/artemCasual.obj");
-
+	Carro_Azul_M = Model();
+	Carro_Azul_M.LoadModel("Models/PuestoCarrosChocones/CarroAzul.obj");
+	Carro_Naranja_M = Model();
+	Carro_Naranja_M.LoadModel("Models/PuestoCarrosChocones/CarroNaranja.obj");
+	
 	//Jaula Bateo
 	PuestoBateo_M = Model();
 	PuestoBateo_M.LoadModel("Models/PuestoBateo/puestoBateo.obj");
@@ -570,14 +746,16 @@ int main()
 	PelotaBateo_M.LoadModel("Models/PuestoBateo/batePelota.obj");
 	LukeCasual_Themis_M = Model();
 	LukeCasual_Themis_M.LoadModel("Models/LukeCasual_Themis/LukeCasual.obj");
-
+	
 	//Baño Boliche
 	Ratio_StarTail_M = Model();
 	Ratio_StarTail_M.LoadModel("Models/Ratio_StarRail/Ratio_StarRail.obj");
-
+	
 	//Puesto de Tickets
 	PuestoTickets_M = Model();
 	PuestoTickets_M.LoadModel("Models/PuestoTickets/PuestoTickets.obj");
+	PomPom_M = Model();
+	PomPom_M.LoadModel("Models/PomPom_StarRail/PomPom_StarRail.obj");
 
 	//Banca Boliche
 	Banca_Genshin_M = Model();
@@ -662,8 +840,80 @@ int main()
 	Gato_RuanMei_M.LoadModel("Models/Gato_StarRail/Gato_StarRail_RuanMei.obj");
 	Gato_Herta_M = Model();
 	Gato_Herta_M.LoadModel("Models/Gato_StarRail/Gato_StarRail_Herta.obj");
+
 	Gato_Verde_M = Model();
 	Gato_Verde_M.LoadModel("Models/Gato_StarRail/Gato_StarRail_Verde.obj");
+	
+	//Blade Star Rail
+	Blade_Cuerpo = Model();
+	Blade_Cuerpo.LoadModel("Models/Blade_StarRail/BladeCuerpo_StarRail.obj");
+
+	Blade_Cabeza = Model();
+	Blade_Cabeza.LoadModel("Models/Blade_StarRail/Blade_Cabeza.obj");
+
+	Blade_HombroDer = Model();
+	Blade_HombroDer.LoadModel("Models/Blade_StarRail/Blade_HombroDer.obj");
+	Blade_AntebrazoDer = Model();
+	Blade_AntebrazoDer.LoadModel("Models/Blade_StarRail/Blade_AntebrazoDer.obj");
+	Blade_ManoDer = Model();
+	Blade_ManoDer.LoadModel("Models/Blade_StarRail/Blade_ManoDer.obj");
+
+	Blade_HombroIzq = Model();
+	Blade_HombroIzq.LoadModel("Models/Blade_StarRail/Blade_HombroIzq.obj");
+	Blade_AntebrazoIzq = Model();
+	Blade_AntebrazoIzq.LoadModel("Models/Blade_StarRail/Blade_AntebrazoIzq.obj");
+	Blade_ManoIzq = Model();
+	Blade_ManoIzq.LoadModel("Models/Blade_StarRail/Blade_ManoIzq.obj");
+
+	Blade_PiernaDer = Model();
+	Blade_PiernaDer.LoadModel("Models/Blade_StarRail/Blade_PiernaDer.obj");
+	Blade_PantorrillaDer = Model();
+	Blade_PantorrillaDer.LoadModel("Models/Blade_StarRail/Blade_PantorrillaDer.obj");
+	Blade_PieDer = Model();
+	Blade_PieDer.LoadModel("Models/Blade_StarRail/Blade_PieDer.obj");
+
+	Blade_PiernaIzq = Model();
+	Blade_PiernaIzq.LoadModel("Models/Blade_StarRail/Blade_PiernaIzq.obj");
+	Blade_PantorrillaIzq = Model();
+	Blade_PantorrillaIzq.LoadModel("Models/Blade_StarRail/Blade_PantorrillaIzq.obj");
+	Blade_PieIzq = Model();
+	Blade_PieIzq.LoadModel("Models/Blade_StarRail/Blade_PieIzq.obj");
+
+	BrazoDerecho = Model();
+	BrazoDerecho.LoadModel("Models/Blade_StarRail/BrazoDerecho.obj");
+	BrazoDerecho_Sur = Model();
+	BrazoDerecho_Sur.LoadModel("Models/Blade_StarRail/BrazoDerecho_Sur.obj");
+	BrazoDerecho_Derecha = Model();
+	BrazoDerecho_Derecha.LoadModel("Models/Blade_StarRail/BrazoDerecho_Derecha.obj");
+	BrazoDerecho_Izquierda = Model();
+	BrazoDerecho_Izquierda.LoadModel("Models/Blade_StarRail/BrazoDerecho_Izquierda.obj");
+
+	//Bote Caminante
+	Bote_Cuerpo = Model();
+	Bote_Cuerpo.LoadModel("Models/Bote2/Bote_Cuerpo.obj");
+
+	Bote_HombroIzq = Model();
+	Bote_HombroIzq.LoadModel("Models/Bote2/Bote_HombroIzq.obj");
+	Bote_AntebrazoIzq = Model();
+	Bote_AntebrazoIzq.LoadModel("Models/Bote2/Bote_AntebrazoIzq.obj");
+
+	Bote_PiernaDer = Model();
+	Bote_PiernaDer.LoadModel("Models/Bote2/Bote_PiernaDer.obj");
+	Bote_PantorrillaDer = Model();
+	Bote_PantorrillaDer.LoadModel("Models/Bote2/Bote_PantorrillaDer.obj");
+
+	Bote_PiernaIzq = Model();
+	Bote_PiernaIzq.LoadModel("Models/Bote2/Bote_PiernaIzq.obj");
+	Bote_PantorrillaIzq = Model();
+	Bote_PantorrillaIzq.LoadModel("Models/Bote2/Bote_PantorrillaIzq.obj");
+
+	//Monedas Juegos
+	Tear_Themis = Model();
+	Tear_Themis.LoadModel("Models/TearMoneda_Themis/tears.obj");
+	Destino_Genshin = Model();
+	Destino_Genshin.LoadModel("Models/DestinoEntrelazado_Genshin/DestinoEntrelazado_Genshin.obj");
+	Ticket_StarRail = Model();
+	Ticket_StarRail.LoadModel("Models/Ticket/Ticket.obj");
 	
 	// --------------------------------------
 	// -----------SKYBOX TEXTURAS------------
@@ -693,10 +943,6 @@ int main()
 	skyboxFacesNoche.push_back("Textures/Skybox/Night_Arriba.tga");
 	skyboxFacesNoche.push_back("Textures/Skybox/Night_Detras.tga");
 	skyboxFacesNoche.push_back("Textures/Skybox/Night_Enfrente.tga");
-
-	int skyCount = 0; //Se crea una variable contadora para que lleve la cuenta de vueltas que lleva el while y se vayan cambiando
-
-	//skybox = Skybox(skyboxFaces); ///BORRAR!!!!!!!
 	
 	// --------------------------------------
 	// -----------CREAR MATERIALES-----------
@@ -714,7 +960,7 @@ int main()
 		0.45f, 0.6f,				//Intensidad
 		0.0f, 0.0f, 1.0f);			//Dirección
 
-	//Contador de luces puntuales
+	//contador de luces puntuales
 	unsigned int pointLightCount = 0;
 	unsigned int spotLightCount = 0;
 	
@@ -794,6 +1040,7 @@ int main()
 	spotLightCount++;
 	*/
 
+
 	// ---------------------------------------
 	// -------VAR. UNIFORM Y PROYECCIÓN-------
 	// ---------------------------------------
@@ -803,12 +1050,15 @@ int main()
 	GLuint uniformColor = 0;
 
 	glm::mat4 projection = glm::perspective(45.0f, (GLfloat)mainWindow.getBufferWidth() / mainWindow.getBufferHeight(), 0.1f, 1000.0f);
-	
+
+
 	// --------------------------------------
 	// ------------WHILE PRINCIPAL-----------
 	// --------------------------------------
 
-	//Loop mientras no se cierra la ventana
+	////Loop mientras no se cierra la ventana
+	glm::vec3 bladePosition = glm::vec3(83.0f, 6.463f, 130.0f);
+
 	while (!mainWindow.getShouldClose())
 	{
 		GLfloat now = glfwGetTime();
@@ -819,6 +1069,8 @@ int main()
 		// --------------------------------------
 		// ----------------SKYBOX----------------
 		// --------------------------------------
+
+		if (contadorInicioPrograma == 0) contadorInicioPrograma++;
 
 		if (skyCount == 0) { //Amanecer
 			skybox = Skybox(skyboxFaces);  //Skybox de dia
@@ -850,33 +1102,132 @@ int main()
 
 		skyCount += 1; //La variable contadora aumenta en uno con cada ciclo del while que es lo que lleva la cuenta del tiempo
 
+		// --------------------------------------
+		// ---------------CÁMARAS----------------
+		// --------------------------------------
 
-		//Recibir eventos del usuario
-		glfwPollEvents();
-		camera.keyControl(mainWindow.getsKeys(), deltaTime);
-		camera.mouseControl(mainWindow.getXChange(), mainWindow.getYChange());
+		if (banderaCamara == 0){
 
-		// Clear the window
-		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		skybox.DrawSkybox(camera.calculateViewMatrix(), projection);
-		shaderList[0].UseShader();
-		uniformModel = shaderList[0].GetModelLocation();
-		uniformProjection = shaderList[0].GetProjectionLocation();
-		uniformView = shaderList[0].GetViewLocation();
-		uniformEyePosition = shaderList[0].GetEyePositionLocation();
-		uniformColor = shaderList[0].getColorLocation();
-		
+			if (mainWindow.getarticulacion1() == 1.0) { //Vista Blade
+				banderaCamaraMovimiento = 0;
+			}
+			else if (mainWindow.getarticulacion2() == 1.0) { //Vista aerea
+				camera3 = camera2;
+				banderaCamaraMovimiento = 1;
+			}
+			else if (mainWindow.getarticulacion3() == 1.0) { //Stand hacha
+				camera3 = Camera(glm::vec3(-106.0f, 8.0f, -78.0f), glm::vec3(0.0f, 1.0f, 0.0f), 180.0f, 0.0f, 0.3f, 0.5f);
+				banderaCamaraMovimiento = 1;
+				camaraAnimacion = 1;
+			}
+			else if (mainWindow.getarticulacion4() == 1.0) { //Stand boliche
+				camera3 = Camera(glm::vec3(-52.0f, 11.0f, 62.0f), glm::vec3(0.0f, 1.0f, 0.0f), 90.0f, -15.0f, 0.3f, 0.5f);
+				banderaCamaraMovimiento = 1;
+				camaraAnimacion = 2;
+			}
+			else if (mainWindow.getarticulacion5() == 1.0) { //Stand dados
+				camera3 = Camera(glm::vec3(-102.0f, 9.0f, -35.0f), glm::vec3(0.0f, 1.0f, 0.0f), 180.0f, -30.0f, 0.3f, 0.5f);
+				banderaCamaraMovimiento = 1;
+				camaraAnimacion = 3;
+			}
+			else if (mainWindow.getarticulacion6() == 1.0) { //Stand bateo
+				camera3 = Camera(glm::vec3(-03.0f, 9.0f, 93.0f), glm::vec3(0.0f, 1.0f, 0.0f), 90.0f, 0.0f, 0.3f, 0.5f);
+				banderaCamaraMovimiento = 1;
+				camaraAnimacion = 4;
+			}
+			else if (mainWindow.getarticulacion7() == 1.0) { //Stand dardos
+				camera3 = Camera(glm::vec3(91.5f, 8.5f, -26.0f), glm::vec3(0.0f, 1.0f, 0.0f), 0.0f, -5.0f, 0.3f, 0.5f);
+				banderaCamaraMovimiento = 1;
+				camaraAnimacion = 5;
+			}
+			else if (mainWindow.getarticulacion8() == 1.0) { //Stand topo
+				camera3 = Camera(glm::vec3(61.0f, 9.0f, 62.5f), glm::vec3(0.0f, 1.0f, 0.0f), 90.0f, -30.0f, 0.3f, 0.5f);
+				banderaCamaraMovimiento = 1;
+				camaraAnimacion = 6;
+			}
+			else if (mainWindow.getarticulacion11() == 1.0) { //Camara Libre (EXTRA)
+				banderaCamaraMovimiento = 2;
+			}
+		}
 
+		//Para  clear Window según se ocupe o no que se pueda mover la cámara
+		if (banderaCamaraMovimiento == 0) {
+			//CAMARA 1 (VISTA BLADE CON MOVIMIENTO)
+			glfwPollEvents();
+			//camera.keyControl(mainWindow.getsKeys(), deltaTime);
+			camera.mouseControl(mainWindow.getXChange(), mainWindow.getYChange());
 
+			// Clear the window
+			glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			skybox.DrawSkybox(camera.calculateViewMatrix(), projection);
+			shaderList[0].UseShader();
+			uniformModel = shaderList[0].GetModelLocation();
+			uniformProjection = shaderList[0].GetProjectionLocation();
+			uniformView = shaderList[0].GetViewLocation();
+			uniformEyePosition = shaderList[0].GetEyePositionLocation();
+			uniformColor = shaderList[0].getColorLocation();
 
-		//información en el shader de intensidad especular y brillo
-		uniformSpecularIntensity = shaderList[0].GetSpecularIntensityLocation();
-		uniformShininess = shaderList[0].GetShininessLocation();
+			//información en el shader de intensidad especular y brillo
+			uniformSpecularIntensity = shaderList[0].GetSpecularIntensityLocation();
+			uniformShininess = shaderList[0].GetShininessLocation();
 
-		glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(projection));
-		glUniformMatrix4fv(uniformView, 1, GL_FALSE, glm::value_ptr(camera.calculateViewMatrix()));
-		glUniform3f(uniformEyePosition, camera.getCameraPosition().x, camera.getCameraPosition().y, camera.getCameraPosition().z);
+			glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(projection));
+			glUniformMatrix4fv(uniformView, 1, GL_FALSE, glm::value_ptr(camera.calculateViewMatrix()));
+			glUniform3f(uniformEyePosition, camera.getCameraPosition().x, camera.getCameraPosition().y, camera.getCameraPosition().z);
+		}
+		else if (banderaCamaraMovimiento == 2) {
+			//CAMARA LIBRE (VISTA EXTRA CON MOVIMIENTO )
+			glfwPollEvents();
+			cameraLibre.keyControl(mainWindow.getsKeys(), deltaTime);
+			cameraLibre.mouseControl(mainWindow.getXChange(), mainWindow.getYChange());
+
+			// Clear the window
+			glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			skybox.DrawSkybox(cameraLibre.calculateViewMatrix(), projection);
+			shaderList[0].UseShader();
+			uniformModel = shaderList[0].GetModelLocation();
+			uniformProjection = shaderList[0].GetProjectionLocation();
+			uniformView = shaderList[0].GetViewLocation();
+			uniformEyePosition = shaderList[0].GetEyePositionLocation();
+			uniformColor = shaderList[0].getColorLocation();
+
+			//información en el shader de intensidad especular y brillo
+			uniformSpecularIntensity = shaderList[0].GetSpecularIntensityLocation();
+			uniformShininess = shaderList[0].GetShininessLocation();
+
+			glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(projection));
+			glUniformMatrix4fv(uniformView, 1, GL_FALSE, glm::value_ptr(cameraLibre.calculateViewMatrix()));
+			glUniform3f(uniformEyePosition, cameraLibre.getCameraPosition().x, cameraLibre.getCameraPosition().y, cameraLibre.getCameraPosition().z);
+		}
+		else {
+			//CAMARA 2 Y 3 (VISTA AEREA Y CADA STAND. SIN MOVIMIENTO)
+			glfwPollEvents();
+
+			// Clear the window
+			glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			skybox.DrawSkybox(camera3.calculateViewMatrix(), projection);
+			shaderList[0].UseShader();
+			uniformModel = shaderList[0].GetModelLocation();
+			uniformProjection = shaderList[0].GetProjectionLocation();
+			uniformView = shaderList[0].GetViewLocation();
+			uniformEyePosition = shaderList[0].GetEyePositionLocation();
+			uniformColor = shaderList[0].getColorLocation();
+
+			//información en el shader de intensidad especular y brillo
+			uniformSpecularIntensity = shaderList[0].GetSpecularIntensityLocation();
+			uniformShininess = shaderList[0].GetShininessLocation();
+
+			glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(projection));
+			glUniformMatrix4fv(uniformView, 1, GL_FALSE, glm::value_ptr(camera3.calculateViewMatrix()));
+			glUniform3f(uniformEyePosition, camera3.getCameraPosition().x, camera3.getCameraPosition().y, camera3.getCameraPosition().z);
+		}
+
+		// --------------------------------------
+		// ----------------LUCES-----------------
+		// --------------------------------------
 
 		/*
 		// luz ligada a la cámara de tipo flash
@@ -904,14 +1255,1780 @@ int main()
 		else if (mainWindow.getarticulacion10() == 0.5) shaderList[0].SetSpotLights(spotLights1, spotLightCount - 1);
 		else shaderList[0].SetSpotLights(spotLights1, spotLightCount - 2);
 
-
 		// --------------------------------------
 		// ---------INICIALIZAR VECTORES---------
 		// --------------------------------------
 
 		glm::mat4 model(1.0);
 		glm::mat4 modelaux(1.0);
+		glm::mat4 modelaux2(1.0);
 		glm::vec3 color = glm::vec3(1.0f, 1.0f, 1.0f);
+
+		
+		// --------------------------------------
+		// ----------ANIMACIONES STANDS----------
+		// --------------------------------------
+		
+		if (camaraAnimacion == 1) { //Stand hacha 3
+			banderaCamara = 1; //Para que la camara no se pueda mover hasta que se acabe la animación. Al final debe volver a 0.
+
+			if (timerBateo < 670.0) { //Timpo que va a durar la animación general del stand
+				
+				//INICIO ANIMACIÓN DE LA MONEDA
+				
+				if (brazoVariacion <= 100.0) {
+					//Antebrazo derecho
+					model = glm::mat4(1.0);
+					model = glm::translate(model, glm::vec3(-107.2f, 7.1f, -78.6f));
+					model = glm::rotate(model, -brazoVariacion * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));//mueve arriba (-) o abajo (+)
+					glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+					BrazoDerecho_Izquierda.RenderModel();
+
+					brazoVariacion += 0.5f * deltaTime;
+				}
+				if (timerBateo > 50.0 && timerBateo < 180.0 && brazoVariacion >= 100 && brazoVariacion1 == 100.0) {
+					//Antebrazo derecho
+					model = glm::mat4(1.0);
+					model = glm::translate(model, glm::vec3(-107.2f, 7.1f, -78.6f));
+					model = glm::rotate(model, -brazoVariacion * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));//mueve arriba (-) o abajo (+)
+					glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+					BrazoDerecho_Izquierda.RenderModel();
+
+					if (timerBateo > 100.0 && timerBateo < 170.0) {
+						//Moneda del juego
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(-108.85f, 7.6f, -78.6f));//(x -1.65, y +0.5, z misma)
+						model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						Destino_Genshin.RenderModel();
+					}
+				}
+				if (brazoVariacion1 >= 20.0 && brazoVariacion >= 100 && timerBateo > 180.0) {
+					//Antebrazo derecho
+					model = glm::mat4(1.0);
+					model = glm::translate(model, glm::vec3(-107.2f, 7.1f, -78.6f));
+					model = glm::rotate(model, -brazoVariacion1 * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));//mueve arriba (-) o abajo (+)
+					glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+					BrazoDerecho_Izquierda.RenderModel();
+
+					brazoVariacion1 -= 0.5f * deltaTime;
+				}
+				//FIN ANIMACIÓN DE LA MONEDA
+
+				///AQUI VA LA ANIMACIÓN DE CADA STAND
+				if (brazoVariacion1 <= 20.0 && brazoVariacion >= 100 && timerBateo > 250.0) {
+					if (inicioBrazo < 100.0) { //Sube el brazo con el hacha
+						//Antebrazo derecho
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(-107.2f, 7.1f, -78.6f));
+						model = glm::rotate(model, -inicioBrazo * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));//mueve arriba (-) o abajo (+)
+						model = glm::rotate(model, -70 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						BrazoDerecho_Derecha.RenderModel();
+
+						//Hacha
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(-109.0f, 4.0f + (inicioBrazo * 0.03), -78.5f));
+						model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						Hacha_M.RenderModel();
+
+						inicioBrazo += 0.5f * deltaTime;
+					}
+					if (movBateo < 30.0 && inicioBrazo >= 100.0) { //Hace el hacha hacia atrás para lanzar
+						//Antebrazo derecho
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(-107.2f, 7.1f, -78.6f));
+						model = glm::rotate(model, -inicioBrazo * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));//mueve arriba (-) o abajo (+)
+						model = glm::rotate(model, -70 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+						//model = glm::rotate(model, -movBateo * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						BrazoDerecho_Derecha.RenderModel();
+
+						//Hacha
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(-109.0f, 4.0f + (inicioBrazo * 0.03), -78.5f));
+						model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+						model = glm::rotate(model, movBateo * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						Hacha_M.RenderModel();
+
+						movBateo += 0.5f * deltaTime;
+					}
+					if (movBateoPelotaRegreso < 10.0 && movBateo >= 30.0 && inicioBrazo >= 100.0) { //Esperar
+						//Antebrazo derecho
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(-107.2f, 7.1f, -78.6f));
+						model = glm::rotate(model, -inicioBrazo * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));//mueve arriba (-) o abajo (+)
+						model = glm::rotate(model, -70 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+						//model = glm::rotate(model, -movBateo * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						BrazoDerecho_Derecha.RenderModel();
+
+						//Hacha
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(-109.0f, 4.0f + (inicioBrazo * 0.03), -78.5f));
+						model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+						model = glm::rotate(model, movBateo * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						Hacha_M.RenderModel();
+
+						movBateoPelotaRegreso += 0.25f * deltaTime;
+					}
+					if (movBateoPelota < 45.0 && movBateoPelotaRegreso >= 10.0 && movBateo >= 30.0 && inicioBrazo >= 100.0) { //Hace el hacha hacia delante
+						//Antebrazo derecho
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(-107.2f, 7.1f, -78.6f));
+						model = glm::rotate(model, -inicioBrazo * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));//mueve arriba (-) o abajo (+)
+						model = glm::rotate(model, -70 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+						//model = glm::rotate(model, -movBateo * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						BrazoDerecho_Derecha.RenderModel();
+
+						//Hacha
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(-109.0f, 4.0f + (inicioBrazo * 0.03), -78.5f));
+						model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+						model = glm::rotate(model, (movBateo - movBateoPelota) * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						Hacha_M.RenderModel();
+
+						movBateoPelota += 0.7f * deltaTime;
+					}
+					if (movBateoRegreso < 14.5 && movBateoPelota >= 45.0 && movBateoPelotaRegreso >= 10.0 && movBateo >= 30.0 && 
+						inicioBrazo >= 100.0) { //Avanza el hacha y la gira
+						//Antebrazo derecho
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(-107.2f, 7.1f, -78.6f));
+						model = glm::rotate(model, -inicioBrazo * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));//mueve arriba (-) o abajo (+)
+						model = glm::rotate(model, -70 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						BrazoDerecho_Derecha.RenderModel();
+
+						//Hacha
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(-109.0f - movBateoRegreso, 4.0f + (inicioBrazo * 0.03), -78.5f));
+						model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+						model = glm::rotate(model, ((movBateo - movBateoPelota) - movBateoRegreso*50) * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						Hacha_M.RenderModel();
+
+						movBateoRegreso += 0.05f * deltaTime;
+					}
+					if (movDardoNuevo < 100.0 && movBateoRegreso >= 14.5 && movBateoPelota >= 45.0 && movBateoPelotaRegreso >= 10.0 && movBateo >= 30.0 &&
+						inicioBrazo >= 100.0) { //Avanza el hacha y la gira
+						//Antebrazo derecho
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(-107.2f, 7.1f, -78.6f));
+						model = glm::rotate(model, (-inicioBrazo + movDardoNuevo) * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));//mueve arriba (-) o abajo (+)
+						model = glm::rotate(model, -70 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						BrazoDerecho_Derecha.RenderModel();
+
+						//Hacha
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(-109.0f - movBateoRegreso, 4.0f + (inicioBrazo * 0.03), -78.5f));
+						model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+						model = glm::rotate(model, ((movBateo - movBateoPelota) - movBateoRegreso * 50) * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						Hacha_M.RenderModel();
+
+						movDardoNuevo += 0.5f * deltaTime;
+					}
+				}
+
+				////
+
+				timerBateo += 0.5f * deltaTime;
+			}
+			else {
+				//VARIABLES FUNCIONALIDAD CÁMARA Y ANIMACIÓN MONEDA (NO MOVER)
+				banderaCamaraMovimiento = 0;//para que la camara regrese a la camara de blade de manera automatica
+				banderaCamara = 0;//para que ya se puedan usar las teclas de camaras
+				camaraAnimacion = 0;//
+				brazoVariacion = 20.0;
+				brazoVariacion1 = 100.0;
+				timerBateo = 0.0;
+
+				//VARIABLES ANIMACIÓN DEL STAND
+				inicioBrazo = 0.0;
+				movBateo = 0.0;
+				movBateoPelota = 0.0;
+				movBateoPelotaRegreso = 0.0;
+				movBateoRegreso = 0.0;
+				movDardoNuevo = 0.0;
+				//
+			}
+		}
+		else if (camaraAnimacion == 2) { //Stand boliche
+			banderaCamara = 1; //Para que la camara no se pueda mover hasta que se acabe la animación. Al final debe volver a 0.
+
+			if (timerBateo < 1650.0) { //Timpo que va a durar la animación general del stand
+				
+				//INICIO ANIMACIÓN DE LA MONEDA
+
+				if (brazoVariacion <= 100.0) {
+					//Antebrazo derecho
+					model = glm::mat4(1.0);
+					model = glm::translate(model, glm::vec3(-54.0f, 8.5f, 64.2f));
+					model = glm::rotate(model, -brazoVariacion * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));//mueve arriba (-) o abajo (+)
+					glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+					BrazoDerecho_Sur.RenderModel();
+
+					//Rendija Boliche
+					model = glm::mat4(1.0);
+					model = glm::translate(model, glm::vec3(-60.0f, 0.0f, 93.0f));
+					model = glm::rotate(model, -180 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+					glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+					Rendija_Boliche_M.RenderModel();
+
+					brazoVariacion += 0.5f * deltaTime;
+				}
+				if (timerBateo > 50.0 && timerBateo < 180.0 && brazoVariacion >= 100 && brazoVariacion1 == 100.0) {
+					//Antebrazo derecho
+					model = glm::mat4(1.0);
+					model = glm::translate(model, glm::vec3(-54.0f, 8.5f, 64.2f));
+					model = glm::rotate(model, -brazoVariacion * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));//mueve arriba (-) o abajo (+)
+					glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+					BrazoDerecho_Sur.RenderModel();
+
+					//Rendija Boliche
+					model = glm::mat4(1.0);
+					model = glm::translate(model, glm::vec3(-60.0f, 0.0f, 93.0f));
+					model = glm::rotate(model, -180 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+					glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+					Rendija_Boliche_M.RenderModel();
+
+					if (timerBateo > 100.0 && timerBateo < 170.0) {
+						//Moneda del juego
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(-54.0f, 9.0f, 65.85f));//(x misma, y +0.5, z +1.65)
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						Destino_Genshin.RenderModel();
+					}
+				}
+				if (brazoVariacion1 >= 20.0 && brazoVariacion >= 100 && timerBateo > 180.0) {
+					//Antebrazo derecho
+					model = glm::mat4(1.0);
+					model = glm::translate(model, glm::vec3(-54.0f, 8.5f, 64.2f));
+					model = glm::rotate(model, -brazoVariacion1 * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));//mueve arriba (-) o abajo (+)
+					glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+					BrazoDerecho_Sur.RenderModel();
+
+					//Rendija Boliche
+					model = glm::mat4(1.0);
+					model = glm::translate(model, glm::vec3(-60.0f, 0.0f, 93.0f));
+					model = glm::rotate(model, -180 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+					glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+					Rendija_Boliche_M.RenderModel();
+
+					brazoVariacion1 -= 0.5f * deltaTime;
+				}
+				//FIN ANIMACIÓN DE LA MONEDA
+
+				///AQUI VA LA ANIMACIÓN DE CADA STAND
+
+				if (brazoVariacion1 <= 20.0 && brazoVariacion >= 100 && timerBateo > 250.0) {
+					if (inicioBrazo < 100.0) { //Sube el brazo y la pelota a la posición incial. Se levanta la rejilla de los bolos.
+						//Antebrazo derecho
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(-54.0f, 8.5f, 64.2f));
+						model = glm::rotate(model, -inicioBrazo * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));//mueve arriba (-) o abajo (+)
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						BrazoDerecho_Sur.RenderModel();
+
+						//Rendija Boliche
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(-60.0f, 0.0f + (inicioBrazo*0.04), 93.0f));
+						model = glm::rotate(model, -180 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						Rendija_Boliche_M.RenderModel();
+
+						// Bolo Boliche 1
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(-53.5f, 1.5f, 111.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						Bolo_M.RenderModel();
+
+						// Bolo Boliche 2
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(-52.5f, 1.5f, 112.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						Bolo_M.RenderModel();
+
+						// Bolo Boliche 3
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(-54.5f, 1.5f, 112.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						Bolo_M.RenderModel();
+
+						// Bolo Boliche 4
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(-53.5f, 1.5f, 113.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						Bolo_M.RenderModel();
+
+						// Bolo Boliche 5
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(-51.5f, 1.5f, 113.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						Bolo_M.RenderModel();
+
+						// Bolo Boliche 6
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(-55.5f, 1.5f, 113.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						Bolo_M.RenderModel();
+
+						//Bola Boliche
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(-54.0f, 6.3f +(inicioBrazo * 0.03), 66.0f));
+						model = glm::rotate(model, -180 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						Bola_Boliche_M.RenderModel();
+
+						inicioBrazo += 0.5f * deltaTime;
+					}
+					if (movBateo < 15.0 && inicioBrazo >= 100.0) { //Deja caer la pelota
+						//Antebrazo derecho
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(-54.0f, 8.5f, 64.2f));
+						model = glm::rotate(model, -inicioBrazo * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));//mueve arriba (-) o abajo (+)
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						BrazoDerecho_Sur.RenderModel();
+
+						// Bolo Boliche 1
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(-53.5f, 1.5f, 111.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						Bolo_M.RenderModel();
+
+						// Bolo Boliche 2
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(-52.5f, 1.5f, 112.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						Bolo_M.RenderModel();
+
+						// Bolo Boliche 3
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(-54.5f, 1.5f, 112.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						Bolo_M.RenderModel();
+
+						// Bolo Boliche 4
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(-53.5f, 1.5f, 113.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						Bolo_M.RenderModel();
+
+						// Bolo Boliche 5
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(-51.5f, 1.5f, 113.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						Bolo_M.RenderModel();
+
+						// Bolo Boliche 6
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(-55.5f, 1.5f, 113.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						Bolo_M.RenderModel();
+
+						//Bola Boliche
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(-54.0f, 6.3f + (inicioBrazo * 0.03) - (movBateo * 0.5), 66.0f + movBateo));
+						model = glm::rotate(model, -180 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+						model = glm::rotate(model, -(movBateo * 100) * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						Bola_Boliche_M.RenderModel();
+
+						movBateo += 0.05f * deltaTime;
+					}
+					if (movBateoPelota < 25.0 && movBateo >= 15.0 && inicioBrazo >= 100.0) { //La pelota se mueve en la profundidad 
+						//Antebrazo derecho
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(-54.0f, 8.5f, 64.2f));
+						model = glm::rotate(model, -inicioBrazo * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));//mueve arriba (-) o abajo (+)
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						BrazoDerecho_Sur.RenderModel();
+
+						// Bolo Boliche 1
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(-53.5f, 1.5f, 111.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						Bolo_M.RenderModel();
+
+						// Bolo Boliche 2
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(-52.5f, 1.5f, 112.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						Bolo_M.RenderModel();
+
+						// Bolo Boliche 3
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(-54.5f, 1.5f, 112.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						Bolo_M.RenderModel();
+
+						// Bolo Boliche 4
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(-53.5f, 1.5f, 113.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						Bolo_M.RenderModel();
+
+						// Bolo Boliche 5
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(-51.5f, 1.5f, 113.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						Bolo_M.RenderModel();
+
+						// Bolo Boliche 6
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(-55.5f, 1.5f, 113.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						Bolo_M.RenderModel();
+
+						//Bola Boliche
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(-54.0f, 6.3f + (inicioBrazo * 0.03) - (movBateo * 0.5), 66.0f + movBateo + (movBateoPelota*1.2)));
+						model = glm::rotate(model, -180 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+						model = glm::rotate(model, -(movBateoPelota * 100) * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						Bola_Boliche_M.RenderModel();
+
+						movBateoPelota += 0.05f * deltaTime;
+					}
+					if (movBateoPelotaRegreso < 65.0 && movBateoPelota >= 25.0 && movBateo >= 15.0 && inicioBrazo >= 100.0) { //Se caen los pinos y vaja el brazo
+						//Antebrazo derecho
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(-54.0f, 8.5f, 64.2f));
+						model = glm::rotate(model, -(inicioBrazo - movBateoPelotaRegreso) * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));//mueve arriba (-) o abajo (+)
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						BrazoDerecho_Sur.RenderModel();
+
+						// Bolo Boliche 1
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(-53.5f, 1.5f, 111.0f));
+						model = glm::rotate(model, movBateoPelotaRegreso * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						Bolo_M.RenderModel();
+
+						// Bolo Boliche 2
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(-52.5f, 1.5f, 112.0f));
+						model = glm::rotate(model, movBateoPelotaRegreso * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						Bolo_M.RenderModel();
+
+						// Bolo Boliche 3
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(-54.5f, 1.5f, 112.0f));
+						model = glm::rotate(model, movBateoPelotaRegreso * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						Bolo_M.RenderModel();
+
+						// Bolo Boliche 4
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(-53.5f, 1.5f, 113.0f));
+						model = glm::rotate(model, movBateoPelotaRegreso * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						Bolo_M.RenderModel();
+
+						// Bolo Boliche 5
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(-51.5f, 1.5f, 113.0f));
+						model = glm::rotate(model, movBateoPelotaRegreso * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						Bolo_M.RenderModel();
+
+						// Bolo Boliche 6
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(-55.5f, 1.5f, 113.0f));
+						model = glm::rotate(model, movBateoPelotaRegreso * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						Bolo_M.RenderModel();
+
+						movBateoPelotaRegreso += 0.5f * deltaTime;
+					}
+					if (movBateoRegreso < 100.0 && movBateoPelotaRegreso >= 65.0 && movBateoPelota >= 25.0 && movBateo >= 15.0 &&
+						inicioBrazo >= 100.0) { //Se baja la rejilla
+						//Rendija Boliche
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(-60.0f, 0.0f + ((inicioBrazo - movBateoRegreso) * 0.04), 93.0f));
+						model = glm::rotate(model, -180 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						Rendija_Boliche_M.RenderModel();
+
+						// Bolo Boliche 1
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(-53.5f, 1.5f, 111.0f));
+						model = glm::rotate(model, movBateoPelotaRegreso * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						Bolo_M.RenderModel();
+
+						// Bolo Boliche 2
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(-52.5f, 1.5f, 112.0f));
+						model = glm::rotate(model, movBateoPelotaRegreso * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						Bolo_M.RenderModel();
+
+						// Bolo Boliche 3
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(-54.5f, 1.5f, 112.0f));
+						model = glm::rotate(model, movBateoPelotaRegreso * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						Bolo_M.RenderModel();
+
+						// Bolo Boliche 4
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(-53.5f, 1.5f, 113.0f));
+						model = glm::rotate(model, movBateoPelotaRegreso * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						Bolo_M.RenderModel();
+
+						// Bolo Boliche 5
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(-51.5f, 1.5f, 113.0f));
+						model = glm::rotate(model, movBateoPelotaRegreso * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						Bolo_M.RenderModel();
+
+						// Bolo Boliche 6
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(-55.5f, 1.5f, 113.0f));
+						model = glm::rotate(model, movBateoPelotaRegreso * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						Bolo_M.RenderModel();
+
+						movBateoRegreso += 0.5f * deltaTime;
+					}
+					///descarrilar
+					if (movDardoNuevoArriba < 5.0 && movBateoRegreso >= 100.0 && movBateoPelotaRegreso >= 65.0 && movBateoPelota >= 25.0 && movBateo >= 15.0 &&
+						inicioBrazo >= 100.0) { //Esperar
+						//Rendija Boliche
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(-60.0f, 0.0f + ((inicioBrazo - movBateoRegreso) * 0.04), 93.0f));
+						model = glm::rotate(model, -180 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						Rendija_Boliche_M.RenderModel();
+
+						// Bolo Boliche 1
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(-53.5f, 1.5f, 111.0f));
+						model = glm::rotate(model, movBateoPelotaRegreso * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						Bolo_M.RenderModel();
+
+						// Bolo Boliche 2
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(-52.5f, 1.5f, 112.0f));
+						model = glm::rotate(model, movBateoPelotaRegreso * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						Bolo_M.RenderModel();
+
+						// Bolo Boliche 3
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(-54.5f, 1.5f, 112.0f));
+						model = glm::rotate(model, movBateoPelotaRegreso * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						Bolo_M.RenderModel();
+
+						// Bolo Boliche 4
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(-53.5f, 1.5f, 113.0f));
+						model = glm::rotate(model, movBateoPelotaRegreso * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						Bolo_M.RenderModel();
+
+						// Bolo Boliche 5
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(-51.5f, 1.5f, 113.0f));
+						model = glm::rotate(model, movBateoPelotaRegreso * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						Bolo_M.RenderModel();
+
+						// Bolo Boliche 6
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(-55.5f, 1.5f, 113.0f));
+						model = glm::rotate(model, movBateoPelotaRegreso * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						Bolo_M.RenderModel();
+
+						movDardoNuevoArriba += 0.03f * deltaTime;
+					}
+					if (movDardoNuevo < 100.0 && movBateoRegreso >= 100.0 && movBateoPelotaRegreso >= 65.0 && movBateoPelota >= 25.0 && movBateo >= 15.0 &&
+						inicioBrazo >= 100.0 && movDardoNuevoArriba >= 5.0) { //Sube el brazo y la pelota a la posición incial. Se levanta la rejilla de los bolos.
+						//Antebrazo derecho
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(-54.0f, 8.5f, 64.2f));
+						model = glm::rotate(model, -movDardoNuevo * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));//mueve arriba (-) o abajo (+)
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						BrazoDerecho_Sur.RenderModel();
+
+						//Rendija Boliche
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(-60.0f, 0.0f + (movDardoNuevo * 0.04), 93.0f));
+						model = glm::rotate(model, -180 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						Rendija_Boliche_M.RenderModel();
+
+						// Bolo Boliche 1
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(-53.5f, 1.5f, 111.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						Bolo_M.RenderModel();
+
+						// Bolo Boliche 2
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(-52.5f, 1.5f, 112.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						Bolo_M.RenderModel();
+
+						// Bolo Boliche 3
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(-54.5f, 1.5f, 112.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						Bolo_M.RenderModel();
+
+						// Bolo Boliche 4
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(-53.5f, 1.5f, 113.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						Bolo_M.RenderModel();
+
+						// Bolo Boliche 5
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(-51.5f, 1.5f, 113.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						Bolo_M.RenderModel();
+
+						// Bolo Boliche 6
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(-55.5f, 1.5f, 113.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						Bolo_M.RenderModel();
+
+						//Bola Boliche
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(-54.0f, 6.3f + (movDardoNuevo * 0.03), 66.0f));
+						model = glm::rotate(model, -180 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						Bola_Boliche_M.RenderModel();
+
+						movDardoNuevo += 0.5f * deltaTime;
+					}
+					if (movDardoNuevo >= 100.0 && movBateoRegreso >= 100.0 && movBateoPelotaRegreso >= 65.0 && movBateoPelota >= 25.0
+						&& movBateo >= 15.0 && inicioBrazo >= 100.0 && movDardoNuevoMovimiento < 15.0 && movDardoNuevoArriba >= 5.0) { //Deja caer la pelota
+						//Antebrazo derecho
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(-54.0f, 8.5f, 64.2f));
+						model = glm::rotate(model, -movDardoNuevo * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));//mueve arriba (-) o abajo (+)
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						BrazoDerecho_Sur.RenderModel();
+
+						// Bolo Boliche 1
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(-53.5f, 1.5f, 111.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						Bolo_M.RenderModel();
+
+						// Bolo Boliche 2
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(-52.5f, 1.5f, 112.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						Bolo_M.RenderModel();
+
+						// Bolo Boliche 3
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(-54.5f, 1.5f, 112.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						Bolo_M.RenderModel();
+
+						// Bolo Boliche 4
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(-53.5f, 1.5f, 113.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						Bolo_M.RenderModel();
+
+						// Bolo Boliche 5
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(-51.5f, 1.5f, 113.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						Bolo_M.RenderModel();
+
+						// Bolo Boliche 6
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(-55.5f, 1.5f, 113.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						Bolo_M.RenderModel();
+
+						//Bola Boliche
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(-54.0f - movDardoNuevoMovimiento*0.26, 6.3f + (movDardoNuevo * 0.03) - (movDardoNuevoMovimiento * 0.5), 66.0f + movDardoNuevoMovimiento));
+						model = glm::rotate(model, -180 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+						model = glm::rotate(model, -(movDardoNuevoMovimiento * 100) * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						Bola_Boliche_M.RenderModel();
+
+						movDardoNuevoMovimiento += 0.05f * deltaTime;
+					}
+					if (movDardoNuevo >= 100.0 && movBateoRegreso >= 100.0 && movBateoPelotaRegreso >= 65.0 && movBateoPelota >= 25.0
+						&& movBateo >= 15.0 && inicioBrazo >= 100.0 && movDardoNuevoMovimiento >= 15.0 && movDardoRegreso < 25.0
+						&& movDardoNuevoArriba >= 5.0) { //La pelota se mueve en la profundidad 
+						//Antebrazo derecho
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(-54.0f, 8.5f, 64.2f));
+						model = glm::rotate(model, -movDardoNuevo * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));//mueve arriba (-) o abajo (+)
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						BrazoDerecho_Sur.RenderModel();
+
+						// Bolo Boliche 1
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(-53.5f, 1.5f, 111.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						Bolo_M.RenderModel();
+
+						// Bolo Boliche 2
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(-52.5f, 1.5f, 112.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						Bolo_M.RenderModel();
+
+						// Bolo Boliche 3
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(-54.5f, 1.5f, 112.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						Bolo_M.RenderModel();
+
+						// Bolo Boliche 4
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(-53.5f, 1.5f, 113.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						Bolo_M.RenderModel();
+
+						// Bolo Boliche 5
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(-51.5f, 1.5f, 113.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						Bolo_M.RenderModel();
+
+						// Bolo Boliche 6
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(-55.5f, 1.5f, 113.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						Bolo_M.RenderModel();
+
+						//Bola Boliche
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(-54.0f - movDardoNuevoMovimiento * 0.26, 6.3f + (movDardoNuevo * 0.03) - (movDardoNuevoMovimiento * 0.5), 66.0f + movDardoNuevoMovimiento + (movDardoRegreso * 1.2)));
+						model = glm::rotate(model, -180 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+						model = glm::rotate(model, -(movDardoRegreso * 100) * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						Bola_Boliche_M.RenderModel();
+
+						movDardoRegreso += 0.05f * deltaTime;
+					}
+					if (movDardoNuevo >= 100.0 && movBateoRegreso >= 100.0 && movBateoPelotaRegreso >= 65.0 && movBateoPelota >= 25.0
+						&& movBateo >= 15.0 && inicioBrazo >= 100.0 && movDardoNuevoMovimiento >= 15.0 && movDardoRegreso >= 25.0
+						&& moverDardoAbajo < 100.0 && movDardoNuevoArriba >= 5.0) { //Se baja la rejilla y se regresa el brazo
+						//Antebrazo derecho
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(-54.0f, 8.5f, 64.2f));
+						model = glm::rotate(model, -(movDardoNuevo - moverDardoAbajo) * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));//mueve arriba (-) o abajo (+)
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						BrazoDerecho_Sur.RenderModel();
+						
+						//Rendija Boliche
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(-60.0f, 0.0f + ((movDardoNuevo - moverDardoAbajo) * 0.04), 93.0f));
+						model = glm::rotate(model, -180 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						Rendija_Boliche_M.RenderModel();
+
+						// Bolo Boliche 1
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(-53.5f, 1.5f, 111.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						Bolo_M.RenderModel();
+
+						// Bolo Boliche 2
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(-52.5f, 1.5f, 112.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						Bolo_M.RenderModel();
+
+						// Bolo Boliche 3
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(-54.5f, 1.5f, 112.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						Bolo_M.RenderModel();
+
+						// Bolo Boliche 4
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(-53.5f, 1.5f, 113.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						Bolo_M.RenderModel();
+
+						// Bolo Boliche 5
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(-51.5f, 1.5f, 113.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						Bolo_M.RenderModel();
+
+						// Bolo Boliche 6
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(-55.5f, 1.5f, 113.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						Bolo_M.RenderModel();
+
+						moverDardoAbajo += 0.5f * deltaTime;
+					}
+					if (movDardoNuevo >= 100.0 && movBateoRegreso >= 100.0 && movBateoPelotaRegreso >= 65.0 && movBateoPelota >= 25.0
+						&& movBateo >= 15.0 && inicioBrazo >= 100.0 && movDardoNuevoMovimiento >= 15.0 && movDardoRegreso >= 25.0
+						&& moverDardoAbajo >= 100.0 && movDardoNuevoArriba >= 5.0 && movDardoNuevoMovimiento2 < 7.0) { //Espera
+						//Rendija Boliche
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(-60.0f, 0.0f + ((movDardoNuevo - moverDardoAbajo) * 0.04), 93.0f));
+						model = glm::rotate(model, -180 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						Rendija_Boliche_M.RenderModel();
+
+						movDardoNuevoMovimiento2 += 0.05f * deltaTime;
+					}
+				}
+
+				////
+
+				timerBateo += 0.5f * deltaTime;
+			}
+			else {
+				//VARIABLES FUNCIONALIDAD CÁMARA Y ANIMACIÓN MONEDA (NO MOVER)
+				banderaCamaraMovimiento = 0;//para que la camara regrese a la camara de blade de manera automatica
+				banderaCamara = 0;//para que ya se puedan usar las teclas de camaras
+				camaraAnimacion = 0;//
+				brazoVariacion = 20.0;
+				brazoVariacion1 = 100.0;
+				timerBateo = 0.0;
+
+				//VARIABLES ANIMACIÓN DEL STAND
+				inicioBrazo = 0.0;
+				movBateo = 0.0;
+				movBateoPelota = 0.0;
+				movBateoPelotaRegreso = 0.0;
+				movBateoRegreso = 0.0;
+				movDardoNuevo = 0.0;
+				movDardoNuevoMovimiento = 0.0f;
+				movDardoRegreso = 0.0f;
+				moverDardoAbajo = 0.0f;
+				movDardoNuevoArriba = 0.0f;
+				movDardoNuevoMovimiento2 = 0.0f;
+				//
+			}
+		}
+		else if (camaraAnimacion == 3) { //Stand dados
+			banderaCamara = 1; //Para que la camara no se pueda mover hasta que se acabe la animación. Al final debe volver a 0.
+
+			if (timerBateo < 500.0) { //Timpo que va a durar la animación general del stand
+
+				//INICIO ANIMACIÓN DE LA MONEDA
+
+				if (brazoVariacion <= 100.0) {
+					//Antebrazo derecho
+					model = glm::mat4(1.0);
+					model = glm::translate(model, glm::vec3(-103.0f, 7.0f, -36.6f));
+					model = glm::rotate(model, -brazoVariacion * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));//mueve arriba (-) o abajo (+)
+					glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+					BrazoDerecho_Izquierda.RenderModel();
+
+					brazoVariacion += 0.5f * deltaTime;
+				}
+				if (timerBateo > 50.0 && timerBateo < 180.0 && brazoVariacion >= 100 && brazoVariacion1 == 100.0) {
+					//Antebrazo derecho
+					model = glm::mat4(1.0);
+					model = glm::translate(model, glm::vec3(-103.0f, 7.0f, -36.6f));
+					model = glm::rotate(model, -brazoVariacion * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));//mueve arriba (-) o abajo (+)
+					glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+					BrazoDerecho_Izquierda.RenderModel();
+
+					if (timerBateo > 100.0 && timerBateo < 170.0) {
+						//Moneda del juego
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(-104.65f, 7.5f, -36.6f));//(x -1.65, y +0.5, z misma)
+						model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						Ticket_StarRail.RenderModel();
+					}
+				}
+				if (brazoVariacion1 >= 20.0 && brazoVariacion >= 100 && timerBateo > 180.0) {
+					//Antebrazo derecho
+					model = glm::mat4(1.0);
+					model = glm::translate(model, glm::vec3(-103.0f, 7.0f, -36.6f));
+					model = glm::rotate(model, -brazoVariacion1 * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));//mueve arriba (-) o abajo (+)
+					glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+					BrazoDerecho_Izquierda.RenderModel();
+
+					brazoVariacion1 -= 0.5f * deltaTime;
+				}
+				//FIN ANIMACIÓN DE LA MONEDA
+
+				///AQUI VA LA ANIMACIÓN DE CADA STAND
+
+				if (timerBateo > 260.0 && timerBateo < 380) {
+					//Antebrazo derecho
+					model = glm::mat4(1.0);
+					model = glm::translate(model, glm::vec3(-103.0f, 7.0f, -36.6f));
+					model = glm::rotate(model, 45 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));//mueve arriba (-) o abajo (+)
+					model = glm::rotate(model, BrazoMartillo * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));//mueve arriba (-) o abajo (+)
+					glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+					BrazoDerecho_Izquierda.RenderModel();
+
+					model = glm::translate(model, glm::vec3(-0.1f, -1.8f, -0.2f));
+					glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+					MesaDados_Dados1_M.RenderModel();
+
+					model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.2f));
+					glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+					MesaDados_Dados2_M.RenderModel();
+
+					if (timerBateo > 260.0 && timerBateo < 320) {
+						BrazoMartillo -= 1.5f * deltaTime;
+
+
+					}
+					else {
+						BrazoMartillo += 0.6f * deltaTime;
+					}
+
+				}
+
+				if (timerBateo > 380 && timerBateo < 470) {
+					//Antebrazo derecho
+					model = glm::mat4(1.0);
+					model = glm::translate(model, glm::vec3(-103.0f, 7.0f, -36.6f));
+					model = glm::rotate(model, 45 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));//mueve arriba (-) o abajo (+)
+					model = glm::rotate(model, BrazoMartillo * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));//mueve arriba (-) o abajo (+)
+					glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+					BrazoDerecho_Izquierda.RenderModel();
+
+					model = glm::translate(model, glm::vec3(-0.1f - TiroDado * 0.8, -2.0f + TiroDado * 1.2, -0.2f));
+					model = glm::rotate(model, TiroDado * 70 * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+					glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+					MesaDados_Dados1_M.RenderModel();
+
+					model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.2f));
+					glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+					MesaDados_Dados2_M.RenderModel();
+
+					TiroDado -= 0.02f * deltaTime;
+
+
+				}
+				if (timerBateo > 470 && timerBateo < 500) {
+					//Antebrazo derecho
+					model = glm::mat4(1.0);
+					model = glm::translate(model, glm::vec3(-103.0f, 7.0f, -36.6f));
+					model = glm::rotate(model, 45 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));//mueve arriba (-) o abajo (+)
+					model = glm::rotate(model, BrazoMartillo * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));//mueve arriba (-) o abajo (+)
+					glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+					BrazoDerecho_Izquierda.RenderModel();
+
+					model = glm::translate(model, glm::vec3(-0.1f - TiroDado * 0.8, -2.0f + TiroDado * 1.2, -0.2f));
+					model = glm::rotate(model, TiroDado * 70 * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+					glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+					MesaDados_Dados1_M.RenderModel();
+
+					model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.2f));
+					glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+					MesaDados_Dados2_M.RenderModel();
+				}
+				////
+
+				timerBateo += 0.5f * deltaTime;
+			}
+			else {
+				//VARIABLES FUNCIONALIDAD CÁMARA Y ANIMACIÓN MONEDA (NO MOVER)
+				banderaCamaraMovimiento = 0;//para que la camara regrese a la camara de blade de manera automatica
+				banderaCamara = 0;//para que ya se puedan usar las teclas de camaras
+				camaraAnimacion = 0;//
+				brazoVariacion = 20.0;
+				brazoVariacion1 = 100.0;
+				timerBateo = 0.0;
+				BrazoMartillo = 20.0f;
+				TiroDado = 0.0f;
+			}
+		}
+		else if (camaraAnimacion == 4) { //Stand bateo
+			banderaCamara = 1; //Para que la camara no se pueda mover hasta que se acabe la animación. Al final debe volver a 0.
+
+			if (timerBateo < 670.0) { //Timpo que va a durar la animación general del stand		
+
+				//INICIO ANIMACIÓN DE LA MONEDA
+
+				//model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));//rota el brazo
+				//model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));//mueve hacia derecha o izquierda
+				//model = glm::rotate(model, 90 * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));//mueve arriba o abajo
+
+				if (brazoVariacion <= 100.0){
+					//Antebrazo derecho
+					model = glm::mat4(1.0);
+					model = glm::translate(model, glm::vec3(-3.6f, 8.0f, 94.2f));
+					model = glm::rotate(model, -brazoVariacion * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));//mueve arriba (-) o abajo (+)
+					glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+					BrazoDerecho_Sur.RenderModel();
+
+					brazoVariacion += 0.5f * deltaTime;
+				}
+				if (timerBateo > 50.0 && timerBateo < 180.0 && brazoVariacion >= 100 && brazoVariacion1 == 100.0) {
+					//Antebrazo derecho
+					model = glm::mat4(1.0);
+					model = glm::translate(model, glm::vec3(-3.6f, 8.0f, 94.2f));
+					model = glm::rotate(model, -brazoVariacion * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));//mueve arriba (-) o abajo (+)
+					glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+					BrazoDerecho_Sur.RenderModel();
+
+					if (timerBateo > 100.0 && timerBateo < 170.0) {
+						//Moneda del juego
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(-3.6f, 8.5f, 95.85f));//(x misma, y +0.5, z +1.65)
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						Tear_Themis.RenderModel();
+					}
+				}
+				if (brazoVariacion1 >= 20.0 && brazoVariacion >= 100 && timerBateo > 180.0) {
+					//Antebrazo derecho
+					model = glm::mat4(1.0);
+					model = glm::translate(model, glm::vec3(-3.6f, 8.0f, 94.2f));
+					model = glm::rotate(model, -brazoVariacion1 * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));//mueve arriba (-) o abajo (+)
+					glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+					BrazoDerecho_Sur.RenderModel();
+
+					brazoVariacion1 -= 0.5f * deltaTime;
+				}
+				//FIN ANIMACIÓN DE LA MONEDA
+
+				///AQUI VA LA ANIMACIÓN DE CADA STAND
+
+				if (brazoVariacion1 <= 20.0 && brazoVariacion >= 100 && timerBateo > 250.0) {
+					
+					if (inicioBrazo < 100.0) {
+						//Antebrazo derecho
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(-3.6f, 8.0f, 94.2f));
+						model = glm::rotate(model, -inicioBrazo * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));//mueve arriba (-) o abajo (+)
+						model = glm::rotate(model, -70 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+						//model = glm::rotate(model, movBateo * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						BrazoDerecho.RenderModel();
+
+						//Bate
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(-3.5f, 0.0f + inicioBrazo*0.082, 96.0f));
+						model = glm::rotate(model, 30 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));//+30 grados
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						Bate_M.RenderModel();
+
+						inicioBrazo += 0.5f * deltaTime;
+					}
+
+					if (movBateo < 0.8 && inicioBrazo >= 100.0) {
+						//Antebrazo derecho
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(-3.6f - movBateo, 8.0f, 94.2f));
+						model = glm::rotate(model, -100 * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));//mueve arriba (-) o abajo (+)
+						model = glm::rotate(model, -70 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+						//model = glm::rotate(model, movBateo * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						BrazoDerecho.RenderModel();
+
+						//Bate
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(-3.5f - movBateo, 8.2f, 96.0f));
+						model = glm::rotate(model, 30 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));//+30 grados
+						model = glm::rotate(model, (movBateo*50) * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						Bate_M.RenderModel();
+
+						movBateo += 0.005f * deltaTime;
+					}
+					if (movBateo >= 0.8 && movBateoPelota < 16.0){
+						//Antebrazo derecho
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(-3.6f - movBateo, 8.0f, 94.2f));
+						model = glm::rotate(model, -100 * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));//mueve arriba (-) o abajo (+)
+						model = glm::rotate(model, -70 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+						//model = glm::rotate(model, movBateo * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						BrazoDerecho.RenderModel();
+
+						//Bate
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(-3.5f -movBateo, 8.2f, 96.0f));
+						model = glm::rotate(model, 30 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));//+30 grados
+						model = glm::rotate(model, (movBateo * 50) * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						Bate_M.RenderModel();
+
+						//Pelota de Baseball
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(-3.5f - (movBateoPelota*0.5), 7.0f + (movBateoPelota*0.4), 115.0f - movBateoPelota));
+						model = glm::rotate(model, (movBateoPelota * 30) * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						PelotaBateo_M.RenderModel();
+
+						movBateoPelota += 0.1f * deltaTime;
+					}
+					if (movBateo >= 0.8 && movBateoPelota >= 16.0 && movBateoPelotaRegreso < 16.0) {
+						//Antebrazo derecho
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(-3.6f - movBateo, 8.0f, 94.2f));
+						model = glm::rotate(model, -100 * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));//mueve arriba (-) o abajo (+)
+						model = glm::rotate(model, -70 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+						//model = glm::rotate(model, movBateo * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						BrazoDerecho.RenderModel();
+
+						//Bate
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(-3.5f - movBateo, 8.2f, 96.0f));
+						model = glm::rotate(model, 30 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));//+30 grados
+						model = glm::rotate(model, (movBateo * 50) * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						Bate_M.RenderModel();
+
+						//Pelota de Baseball
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(-3.5f - (movBateoPelota * 0.5) + (movBateoPelotaRegreso * 0.5), 7.0f +
+							(movBateoPelota * 0.4) - (movBateoPelotaRegreso * 0.4), 115.0f - movBateoPelota + movBateoPelotaRegreso));
+						model = glm::rotate(model, -(movBateoPelotaRegreso * 30) * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						PelotaBateo_M.RenderModel();
+
+						movBateoPelotaRegreso += 0.1f * deltaTime;
+					}
+					if (movBateo >= 0.8 && movBateoPelota >= 16.0 && movBateoPelotaRegreso >= 16.0 && movBateoRegreso < 0.8) {
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(-3.6f - movBateo + movBateoRegreso, 8.0f, 94.2f));
+						model = glm::rotate(model, -100 * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));//mueve arriba (-) o abajo (+)
+						model = glm::rotate(model, -70 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+						//model = glm::rotate(model, movBateo * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						BrazoDerecho.RenderModel();
+
+						//Bate
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(-3.5f - movBateo + movBateoRegreso, 8.2f, 96.0f));
+						model = glm::rotate(model, 30 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));//+30 grados
+						model = glm::rotate(model, ((movBateo * 50) - (movBateoRegreso* 50)) * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						Bate_M.RenderModel();
+
+						movBateoRegreso += 0.005f * deltaTime;
+					}
+				}
+
+
+				////
+
+				timerBateo += 0.5f * deltaTime;
+			}
+			else {
+				//VARIABLES FUNCIONALIDAD CÁMARA Y ANIMACIÓN MONEDA (NO MOVER)
+				banderaCamaraMovimiento = 0;//para que la camara regrese a la camara de blade de manera automatica
+				banderaCamara = 0;//para que ya se puedan usar las teclas de camaras
+				camaraAnimacion = 0;//
+				brazoVariacion = 20.0;
+				brazoVariacion1 = 100.0;
+				timerBateo = 0.0;
+
+				//VARIABLES ANIMACIÓN DEL STAND
+				movBateo = 0.0;
+				movBateoPelota = 0.0;
+				movBateoPelotaRegreso = 0.0;
+				movBateoRegreso = 0.0;
+				inicioBrazo = 0.0;
+				//
+			}
+		}
+		else if (camaraAnimacion == 5) { //Stand dardos
+			banderaCamara = 1; //Para que la camara no se pueda mover hasta que se acabe la animación. Al final debe volver a 0.
+
+			if (timerBateo < 980.0) { //Timpo que va a durar la animación general del stand
+				
+				//INICIO ANIMACIÓN DE LA MONEDA
+
+				if (brazoVariacion <= 100.0) {
+					//Antebrazo derecho
+					model = glm::mat4(1.0);
+					model = glm::translate(model, glm::vec3(92.3f, 7.7f, -25.0f));
+					model = glm::rotate(model, brazoVariacion * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));//mueve arriba (-) o abajo (+)
+					glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+					BrazoDerecho_Derecha.RenderModel();
+
+					//Globo1
+					model = glm::mat4(1.0);
+					model = glm::translate(model, glm::vec3(110.0f, 0.0f, -25.0f));
+					model = glm::rotate(model, -90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+					glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+					Globo1_M.RenderModel();
+
+					//Globo2
+					Globo2_M.RenderModel();
+
+					//Globo3
+					Globo3_M.RenderModel();
+
+					brazoVariacion += 0.5f * deltaTime;
+				}
+				if (timerBateo > 50.0 && timerBateo < 180.0 && brazoVariacion >= 100 && brazoVariacion1 == 100.0) {
+					//Antebrazo derecho
+					model = glm::mat4(1.0);
+					model = glm::translate(model, glm::vec3(92.3f, 7.7f, -25.0f));
+					model = glm::rotate(model, brazoVariacion * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));//mueve arriba (-) o abajo (+)
+					glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+					BrazoDerecho_Derecha.RenderModel();
+
+					//Globo1
+					model = glm::mat4(1.0);
+					model = glm::translate(model, glm::vec3(110.0f, 0.0f, -25.0f));
+					model = glm::rotate(model, -90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+					glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+					Globo1_M.RenderModel();
+
+					//Globo2
+					Globo2_M.RenderModel();
+
+					//Globo3
+					Globo3_M.RenderModel();
+
+					if (timerBateo > 100.0 && timerBateo < 170.0) {
+						//Moneda del juego
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(93.95f, 8.2f, -25.0f));//(x +1.65, y +0.5, z misma)
+						model = glm::rotate(model, -90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						Tear_Themis.RenderModel();
+					}
+				}
+				if (brazoVariacion1 >= 20.0 && brazoVariacion >= 100 && timerBateo > 180.0) {
+					//Antebrazo derecho
+					model = glm::mat4(1.0);
+					model = glm::translate(model, glm::vec3(92.3f, 7.7f, -25.0f));
+					model = glm::rotate(model, brazoVariacion1 * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));//mueve arriba (-) o abajo (+)
+					glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+					BrazoDerecho_Derecha.RenderModel();
+
+					//Globo1
+					model = glm::mat4(1.0);
+					model = glm::translate(model, glm::vec3(110.0f, 0.0f, -25.0f));
+					model = glm::rotate(model, -90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+					glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+					Globo1_M.RenderModel();
+
+					//Globo2
+					Globo2_M.RenderModel();
+
+					//Globo3
+					Globo3_M.RenderModel();
+
+					brazoVariacion1 -= 0.5f * deltaTime;
+				}
+				//FIN ANIMACIÓN DE LA MONEDA
+
+				///AQUI VA LA ANIMACIÓN DE CADA STAND
+
+				if (brazoVariacion1 <= 20.0 && brazoVariacion >= 100 && timerBateo > 250.0) {
+					if (inicioBrazo < 100.0) {
+						//Antebrazo derecho
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(92.3f, 7.7f, -25.0f));
+						model = glm::rotate(model, inicioBrazo * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));//mueve arriba (-) o abajo (+)
+						model = glm::rotate(model, -70 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						BrazoDerecho_Izquierda.RenderModel();
+
+						//Globo1
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(110.0f, 0.0f, -25.0f));
+						model = glm::rotate(model, -90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						Globo1_M.RenderModel();
+
+						//Globo2
+						Globo2_M.RenderModel();
+
+						//Globo3
+						Globo3_M.RenderModel();
+
+						inicioBrazo += 0.5f * deltaTime;
+					}
+					if (movBateo < 8.0 && inicioBrazo >= 100.0) { //Mueve brazo hacia arriba
+						//Antebrazo derecho
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(92.3f, 7.7f, -25.0f));
+						model = glm::rotate(model, 100 * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));//mueve arriba (-) o abajo (+)
+						model = glm::rotate(model, -70 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+						model = glm::rotate(model, movBateo * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						BrazoDerecho_Izquierda.RenderModel();
+
+						//Globo1
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(110.0f, 0.0f, -25.0f));
+						model = glm::rotate(model, -90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						Globo1_M.RenderModel();
+
+						//Globo2
+						Globo2_M.RenderModel();
+
+						//Globo3
+						Globo3_M.RenderModel();
+
+						//Dardo
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(109.5f, 1.2f + movBateo * 0.05 , -25.7f));//98
+						model = glm::rotate(model, -90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						Dardo_M.RenderModel();
+
+						movBateo += 0.05f * deltaTime;
+					}
+					if (movBateo >= 8.0 && movBateoPelota < 8.0) { //Mueve dardo
+						//Antebrazo derecho
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(92.3f, 7.7f, -25.0f));
+						model = glm::rotate(model, 100 * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));//mueve arriba (-) o abajo (+)
+						model = glm::rotate(model, -70 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+						model = glm::rotate(model, movBateo * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						BrazoDerecho_Izquierda.RenderModel();
+
+						//Globo1
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(110.0f, 0.0f, -25.0f));
+						model = glm::rotate(model, -90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						Globo1_M.RenderModel();
+
+						//Globo2
+						Globo2_M.RenderModel();
+
+						//Globo3
+						Globo3_M.RenderModel();
+
+						//Dardo
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(109.5f + movBateoPelota, 1.2f + movBateo * 0.05, -25.7f -(movBateoPelota * 0.2) ));//98
+						model = glm::rotate(model, -90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						Dardo_M.RenderModel();
+
+						movBateoPelota += 0.1f * deltaTime;
+					}
+					if (movBateo >= 8.0 && movBateoPelota >= 8.0 && movBateoPelotaRegreso < 8.0) { //Desaparece globo
+						//Antebrazo derecho
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(92.3f, 7.7f, -25.0f));
+						model = glm::rotate(model, 100 * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));//mueve arriba (-) o abajo (+)
+						model = glm::rotate(model, -70 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+						model = glm::rotate(model, movBateo * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						BrazoDerecho_Izquierda.RenderModel();
+
+						//Globo1
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(110.0f, 0.0f, -25.0f));
+						model = glm::rotate(model, -90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						Globo1_M.RenderModel();
+
+						//Globo2
+						//Globo2_M.RenderModel();
+
+						//Globo3
+						Globo3_M.RenderModel();
+
+						movBateoPelotaRegreso += 0.1f * deltaTime;
+					}
+					if (movBateo >= 8.0 && movBateoPelota >= 8.0 && movBateoPelotaRegreso >= 8.0 && movBateoRegreso < 8.0) { //Mueve brazo hacia abajo
+						//Antebrazo derecho
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(92.3f, 7.7f, -25.0f));
+						model = glm::rotate(model, 100 * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));//mueve arriba (-) o abajo (+)
+						model = glm::rotate(model, -70 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+						model = glm::rotate(model, (movBateo - movBateoRegreso) * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						BrazoDerecho_Izquierda.RenderModel();
+
+						//Globo1
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(110.0f, 0.0f, -25.0f));
+						model = glm::rotate(model, -90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						Globo1_M.RenderModel();
+
+						//Globo2
+						//Globo2_M.RenderModel();
+
+						//Globo3
+						Globo3_M.RenderModel();
+
+						movBateoRegreso += 0.05f * deltaTime;
+					}
+					if (movBateo >= 8.0 && movBateoPelota >= 8.0 && movBateoPelotaRegreso >= 8.0 && movBateoRegreso >= 8.0
+						&& movDardoNuevo < 8.0) { //Mueve brazo hacia arriba
+						//Antebrazo derecho
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(92.3f, 7.7f, -25.0f));
+						model = glm::rotate(model, 100 * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));//mueve arriba (-) o abajo (+)
+						model = glm::rotate(model, -70 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+						model = glm::rotate(model, movDardoNuevo * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						BrazoDerecho_Izquierda.RenderModel();
+
+						//Globo1
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(110.0f, 0.0f, -25.0f));
+						model = glm::rotate(model, -90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						Globo1_M.RenderModel();
+
+						//Globo2
+						//Globo2_M.RenderModel();
+
+						//Globo3
+						Globo3_M.RenderModel();
+
+						//Dardo
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(109.5f, 1.2f + movDardoNuevo * 0.05, -25.7f));//98
+						model = glm::rotate(model, -90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						Dardo_M.RenderModel();
+
+						movDardoNuevo += 0.05f * deltaTime;
+					}
+					if (movBateo >= 8.0 && movBateoPelota >= 8.0 && movBateoPelotaRegreso >= 8.0 && movBateoRegreso >= 8.0
+						&& movDardoNuevo >= 8.0 && movDardoNuevoMovimiento < 8.0) { //Mueve Dardo
+						//Antebrazo derecho
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(92.3f, 7.7f, -25.0f));
+						model = glm::rotate(model, 100 * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));//mueve arriba (-) o abajo (+)
+						model = glm::rotate(model, -70 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+						model = glm::rotate(model, movDardoNuevo * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						BrazoDerecho_Izquierda.RenderModel();
+
+						//Globo1
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(110.0f, 0.0f, -25.0f));
+						model = glm::rotate(model, -90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						Globo1_M.RenderModel();
+
+						//Globo2
+						//Globo2_M.RenderModel();
+
+						//Globo3
+						Globo3_M.RenderModel();
+
+						//Dardo
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(109.5f + movDardoNuevoMovimiento, 1.2f + movDardoNuevo * 0.05, -25.7f - (movDardoNuevoMovimiento * 0.003)));
+						model = glm::rotate(model, -90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						Dardo_M.RenderModel();
+
+						movDardoNuevoMovimiento += 0.1f * deltaTime;
+					}
+					if (movBateo >= 8.0 && movBateoPelota >= 8.0 && movBateoPelotaRegreso >= 8.0 && movBateoRegreso >= 8.0
+						&& movDardoNuevo >= 8.0 && movDardoNuevoMovimiento >= 8.0 && movDardoRegreso < 8.0) { //Desaparece globo
+						//Antebrazo derecho
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(92.3f, 7.7f, -25.0f));
+						model = glm::rotate(model, 100 * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));//mueve arriba (-) o abajo (+)
+						model = glm::rotate(model, -70 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+						model = glm::rotate(model, movDardoNuevo * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						BrazoDerecho_Izquierda.RenderModel();
+
+						//Globo1
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(110.0f, 0.0f, -25.0f));
+						model = glm::rotate(model, -90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						Globo3_M.RenderModel();
+
+						//Globo2
+						//Globo2_M.RenderModel();
+
+						//Globo3
+						//Globo1_M.RenderModel();
+
+						movDardoRegreso += 0.1f * deltaTime;
+					}
+					if (movBateo >= 8.0 && movBateoPelota >= 8.0 && movBateoPelotaRegreso >= 8.0 && movBateoRegreso >= 8.0
+						&& movDardoNuevo >= 8.0 && movDardoNuevoMovimiento >= 8.0 && movDardoRegreso >= 8.0
+						&& moverDardoAbajo < 8.0) { //Mueve brazo hacia abajo
+						//Antebrazo derecho
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(92.3f, 7.7f, -25.0f));
+						model = glm::rotate(model, 100 * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));//mueve arriba (-) o abajo (+)
+						model = glm::rotate(model, -70 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+						model = glm::rotate(model, (movDardoNuevo - moverDardoAbajo) * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						BrazoDerecho_Izquierda.RenderModel();
+
+						//Globo1
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(110.0f, 0.0f, -25.0f));
+						model = glm::rotate(model, -90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						Globo3_M.RenderModel();
+
+						//Globo2
+						//Globo2_M.RenderModel();
+
+						//Globo3
+						//Globo1_M.RenderModel();
+
+						moverDardoAbajo += 0.05f * deltaTime;
+					}
+					if (movBateo >= 8.0 && movBateoPelota >= 8.0 && movBateoPelotaRegreso >= 8.0 && movBateoRegreso >= 8.0
+						&& movDardoNuevo >= 8.0 && movDardoNuevoMovimiento >= 8.0 && movDardoRegreso >= 8.0
+						&& moverDardoAbajo >= 8.0 && movDardoNuevoArriba < 8.0) { //Mueve brazo hacia arriba
+						//Antebrazo derecho
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(92.3f, 7.7f, -25.0f));
+						model = glm::rotate(model, 100 * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));//mueve arriba (-) o abajo (+)
+						model = glm::rotate(model, -70 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+						model = glm::rotate(model, movDardoNuevoArriba * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						BrazoDerecho_Izquierda.RenderModel();
+
+						//Globo1
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(110.0f, 0.0f, -25.0f));
+						model = glm::rotate(model, -90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						Globo3_M.RenderModel();
+
+						//Globo2
+						//Globo2_M.RenderModel();
+
+						//Globo3
+						//Globo1_M.RenderModel();
+
+						//Dardo
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(109.5f, 1.2f + movDardoNuevoArriba * 0.05, -25.7f));//98
+						model = glm::rotate(model, -90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						Dardo_M.RenderModel();
+
+						movDardoNuevoArriba += 0.05f * deltaTime;
+					}
+					if (movBateo >= 8.0 && movBateoPelota >= 8.0 && movBateoPelotaRegreso >= 8.0 && movBateoRegreso >= 8.0
+						&& movDardoNuevo >= 8.0 && movDardoNuevoMovimiento >= 8.0 && movDardoRegreso >= 8.0
+						&& moverDardoAbajo >= 8.0 && movDardoNuevoArriba >= 8.0 && movDardoNuevoMovimiento2 < 8.0) { //Mueve Dardo
+						//Antebrazo derecho
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(92.3f, 7.7f, -25.0f));
+						model = glm::rotate(model, 100 * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));//mueve arriba (-) o abajo (+)
+						model = glm::rotate(model, -70 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+						model = glm::rotate(model, movDardoNuevoArriba * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						BrazoDerecho_Izquierda.RenderModel();
+
+						//Globo1
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(110.0f, 0.0f, -25.0f));
+						model = glm::rotate(model, -90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						Globo3_M.RenderModel();
+
+						//Globo2
+						//Globo2_M.RenderModel();
+
+						//Globo3
+						//Globo1_M.RenderModel();
+
+						//Dardo
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(109.5f + movDardoNuevoMovimiento2, 1.2f + movDardoNuevoArriba * 0.05, -25.7f + (movDardoNuevoMovimiento2 * 0.2)));
+						model = glm::rotate(model, -90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						Dardo_M.RenderModel();
+
+						movDardoNuevoMovimiento2 += 0.1f * deltaTime;
+					}
+					if (movBateo >= 8.0 && movBateoPelota >= 8.0 && movBateoPelotaRegreso >= 8.0 && movBateoRegreso >= 8.0
+						&& movDardoNuevo >= 8.0 && movDardoNuevoMovimiento >= 8.0 && movDardoRegreso >= 8.0
+						&& moverDardoAbajo >= 8.0 && movDardoNuevoArriba >= 8.0 && movDardoNuevoMovimiento2 >= 8.0
+						&& movDardoRegreso2 < 8.0) { //Desaparece globo
+						//Antebrazo derecho
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(92.3f, 7.7f, -25.0f));
+						model = glm::rotate(model, 100 * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));//mueve arriba (-) o abajo (+)
+						model = glm::rotate(model, -70 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+						model = glm::rotate(model, movDardoNuevo * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						BrazoDerecho_Izquierda.RenderModel();
+
+						//Globo2
+						//Globo2_M.RenderModel();
+
+						//Globo3
+						//Globo1_M.RenderModel();
+
+						movDardoRegreso2 += 0.1f * deltaTime;
+					}
+				}
+
+				////
+
+				timerBateo += 0.5f * deltaTime;
+			}
+			else {
+				//VARIABLES FUNCIONALIDAD CÁMARA Y ANIMACIÓN MONEDA (NO MOVER)
+				banderaCamaraMovimiento = 0;//para que la camara regrese a la camara de blade de manera automatica
+				banderaCamara = 0;//para que ya se puedan usar las teclas de camaras
+				camaraAnimacion = 0;//
+				brazoVariacion = 20.0;
+				brazoVariacion1 = 100.0;
+				timerBateo = 0.0;
+
+				//VARIABLES ANIMACIÓN DEL STAND
+				inicioBrazo = 0.0;
+				movBateo = 0.0;
+				movBateoPelota = 0.0;
+				movBateoPelotaRegreso = 0.0;
+				movBateoRegreso = 0.0;
+				movDardoNuevo = 0.0;
+				movDardoNuevoMovimiento = 0.0f;
+				movDardoRegreso = 0.0f;
+				moverDardoAbajo = 0.0f;
+				movDardoNuevoArriba = 0.0f;
+				movDardoNuevoMovimiento2 = 0.0f;
+				movDardoRegreso2 = 0.0f;
+
+				//
+			}
+		}
+		else if (camaraAnimacion == 6) { //Stand topo
+			banderaCamara = 1; //Para que la camara no se pueda mover hasta que se acabe la animación. Al final debe volver a 0.
+
+			if (timerBateo < 500.0) { //Timpo que va a durar la animación general del stand
+
+				//INICIO ANIMACIÓN DE LA MONEDA
+
+				if (brazoVariacion <= 100.0) {
+					//Antebrazo derecho
+					model = glm::mat4(1.0);
+					model = glm::translate(model, glm::vec3(59.5f, 7.1f, 63.2f));
+					model = glm::rotate(model, -brazoVariacion * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));//mueve arriba (-) o abajo (+)
+					glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+					BrazoDerecho_Sur.RenderModel();
+
+					brazoVariacion += 0.5f * deltaTime;
+				}
+				if (timerBateo > 50.0 && timerBateo < 180.0 && brazoVariacion >= 100 && brazoVariacion1 == 100.0) {
+					//Antebrazo derecho
+					model = glm::mat4(1.0);
+					model = glm::translate(model, glm::vec3(59.5f, 7.1f, 63.2f));
+					model = glm::rotate(model, -brazoVariacion * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));//mueve arriba (-) o abajo (+)
+					glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+					BrazoDerecho_Sur.RenderModel();
+
+					if (timerBateo > 100.0 && timerBateo < 170.0) {
+						//Moneda del juego
+						model = glm::mat4(1.0);
+						model = glm::translate(model, glm::vec3(59.5f, 7.6f, 64.85f));//(x misma, y +0.5, z +1.65)
+						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+						Ticket_StarRail.RenderModel();
+					}
+				}
+				if (brazoVariacion1 >= 20.0 && brazoVariacion >= 100 && timerBateo > 180.0) {
+					//Antebrazo derecho
+					model = glm::mat4(1.0);
+					model = glm::translate(model, glm::vec3(59.5f, 7.1f, 63.2f));
+					model = glm::rotate(model, -brazoVariacion1 * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));//mueve arriba (-) o abajo (+)
+					glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+					BrazoDerecho_Sur.RenderModel();
+
+					brazoVariacion1 -= 0.5f * deltaTime;
+				}
+				//FIN ANIMACIÓN DE LA MONEDA
+
+				///AQUI VA LA ANIMACIÓN DE CADA STAND
+
+				if (timerBateo > 260.0 && timerBateo < 380) {
+					//Antebrazo derecho
+					model = glm::mat4(1.0);
+					model = glm::translate(model, glm::vec3(59.5f, 7.1f, 63.2f));
+					model = glm::rotate(model, 10 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+					model = glm::rotate(model, BrazoMartillo * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));//mueve arriba (-) o abajo (+)
+					glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+					BrazoDerecho_Derecha.RenderModel();
+
+					model = glm::rotate(model, 90 * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
+					model = glm::translate(model, glm::vec3(0.0f, 0.0f, 1.8f));
+					glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+					GolpearTopo_MazaHerta_M.RenderModel();
+
+					if (timerBateo > 260.0 && timerBateo < 320) {
+						BrazoMartillo -= 1.5f * deltaTime;
+					}
+					else {
+						BrazoMartillo += 1.5f * deltaTime;
+						if (timerBateo > 360.0 && timerBateo <= 380) ToposY2 -= 0.02f * deltaTime;
+					}
+
+				}
+
+				if (timerBateo > 380.0 && timerBateo <= 500.0) {
+					//Antebrazo derecho
+					model = glm::mat4(1.0);
+					model = glm::translate(model, glm::vec3(59.5f, 7.1f, 63.2f));
+					model = glm::rotate(model, 30 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+					model = glm::rotate(model, BrazoMartillo * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));//mueve arriba (-) o abajo (+)
+					glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+					BrazoDerecho_Derecha.RenderModel();
+
+					model = glm::rotate(model, 90 * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
+					model = glm::translate(model, glm::vec3(0.0f, 0.0f, 1.8f));
+					glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+					GolpearTopo_MazaHerta_M.RenderModel();
+
+					if (timerBateo > 380.0 && timerBateo < 440) {
+						BrazoMartillo -= 1.5f * deltaTime;
+					}
+					else {
+						if (timerBateo > 480.0 && timerBateo <= 500) ToposY1 -= 0.02f * deltaTime;
+						BrazoMartillo += 1.5f * deltaTime;
+					}
+
+				}
+				////
+
+				timerBateo += 0.5f * deltaTime;
+			}
+			else {
+				//VARIABLES FUNCIONALIDAD CÁMARA Y ANIMACIÓN MONEDA (NO MOVER)
+				banderaCamaraMovimiento = 0;//para que la camara regrese a la camara de blade de manera automatica
+				banderaCamara = 0;//para que ya se puedan usar las teclas de camaras
+				camaraAnimacion = 0;//
+				brazoVariacion = 20.0;
+				brazoVariacion1 = 100.0;
+				timerBateo = 0.0;
+				ToposY1 = 0.0f;
+				ToposY2 = 0.0f;
+				BrazoMartillo = 20.0f;
+				//VARIABLES ANIMACIÓN DEL STAND
+
+				//
+			}
+		}
 
 		// --------------------------------------
 		// -----------------PISO-----------------
@@ -931,7 +3048,7 @@ int main()
 		// --------------------------------------
 		// ------------RUEDA FORTUNA-------------
 		// --------------------------------------
-
+		
 		//Rueda Fortuna
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
@@ -994,28 +3111,109 @@ int main()
 		model = glm::translate(model, glm::vec3(-34.0f, 0.0f, 21.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Globo_Verde_M.RenderModel();
-
+		
 		// --------------------------------------
 		// -----------PUESTO HELADOS-------------
 		// --------------------------------------
 
 		//Puesto helado
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(60.0f, 0.0f, 25.0f));
+		model = glm::translate(model, glm::vec3(65.0f, 0.0f, 25.0f));
 		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		PuestoHelado_M.RenderModel();
-
-		//Marius Casual Tears of Themis
+		
+		//Marius Casual Tears of Themis Cuerpo
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(60.0f, 0.0f, 25.0f));
-		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::translate(model, glm::vec3(66.5f, 0.0f, 24.0f));
+		//model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		MariusCasual_M.RenderModel();
 
+
+		if (ContadorInicioPrograma == 1) {
+			//Marius brazo
+			if (banderaMarius == 0 && MariusBrazo < 40.0f) {
+				MariusBrazo += 0.2 * deltaTime;
+			}
+			else if (MariusBrazo >= 0.0f) {
+				MariusBrazo -= 0.2 * deltaTime;
+				banderaMarius = 1;
+				if (helado1 == 0 && MariusContador2 == 0) helado1 = 1;
+				if (helado2 == 0 && MariusContador2 == 1) helado2 = 1;
+				if (helado3 == 0 && MariusContador2 == 2) helado3 = 1;
+
+			}
+			else {
+				banderaMarius = 0;
+				MariusContador2 ++;
+				if (MariusContador < 2) MariusContador += 1;
+				else MariusContador = 0;
+			}
+
+			if (MariusContador2 == 3) {
+				MariusContador2 = 0;
+				helado1 = 0;
+				helado2 = 0;
+				helado3 = 0;
+			}
+
+			model = glm::translate(model, glm::vec3(-0.44f, 7.13f, 2.73f));
+			model = glm::rotate(model, MariusBrazo * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+			glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+			MariusCasualBrazo_M.RenderModel();
+
+			//Para que la bola gire en el cucharón
+			if (MariusBrazo <= 40.0f && banderaMarius == 0 && MariusContador == 0) {
+				model = glm::translate(model, glm::vec3(1.7f, -1.6f, -0.45f));
+				model = glm::rotate(model, -50 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+				model = glm::rotate(model, -180 * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
+				model = glm::rotate(model, -MariusBrazo * 25 * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+				glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+				BolaHelado_Suelta_M.RenderModel();//azul
+			}
+			else if (MariusBrazo <= 40.0f && banderaMarius == 0 && MariusContador == 1) {
+				model = glm::translate(model, glm::vec3(1.7f, -1.6f, -0.45f));
+				model = glm::rotate(model, -50 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+				model = glm::rotate(model, -180 * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
+				model = glm::rotate(model, -MariusBrazo * 25 * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+				glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+				BolaHelado_Suelta_Morada_M.RenderModel();//morada
+			}
+			else if (MariusBrazo <= 40.0f && banderaMarius == 0 && MariusContador == 2) {
+				model = glm::translate(model, glm::vec3(1.7f, -1.6f, -0.45f));
+				model = glm::rotate(model, -50 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+				model = glm::rotate(model, -180 * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
+				model = glm::rotate(model, -MariusBrazo * 25 * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+				glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+				BolaHelado_Suelta_Naranja_M.RenderModel();//naranja
+			}
+			//Para aparecer las bolas en el cono
+			if (helado1 == 1) {
+				model = glm::mat4(1.0);
+				model = glm::translate(model, glm::vec3(66.5f, 0.0f, 24.0f));
+				glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+				BolaHelado_Izquierda_M.RenderModel();//primera bola
+			}
+			if (helado2 == 1) {
+				model = glm::mat4(1.0);
+				model = glm::translate(model, glm::vec3(66.5f, 0.0f, 24.0f));
+				glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+				BolaHelado_Derecha_M.RenderModel();//segunda bola
+			}
+			if (helado3 == 1) {
+				model = glm::mat4(1.0);
+				model = glm::translate(model, glm::vec3(66.5f, 0.0f, 24.0f));
+				glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+				BolaHelado_Arriba_M.RenderModel();//tercera bola
+			}
+
+
+		}else ContadorInicioPrograma++;
+
 		//Sigwinne Genshin Impact
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(69.0f, 0.0f, 25.0f));
+		model = glm::translate(model, glm::vec3(74.0f, 0.0f, 25.0f));
 		model = glm::rotate(model, -90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Sigwinne_Genshin_M.RenderModel();
@@ -1026,7 +3224,7 @@ int main()
 		model = glm::rotate(model, -180 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Lampara_Genshin_M.RenderModel();
-
+		
 		// --------------------------------------
 		// --------BANCA PUESTO HELADOS----------
 		// --------------------------------------
@@ -1065,7 +3263,7 @@ int main()
 		// --------------------------------------
 		// -----------PUESTO DE DARDOS-----------
 		// --------------------------------------
-
+		
 		//Puesto Dardos
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(110.0f, 0.0f, -25.0f));
@@ -1073,17 +3271,16 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		PuestoDardos_M.RenderModel();
 		
-		//Globo1
-		Globo1_M.RenderModel();
+		if (camaraAnimacion != 5) {
+			//Globo1
+			Globo1_M.RenderModel();
 
-		//Globo2
-		Globo2_M.RenderModel();
+			//Globo2
+			Globo2_M.RenderModel();
 
-		//Globo3
-		Globo3_M.RenderModel();
-
-		//Dardo
-		Dardo_M.RenderModel();
+			//Globo3
+			Globo3_M.RenderModel();
+		}
 
 		//Gato Verde
 		model = glm::mat4(1.0);
@@ -1105,7 +3302,7 @@ int main()
 		model = glm::rotate(model, -90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		LukeNormal_M.RenderModel();
-
+		
 		//Globos izquierda
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(102.0f, 0.0f, -43.0f));
@@ -1332,7 +3529,6 @@ int main()
 		// --------------------------------------
 		// ----------ARTEM PROTAGONISTA----------
 		// --------------------------------------
-		
 		//Artem Normal Tears of Themis
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(-10.0f, 0.0f, -55.0f));
@@ -1340,13 +3536,12 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		ArtemNormal_M.RenderModel();
 
-		//Globo
+		//Globos
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(-8.0f, 0.0f, -50.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Globo_Feliz_M.RenderModel();
 
-		//Globo
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(8.0f, 0.0f, -50.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -1372,14 +3567,13 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Gato_DanHeng_M.RenderModel();
 
-		//Globo
+		//Globos
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(-106.0f, 0.0f, -117.0f));
 		model = glm::rotate(model, 15 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Globo_Naranja_M.RenderModel();
 
-		//Globo
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(-108.0f, 0.0f, -115.0f));
 		model = glm::rotate(model, 15 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
@@ -1399,7 +3593,7 @@ int main()
 
 		//Aventurine Honkai Star Rail
 		Aventurine_StarRail_M.RenderModel();
-
+		
 		//Lámpara Genshin Impact
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(-120.0f, 0.0f, -20.0f));
@@ -1444,7 +3638,7 @@ int main()
 		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Globo_Naranja_M.RenderModel();
-
+		
 		// --------------------------------------
 		// -----------PUESTO BOLICHE-------------
 		// --------------------------------------
@@ -1456,15 +3650,11 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Boliche_M.RenderModel();
 
-		//Rendija Boliche
-		Rendija_Boliche_M.RenderModel();
-
-		// Bolo Boliche
-		Bolo_M.RenderModel();
-
-		//Bola Boliche
-		Bola_Boliche_M.RenderModel();
-
+		if (camaraAnimacion != 2) {
+			//Rendija Boliche
+			Rendija_Boliche_M.RenderModel();
+		}
+		
 		//Ayato Genshin Impact
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(-25.0f, 0.0f, 83.0f));
@@ -1522,10 +3712,25 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		GolpearTopo_M.RenderModel();
 
+
 		//Yanqing Honkai Star Rail
 		model = glm::translate(model, glm::vec3(-3.0f, 0.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Yanqing_StarRail_M.RenderModel();
+
+		//Topos Izquierda
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(65.0f, 0.0f + ToposY1, 70.0f));
+		model = glm::rotate(model, -180 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		GolpearTopo_Topos1_M.RenderModel();
+
+		//Topos Derecha
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(65.0f, 0.0f + ToposY2, 70.0f));
+		model = glm::rotate(model, -180 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		GolpearTopo_Topos2_M.RenderModel();
 
 		//Lámpara Genshin Impact
 		model = glm::mat4(1.0);
@@ -1550,19 +3755,17 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Robin_StarRail_M.RenderModel();
 
-		//Globo
+		//Globos
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(49.0f, 0.0f, 76.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Globo_Naranja_M.RenderModel();
 
-		//Globo
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(48.0f, 0.0f, 74.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Globo_Verde_M.RenderModel();
 
-		//Globo
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(47.0f, 0.0f, 76.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -1571,7 +3774,7 @@ int main()
 		// --------------------------------------
 		// -----------CARROS CHOCONES------------
 		// --------------------------------------
-
+		
 		//Puesto de Carros Chocones
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(0.0f, 4.0f, -125.0f));
@@ -1580,6 +3783,20 @@ int main()
 
 		//Artem Casual Tears of Themis
 		ArtemCasual_Themis_M.RenderModel();
+
+		//Carro Azul
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(12.0f, 5.0f, -150.0f));
+		model = glm::rotate(model, 45 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Carro_Azul_M.RenderModel();
+
+		//Carro Naranja
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(18.0f, 5.0f, -170.0f));
+		model = glm::rotate(model, -20 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Carro_Naranja_M.RenderModel();
 
 		// --------------------------------------
 		// ------------BAÑO BOLICHE--------------
@@ -1618,14 +3835,13 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Lampara_Genshin_M.RenderModel();
 
-		//Globo
+		//Globos
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(-123.0f, 0.0f, 79.0f));
 		model = glm::rotate(model, 75 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Globo_Verde_M.RenderModel();
 
-		//Globo
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(-121.0f, 0.0f, 76.0f));
 		model = glm::rotate(model, 75 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
@@ -1642,6 +3858,9 @@ int main()
 		model = glm::rotate(model, -180 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		PuestoTickets_M.RenderModel();
+
+		//Pom Pom Star Rail
+		PomPom_M.RenderModel();
 
 		//Gato Blade
 		model = glm::mat4(1.0);
@@ -1746,14 +3965,13 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Gato_Naranja_M.RenderModel();
 
-		//Globo
+		//Globos
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(-60.0f, 0.0f, 10.0f));
 		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Globo_Enojado_M.RenderModel();
 
-		//Globo
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(-59.0f, 0.0f, 8.0f));
 		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
@@ -1849,7 +4067,7 @@ int main()
 		Gato_Herta_M.RenderModel();
 		
 		// --------------------------------------
-		// --*----------PISO CAMINO--------------
+		// -------------PISO CAMINO--------------
 		// --------------------------------------
 
 		//Derecha
@@ -1883,9 +4101,260 @@ int main()
 		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 49.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		meshList[4]->RenderMesh();
+		
+		// --------------------------------------
+		// ----------BLADE JERARQUICO------------
+		// --------------------------------------
+
+		if (mainWindow.getAvanzaBlade() == 1) {
+
+			angulovaria += 2.2f * deltaTime;
+			angulovariaAux += 2.2f * deltaTime;
+			if (sin(glm::radians(angulovariaAux)) > 0) {
+				angulovaria2 = 0.0f;
+			}
+			else {
+				angulovaria2 = angulovariaAux;
+			}
+			if (sin(glm::radians(angulovariaAux)) < 0) {
+				angulovaria3 = 0.0f;
+			}
+			else {
+				angulovaria3 = -angulovariaAux;
+			}
+			//std::cout << "angulovaria = " << sin(glm::radians(angulovaria2)) << std::endl;
+
+		}
+
+		if ((sin(glm::radians(angulovaria)) > 0.1 && mainWindow.getAvanzaBlade() == 0) || (sin(glm::radians(angulovaria)) < -0.1 && mainWindow.getAvanzaBlade() == 0)) {
+			angulovaria += 3.0f * deltaTime;
+			angulovariaAux += 3.0f * deltaTime;
+			if (sin(glm::radians(angulovariaAux)) > 0) {
+				angulovaria2 = 0.0f;
+			}
+			else {
+				angulovaria2 = angulovariaAux;
+			}
+			if (sin(glm::radians(angulovariaAux)) < 0) {
+				angulovaria3 = 0.0f;
+			}
+			else {
+				angulovaria3 = -angulovariaAux;
+			}
+			//std::cout << "angulovaria = " << sin(glm::radians(angulovaria)) << std::endl;
+		}
+
+		// Variables persistentes (deberían estar fuera del loop si no lo están ya)
+
+		float bladeSpeed = 0.3f;
+
+		// En el render loop o función de actualización:
+
+		// 1. Dirección de la cámara (sin componente Y para que no suba/baje el personaje)
+		glm::vec3 cameraForward = glm::normalize(glm::vec3(camera.getCameraDirection().x, 0.0f, camera.getCameraDirection().z));
+		glm::vec3 right = glm::normalize(glm::cross(cameraForward, glm::vec3(0.0f, 1.0f, 0.0f))); // vector a la derecha
+
+		// 2. Rotación del personaje basada en la cámara
+		float bladeAngle = atan2(cameraForward.x, cameraForward.z); // Yaw en radianes
+
+		// 3. Movimiento si se presiona tecla
+		if (mainWindow.getAvanzaBladeW() == 1) {
+			bladePosition += cameraForward * bladeSpeed * deltaTime;
+		}
+		if (mainWindow.getAvanzaBladeA() == 1) {
+			bladePosition -= right * bladeSpeed * deltaTime;
+		}
+		if (mainWindow.getAvanzaBladeS() == 1) {
+			bladePosition -= cameraForward * bladeSpeed * deltaTime;
+		}
+		if (mainWindow.getAvanzaBladeD() == 1) {
+			bladePosition += right * bladeSpeed * deltaTime;
+		}
+
+		// 4. Construcción de la matriz del personaje
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, bladePosition);
+		model = glm::rotate(model, bladeAngle, glm::vec3(0.0f, 1.0f, 0.0f)); // rotación en eje Y
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Blade_Cuerpo.RenderModel();
+		modelaux = model;
+
+		// 5. Cámara que sigue al personaje desde atrás
+		glm::vec3 cameraOffset = -cameraForward * 10.0f + glm::vec3(0.0f, 5.0f, 0.0f); // detrás y arriba
+		glm::vec3 cameraPosition = bladePosition + cameraOffset;
+		camera.setPosition(cameraPosition);
+
+		glm::vec3 lookTarget = bladePosition + glm::vec3(0.0f, 2.0f, 0.0f); // mira al torso
+		camera.setFront(glm::normalize(lookTarget - cameraPosition));
+
+		//Cabeza 
+		model = glm::translate(model, glm::vec3(0.0f, 1.552f, -0.207f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Blade_Cabeza.RenderModel();
+
+		//---Brazo derecho
+		//Hombro Derecho
+		model = modelaux;
+		model = glm::translate(model, glm::vec3(-0.897f, 0.997f, -0.3f));
+		model = glm::rotate(model, 42 * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+		model = glm::rotate(model, 1.0f * sin(glm::radians(angulovaria)), glm::vec3(1.0f, 0.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Blade_HombroDer.RenderModel();
+
+		//Antebrazo Derecho
+		model = glm::translate(model, glm::vec3(-0.925f, -0.71f, 0.02f));
+		model = glm::rotate(model, 0.5f * -sin(glm::radians(angulovaria2)), glm::vec3(0.0f, 0.0f, 1.0f));
+
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Blade_AntebrazoDer.RenderModel();
+
+		//Mano Derecha
+		model = glm::translate(model, glm::vec3(-0.960f, -0.697f, 0.041f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Blade_ManoDer.RenderModel();
+
+		//---Brazo Izquierdo
+		//Hombro Izquierdo
+		model = modelaux;
+		model = glm::translate(model, glm::vec3(0.874f, 0.941f, -0.285f));
+		model = glm::rotate(model, -42 * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+		model = glm::rotate(model, 1.0f * -sin(glm::radians(angulovaria)), glm::vec3(1.0f, 0.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Blade_HombroIzq.RenderModel();
+
+		//Antebrazo Izquierdo
+		model = glm::translate(model, glm::vec3(0.939f, -0.616f, 0.005f));
+		model = glm::rotate(model, 0.5f * sin(glm::radians(angulovaria3)), glm::vec3(0.0f, 0.0f, 1.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Blade_AntebrazoIzq.RenderModel();
+
+		//Mano Izquierda
+		model = glm::translate(model, glm::vec3(0.952f, -0.719f, 0.036f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Blade_ManoIzq.RenderModel();
+
+		//---Pierna Derecha
+		//Pierna Derecha
+		model = modelaux;
+		model = glm::translate(model, glm::vec3(-0.424f, -1.452f, -0.12f));
+		model = glm::rotate(model, 0.45f * -sin(glm::radians(angulovaria)), glm::vec3(1.0f, 0.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Blade_PiernaDer.RenderModel();
+
+		model = glm::translate(model, glm::vec3(-0.062f, -1.991f, -0.106));
+		model = glm::rotate(model, 0.5f * -sin(glm::radians(angulovaria3)), glm::vec3(1.0f, 0.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Blade_PantorrillaDer.RenderModel();
+
+		model = glm::translate(model, glm::vec3(-0.047f, -2.442f, 0.031f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Blade_PieDer.RenderModel();
+
+		//---Pierna Izquierda
+		//Pierna Izquierda
+		model = modelaux;
+		model = glm::translate(model, glm::vec3(0.417f, -1.458f, -0.107f));
+		model = glm::rotate(model, 0.45f * sin(glm::radians(angulovaria)), glm::vec3(1.0f, 0.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Blade_PiernaIzq.RenderModel();
+
+		model = glm::translate(model, glm::vec3(0.061f, -1.974f, -0.119f));
+		model = glm::rotate(model, 0.5f * -sin(glm::radians(angulovaria2)), glm::vec3(1.0f, 0.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Blade_PantorrillaIzq.RenderModel();
+
+		model = glm::translate(model, glm::vec3(0.046f, -2.434f, -0.01f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Blade_PieIzq.RenderModel();
+
+		// --------------------------------------
+		// -----------BOTE CAMINANTE-------------
+		// --------------------------------------
+
+		if (contadorInicioPrograma == 1) {
+
+			Bangulovaria += 2.2f * deltaTime;
+			BanguloAvanza += 0.2f * deltaTime;
+			BangulovariaAux += 2.2f * deltaTime;
+			if (sin(glm::radians(BangulovariaAux)) > 0) {
+				Bangulovaria2 = 0.0f;
+			}
+			else {
+				Bangulovaria2 = BangulovariaAux;
+			}
+			if (sin(glm::radians(BangulovariaAux)) < 0) {
+				Bangulovaria3 = 0.0f;
+			}
+			else {
+				Bangulovaria3 = -BangulovariaAux;
+			}
+			float senoActual = sin(glm::radians(BanguloAvanza));
+
+			if (senoActual >= 1.0f - epsilon && !yaCambio) {
+				BanguloMira = 180.0f;  // Mira hacia un lado
+				yaCambio = true;
+			}
+			else if (senoActual <= -1.0f + epsilon && !yaCambio) {
+				BanguloMira = 00.0f; // Mira al otro, je 
+				yaCambio = true;
+			}
+			else if (senoActual < 1.0f - epsilon && senoActual > -1.0f + epsilon) {
+				yaCambio = false;
+			}
+			senoAnterior = senoActual;
+			//std::cout << "BanguloAvanza = " << sin(glm::radians(BanguloAvanza)) << std::endl;
+
+			// 4. Construcción de la matriz del personaje
+			model = glm::mat4(1.0f);
+			model = glm::translate(model, glm::vec3(-80.0f, 4.033f, -35.0f + (25 * sin(glm::radians(BanguloAvanza)))));
+			//model = glm::translate(model, glm::vec3(73.0f, 4.033f, 118.0f+(10*sin(glm::radians(BanguloAvanza)))));
+			model = glm::rotate(model, BanguloMira * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+			glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+			Bote_Cuerpo.RenderModel();
+			modelaux = model;
+
+			//---Brazo Izquierdo
+			//Hombro Izquierdo
+			model = modelaux;
+			model = glm::translate(model, glm::vec3(1.091f, 0.662f, -0.107f));
+			model = glm::rotate(model, 1.0f * -sin(glm::radians(Bangulovaria3)), glm::vec3(0.0f, 0.0f, 1.0f));
+			glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+			Bote_HombroIzq.RenderModel();
+			//Antebrazo Izquierdo
+			model = glm::translate(model, glm::vec3(0.982f, 0.039f, -0.076f));
+			model = glm::rotate(model, 1.5f * sin(glm::radians(Bangulovaria3)), glm::vec3(0.0f, 0.0f, 1.0f));
+			glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+			Bote_AntebrazoIzq.RenderModel();
+
+			//---Pierna Derecha
+			//Pierna Derecha
+			model = modelaux;
+			model = glm::translate(model, glm::vec3(-0.438f, -1.512f, -0.014));
+			model = glm::rotate(model, 0.45f * -sin(glm::radians(Bangulovaria)), glm::vec3(1.0f, 0.0f, 0.0f));
+			glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+			Bote_PiernaDer.RenderModel();
+
+			model = glm::translate(model, glm::vec3(-0.033f, -1.002f, 0.1f));
+			model = glm::rotate(model, 0.5f * -sin(glm::radians(Bangulovaria3)), glm::vec3(1.0f, 0.0f, 0.0f));
+			glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+			Bote_PantorrillaDer.RenderModel();
+
+			//---Pierna Izquierda
+			//Pierna Izquierda
+			model = modelaux;
+			model = glm::translate(model, glm::vec3(0.439f, -1.532f, -0.014f));
+			model = glm::rotate(model, 0.45f * sin(glm::radians(Bangulovaria)), glm::vec3(1.0f, 0.0f, 0.0f));
+			glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+			Bote_PiernaIzq.RenderModel();
+
+			model = glm::translate(model, glm::vec3(0.033f, -0.972f, 0.1f));
+			model = glm::rotate(model, 0.5f * -sin(glm::radians(Bangulovaria2)), glm::vec3(1.0f, 0.0f, 0.0f));
+			glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+			Bote_PantorrillaIzq.RenderModel();
+		}
 
 		//-----------------¡¡TRANSPARENCIAS!!---------------------------------
-
+		
 		// --------------------------------------
 		// ----------LANZAMIENTO HACHA-----------
 		// --------------------------------------
@@ -1894,7 +4363,7 @@ int main()
 		// --------------------------------------
 		// -----------JAULA DE BATEO-------------
 		// --------------------------------------
-
+		
 		//Wanderer Genshin Impact
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(-105.0f, 0.0f, -90.0f));
@@ -1902,21 +4371,12 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Wanderer_Genshin_M.RenderModel();
 
-		//Hacha
-		Hacha_M.RenderModel();
-
 		//Luke Casual Tears of Themis
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 85.0f));
 		model = glm::rotate(model, -180 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		LukeCasual_Themis_M.RenderModel();
-
-		//Bate
-		Bate_M.RenderModel();
-
-		//Pelota de Baseball
-		PelotaBateo_M.RenderModel();
 
 		//Basura Honkai Star Rail
 		model = glm::mat4(1.0);
@@ -1929,25 +4389,25 @@ int main()
 
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
+		
 		//Puesto de Lanzamiento de Hacha
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(-105.0f, 0.0f, -78.0f));
 		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		LanzamientoHacha_M.RenderModel();
-
+		
 		//Jaula Bateo
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 85.0f));
 		model = glm::rotate(model, -180 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		PuestoBateo_M.RenderModel();
-
-		//---------
-		//--REJAS--
-		//---------
-
+		
+		//------
+		//REJAS-
+		//------
+		
 		//Derecha
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(130.0f, 0.0f, 0.0f));
@@ -2199,121 +4659,6 @@ int main()
 		meshList[1]->RenderMesh();
 
 		glDisable(GL_BLEND);
-
-
-
-		/*
-		//Coche base
-		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(mainWindow.getarticulacion1(), -0.45f, -5.0f));
-		modelaux = model; //Mantiene la jerarquía al cuerpo
-		//color = glm::vec3(0.0f, 0.5f, 0.5f);
-		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		CocheBase_M.RenderModel();
-
-		// luz ligada al movimiento del automóvil (frente)
-		//sirve para que en tiempo de ejecución (dentro del while) se cambien propiedades de la luz
-		glm::vec3 lowerLight = glm::vec3(10.0f, 0.5f, -5.0f); // Posición (de dónde sale la luz) original
-		lowerLight.x += mainWindow.getarticulacion1(); //Modificación en el valor X
-		spotLights[1].SetFlash(lowerLight, glm::vec3(1.0f, 0.0f, 0.0f)); //lowerlight, Dirección (hacia dónde apunta)
-		spotLights1[2].SetFlash(lowerLight, glm::vec3(1.0f, 0.0f, 0.0f)); //lowerlight, Dirección (hacia dónde apunta)
-
-		// luz ligada al movimiento del automóvil (detrás)
-		//sirve para que en tiempo de ejecución (dentro del while) se cambien propiedades de la luz
-		lowerLight = glm::vec3(-10.0f, 0.5f, -5.0f); // Posición (de dónde sale la luz) original
-		lowerLight.x += mainWindow.getarticulacion1(); //Modificación en el valor X
-		spotLights[2].SetFlash(lowerLight, glm::vec3(-1.0f, 0.0f, 0.0f)); //lowerlight, Dirección (hacia dónde apunta)
-		spotLights1[1].SetFlash(lowerLight, glm::vec3(-1.0f, 0.0f, 0.0f)); //lowerlight, Dirección (hacia dónde apunta)
-
-		//Cofre
-		model = modelaux;
-		model = glm::translate(model, glm::vec3(3.9f, 3.7f, 0.3f));
-		model = glm::rotate(model, glm::radians(mainWindow.getarticulacion2()), glm::vec3(0.0f, 0.0f, 1.0f));
-		//color = glm::vec3(1.0f, 0.0f, 0.5f);
-		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		CocheCofre_M.RenderModel();
-
-		// luz ligada al movimiento del cofre
-		//sirve para que en tiempo de ejecución (dentro del while) se cambien propiedades de la luz
-		lowerLight = glm::vec3(10.0f, 3.0f, -5.0f); // Posición (de dónde sale la luz) original
-		lowerLight.y += mainWindow.getarticulacion2()/5; //Modificación en el valor Y
-		lowerLight.x += mainWindow.getarticulacion1(); //Modificación en el valor X
-		spotLights[0].SetFlash(lowerLight, glm::vec3(1.0f, 0.0f, 0.0f)); //lowerlight, Dirección (hacia dónde apunta)
-		spotLights1[0].SetFlash(lowerLight, glm::vec3(1.0f, 0.0f, 0.0f)); //lowerlight, Dirección (hacia dónde apunta)
-
-		//Llanta delantera izquierda
-		model = modelaux;
-		model = glm::translate(model, glm::vec3(7.7f, 0.6f, -3.1f));
-		model = glm::rotate(model, glm::radians(mainWindow.getarticulacion3()), glm::vec3(0.0f, 0.0f, 1.0f));
-		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		CocheLlantaDelanteraIzquierda_M.RenderModel();
-
-		//Llanta trasera izquierda
-		model = modelaux;
-		model = glm::translate(model, glm::vec3(-7.7f, 0.8f, -3.2f));
-		model = glm::rotate(model, glm::radians(mainWindow.getarticulacion3()), glm::vec3(0.0f, 0.0f, 1.0f));
-		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		CocheLlantaTraseraIzquierda_M.RenderModel();
-
-		//Llanta delantera derecha
-		model = modelaux;
-		model = glm::translate(model, glm::vec3(7.7f, 0.6f, 3.6f));
-		model = glm::rotate(model, glm::radians(mainWindow.getarticulacion3()), glm::vec3(0.0f, 0.0f, 1.0f));
-		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		CocheLlantaDelanteraDerecha_M.RenderModel();
-
-		//Llanta trasera derecha
-		model = modelaux;
-		model = glm::translate(model, glm::vec3(-7.7f, 0.9f, 3.6f));
-		model = glm::rotate(model, glm::radians(mainWindow.getarticulacion3()), glm::vec3(0.0f, 0.0f, 1.0f));
-		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		CocheLlantaTraseraDerecha_M.RenderModel();
-		*/
-		/*
-		//Slime
-		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(0.0f, 0.5f, 6.0f));
-		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		SlimeFuego_M.RenderModel();
-
-		//Lámpara
-		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(13.0f, -2.0f, -5.0f));
-		model = glm::scale(model, glm::vec3(0.06f, 0.06f, 0.06f));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Lampara_M.RenderModel();
-
-		//Puerta
-		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(0.0f, -2.0f, 13.0f));
-		//model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		personaje_M.RenderModel();
-		*/
-
-		/*
-		//Agave ¿qué sucede si lo renderizan antes del coche y el helicóptero?
-		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(0.0f, 1.0f, -4.0f));
-		model = glm::scale(model, glm::vec3(4.0f, 4.0f, 4.0f));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-
-
-		//blending: transparencia o traslucidez
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		AgaveTexture.UseTexture();
-		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
-		meshList[3]->RenderMesh();
-		glDisable(GL_BLEND);
-		*/
 
 		glUseProgram(0);
 
