@@ -284,6 +284,18 @@ Model Tear_Themis;
 Model Destino_Genshin;
 Model Ticket_StarRail;
 
+//Puesto Elotes
+Model Alhaitham_M;
+Model PuestoElotes_M;
+Model Kaveh_M;
+
+//Phanion Star Rail
+Model Phanion_M;
+Model Phanion_Brazo_M;
+
+//Nilou Genshin
+Model Nilou_M;
+
 // --------------------------------------
 // ------------DEFINIR SKYBOX------------
 // --------------------------------------
@@ -419,6 +431,13 @@ int contadorInicioPrograma = 0;
 int contadorInicioPrograma2 = 0;
 int contadorInicioPrograma3 = 0;
 int contadorInicioPrograma4 = 0;
+
+//Animaciones finales
+int contadorInicioPrograma7;
+float BrazoPhanion = 0.0f;
+int banderaPhanion = 0;
+int contadorInicioPrograma8;
+float NilouGiro = 0.0f;
 
 // --------------------------------------
 // -------------DEFINIR LUCES------------
@@ -1017,6 +1036,24 @@ int main()
 	Destino_Genshin.LoadModel("Models/DestinoEntrelazado_Genshin/DestinoEntrelazado_Genshin.obj");
 	Ticket_StarRail = Model();
 	Ticket_StarRail.LoadModel("Models/Ticket/Ticket.obj");
+
+	//Puesto de Elotes
+	Alhaitham_M = Model();
+	Alhaitham_M.LoadModel("Models/Alhaitham_Genshin/Alhaitham_Genshin.obj");
+	PuestoElotes_M = Model();
+	PuestoElotes_M.LoadModel("Models/PuestoElotes/puestoElotes.obj");
+	Kaveh_M = Model();
+	Kaveh_M.LoadModel("Models/Kaveh_Genshin/Kaveh_Genshin.obj");
+	
+	//Phanion Star Rail
+	Phanion_M = Model();
+	Phanion_M.LoadModel("Models/Phainon_StarRail/Phainon_StarRail.obj");
+	Phanion_Brazo_M = Model();
+	Phanion_Brazo_M.LoadModel("Models/Phainon_StarRail/Phainon_Brazo.obj");
+
+	//Nilou Genshin
+	Nilou_M = Model();
+	Nilou_M.LoadModel("Models/Nilou_Genshin/Nilou_Genshin.obj");
 
 	// --------------------------------------
 	// -----------SKYBOX TEXTURAS------------
@@ -1799,7 +1836,7 @@ int main()
 		// --------------------------------------
 		// ----------ANIMACIONES STANDS----------
 		// --------------------------------------
-
+		
 		if (camaraAnimacion == 1) { //Stand hacha 3
 			banderaCamara = 1; //Para que la camara no se pueda mover hasta que se acabe la animación. Al final debe volver a 0.
 			
@@ -4937,7 +4974,7 @@ int main()
 				//
 			}
 		}
-
+		
 
 		// --------------------------------------
 		// -----------------PISO-----------------
@@ -6066,7 +6103,7 @@ int main()
 		model = glm::translate(model, glm::vec3(-27.0f, 0.0f, -116.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Gato_Herta_M.RenderModel();
-		
+
 		// --------------------------------------
 		// -------------PISO CAMINO--------------
 		// --------------------------------------
@@ -6363,6 +6400,82 @@ int main()
 		}
 		else contadorInicioPrograma4++;
 
+		// --------------------------------------
+		// -------------PUESTO ELOTES------------
+		// --------------------------------------
+
+		//Puesto Elotes
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(99.0f, 0.0f, 60.0f));
+		model = glm::rotate(model, -90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		PuestoElotes_M.RenderModel();
+
+		//Alhaitham Genshin
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Alhaitham_M.RenderModel();
+
+		//Kaveh Genshin
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Kaveh_M.RenderModel();
+		
+		// --------------------------------------
+		// ----------------PHAINON---------------
+		// --------------------------------------
+
+		if (contadorInicioPrograma7 == 1) {//Phanion animación
+
+			//Phainon
+			model = glm::mat4(1.0);
+			model = glm::translate(model, glm::vec3(-72.0f, 0.0f, 35.0f));
+			model = glm::rotate(model, -145 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+			glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+			Phanion_M.RenderModel();
+
+			//Phainon Antebrazo
+			if (banderaPhanion == 0 && BrazoPhanion < 65.0f) {
+				BrazoPhanion += 0.5f * deltaTime;
+			}
+			else if (BrazoPhanion >= 0.0f) {
+				BrazoPhanion -= 0.5f * deltaTime;
+				banderaPhanion = 1;
+			}
+			else banderaPhanion = 0;
+
+			//Su brazo
+			model = glm::translate(model, glm::vec3(1.4f, 6.5f, 0.2f));
+			model = glm::rotate(model, (110 + BrazoPhanion) * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+			glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+			Phanion_Brazo_M.RenderModel();
+		}
+		else contadorInicioPrograma7++;
+
+		// --------------------------------------
+		// -----------------NILOU----------------
+		// --------------------------------------
+
+		if (contadorInicioPrograma8 == 1) {//Nilou animación
+
+			//Nilou giro
+			if (NilouGiro <= 360.0f) {
+				NilouGiro += 1.0f * deltaTime;
+			}
+			else NilouGiro = 0.0f;
+
+			//Nilou
+			model = glm::mat4(1.0);
+			model = glm::translate(model, glm::vec3(-43.0f, 0.7f, -65.0f));
+			model = glm::rotate(model, NilouGiro * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+			glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+			Nilou_M.RenderModel();
+		}
+		else contadorInicioPrograma8++;
+
+		
+
+
+
+
 		//-----------------¡¡TRANSPARENCIAS!!---------------------------------
 
 		// --------------------------------------
@@ -6373,7 +6486,7 @@ int main()
 		// --------------------------------------
 		// -----------JAULA DE BATEO-------------
 		// --------------------------------------
-		
+
 		//Wanderer Genshin Impact
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(-105.0f, 0.0f, -90.0f));
@@ -6422,7 +6535,7 @@ int main()
 		model = glm::rotate(model, -180 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Maquina_Bateo_M.RenderModel();
-
+		
 		//------
 		//REJAS-
 		//------
