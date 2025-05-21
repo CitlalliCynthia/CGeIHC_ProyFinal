@@ -41,6 +41,11 @@ PROYECTO FINAL:
 #include "PointLight.h"
 #include "SpotLight.h"
 #include "Material.h"
+
+//para la música
+#include "Sound.h"
+
+
 const float toRadians = 3.14159265f / 180.0f;
 
 // --------------------------------------
@@ -80,6 +85,9 @@ Texture caminoTexture;
 
 //Rueda Fortuna
 Model RuedaFortuna_M;
+Model Montura_Rueda_M;
+Model Cabina_M;
+
 Model NeuvilletteCuerpo_Genshin_M;
 Model NeuvilletteHombro_Genshin_M;
 Model NeuvilletteBrazo_Genshin_M;
@@ -112,8 +120,16 @@ Model LukeNormal_M;
 
 //Carrusel
 Model Carrusel_Base_M;
-Model Carrusel_M;
+Model Carrusel_Movible_M;
+Model Caballos_Blancos_M;
+Model Caballos_Negros_M;
 Model Lyney_M;
+Model Lyney_Capa_M;
+Model Lyney_Hombro_M;
+Model Lyney_Brazo_M;
+Model Lyney_Mano_M;
+Model Lyney_Sombrero_M;
+Model Lyney_SombreroGato_M;
 
 //Baño Puesto Dardos
 Model Bano_M;
@@ -389,11 +405,12 @@ int helado3 = 0;
 
 //Animación Carros Chocones
 int banderaCarro1 = 0;
-float CarroAzul = 0.0f;
-int banderaCarro2 = 0;
 float CarroNaranja = 0.0f;
+float CarroNaranja1 = 0.0f;
+float CarroNaranja2 = 0.0f;
+int banderaCarro2 = 0;
+float CarroAzul = 0.0f;
 float CarroAzul1 = 0.0f;
-float CarroAzul2 = 0.0f;
 
 //Movimiento Bote 
 float Bangulovaria = 0.0f;
@@ -414,6 +431,10 @@ float BrazoMartillo = 20.0f;
 //Animacion Dados
 float TiroDado = 0.0f;
 
+//Movimiento Rueda Fortuna
+float giroRuedaFortuna = 0.0f;
+float giroCabina = 0.0f;
+
 //Movimiento Neuvillette (Otro Protagonista)
 float NeuviHombro = 0.0f;
 float NeuviBrazoY = 0.0f;
@@ -426,11 +447,30 @@ float ArtemBrazo = 0.0f;
 float ArtemHoja = 0.0f;
 float ArtemHoja2 = 0.0f;
 
+//Movimiento Carrusel
+float giroCarrusel = 0.0f;
+float caballosBlancosMovimiento = 0.0f;
+float caballosNegrosMovimiento = 0.0f;
+
+//Movimiento Lyney
+float LyneyHombro = 0.0f;
+float LyneyBrazo = 0.0f;
+float LyneyMano = 0.0f;
+float LyneyCapa = 0.0f;
+float LyneySombrero = 0.0f;
+float LyneySomPosicionY = 0.0f;
+float LyneySomPosicionZ = 0.0f;
+float contadorLyney = 0.0f;
+int banderaLyney = 0;
+
 //General, timing de comienzo de programa
+int banderaRupia = 0; //Bandera para el sonido de las rupias
 int contadorInicioPrograma = 0;
 int contadorInicioPrograma2 = 0;
 int contadorInicioPrograma3 = 0;
 int contadorInicioPrograma4 = 0;
+int contadorInicioPrograma5 = 0;
+int contadorInicioPrograma6 = 0;
 
 //Animaciones finales
 int contadorInicioPrograma7;
@@ -478,6 +518,20 @@ SpotLight spotLightsNocheDardos[MAX_SPOT_LIGHTS];
 //Luz Topos
 SpotLight spotLightsDiaTopos[MAX_SPOT_LIGHTS];
 SpotLight spotLightsNocheTopos[MAX_SPOT_LIGHTS];
+
+// --------------------------------------
+// ------------DEFINIR MUSICA------------
+// --------------------------------------
+
+SoundSystemClass soundSystem;
+SoundClass SoundTrack = nullptr;
+SoundClass Ambiental = nullptr;
+SoundClass Carrusel = nullptr;
+SoundClass Rupia = nullptr;
+ChannelClass chan1 = nullptr;
+ChannelClass chan2 = nullptr;
+ChannelClass chan3 = nullptr;
+ChannelClass chan4 = nullptr;
 
 
 // --------------------------------------
@@ -638,13 +692,34 @@ void CreateShaders()
 }
 
 
+// --------------------------------------
+// ------MODIFICAR VOLUMEN MÚSICA--------
+// --------------------------------------
+
+template<typename T>
+T clamp(T value, T minVal, T maxVal) {
+	if (value < minVal) return minVal;
+	if (value > maxVal) return maxVal;
+	return value;
+}
+
+void adjustVolume(FMOD::Channel* channel, float nuevoVolumen) {
+	float currentVolume;
+	if (channel && channel->getVolume(&currentVolume) == FMOD_OK) {
+		float newVolume = clamp(nuevoVolumen, 0.0f, 1.0f);
+		channel->setVolume(newVolume);
+		//std::cout << "Volumen actualizado: " << newVolume << std::endl;
+	}
+}
+
+
 // -------------------------------------------
 // --------------FUNCIÓN PRINCIPAL------------
 // -------------------------------------------
 
 int main()
 {
-	mainWindow = Window(1366, 768); // 1280, 1024 or 1024, 768
+	mainWindow = Window(1366, 768); //mainWindow = Window(1920, 1080);
 	mainWindow.Initialise();
 
 	CreateObjects();
@@ -685,10 +760,14 @@ int main()
 	// --------------------------------------
 	// ------------CARGAR MODELOS------------
 	// --------------------------------------
-	
 	//Rueda Fortuna
 	RuedaFortuna_M = Model();
-	RuedaFortuna_M.LoadModel("Models/RuedaFortuna/RuedaFortuna.obj");
+	RuedaFortuna_M.LoadModel("Models/RuedaFortuna/Rueda.obj");
+	Montura_Rueda_M = Model();
+	Montura_Rueda_M.LoadModel("Models/RuedaFortuna/Montura.obj");
+	Cabina_M = Model();
+	Cabina_M.LoadModel("Models/RuedaFortuna/Cabina.obj");
+
 	NeuvilletteCuerpo_Genshin_M = Model();
 	NeuvilletteCuerpo_Genshin_M.LoadModel("Models/Neuvillette_Genshin/NeuvilletteCuerpo_Genshin.obj");
 	NeuvilletteHombro_Genshin_M = Model();
@@ -724,7 +803,7 @@ int main()
 	//Banca Puesto de Helados
 	Wriothesley_Genshin_M = Model();
 	Wriothesley_Genshin_M.LoadModel("Models/Wriothesley_Genshin/Wriothesley_Genshin.obj");
-	
+
 	//Puesto de Dardos
 	PuestoDardos_M = Model();
 	PuestoDardos_M.LoadModel("Models/PuestoDardos/puestoDardos.obj");
@@ -740,14 +819,31 @@ int main()
 	Firefly_StarRail_M.LoadModel("Models/Firefly_StarRail/Firefly_StarRail.obj");
 	LukeNormal_M = Model();
 	LukeNormal_M.LoadModel("Models/LukeNormal-Themis/lukeNormal.obj");
-	
+
 	//Carrusel
 	Carrusel_Base_M = Model();
 	Carrusel_Base_M.LoadModel("Models/Carrusel/Base.obj");
-	Carrusel_M = Model();
-	Carrusel_M.LoadModel("Models/Carrusel/Carrusel.obj");
+	Carrusel_Movible_M = Model();
+	Carrusel_Movible_M.LoadModel("Models/Carrusel/Carrusel_Movible.obj");
+	Caballos_Blancos_M = Model();
+	Caballos_Blancos_M.LoadModel("Models/Carrusel/Caballos_Blancos.obj");
+	Caballos_Negros_M = Model();
+	Caballos_Negros_M.LoadModel("Models/Carrusel/Caballos_Negros.obj");
+
 	Lyney_M = Model();
 	Lyney_M.LoadModel("Models/Lyney_Genshin/Lyney_Genshin.obj");
+	Lyney_Capa_M = Model();
+	Lyney_Capa_M.LoadModel("Models/Lyney_Genshin/Lyney_Capa.obj");
+	Lyney_Hombro_M = Model();
+	Lyney_Hombro_M.LoadModel("Models/Lyney_Genshin/Lyney_Hombro.obj");
+	Lyney_Brazo_M = Model();
+	Lyney_Brazo_M.LoadModel("Models/Lyney_Genshin/Lyney_Brazo.obj");
+	Lyney_Mano_M = Model();
+	Lyney_Mano_M.LoadModel("Models/Lyney_Genshin/Lyney_Mano.obj");
+	Lyney_Sombrero_M = Model();
+	Lyney_Sombrero_M.LoadModel("Models/Lyney_Genshin/Lyney_Sombrero.obj");
+	Lyney_SombreroGato_M = Model();
+	Lyney_SombreroGato_M.LoadModel("Models/Lyney_Genshin/Lyney_SombreroGato.obj");
 
 	//Baño Puesto Dardos
 	Bano_M = Model();
@@ -784,7 +880,7 @@ int main()
 	PuestoPalomitas_M.LoadModel("Models/PuestoPalomitas/PuestoPalomitas.obj");
 	Feixiao_StarRail_M = Model();
 	Feixiao_StarRail_M.LoadModel("Models/Feixiao_StarRail/Feixiao_StarRail.obj");
-	
+
 	//Lanzamiento de Hacha
 	LanzamientoHacha_M = Model();
 	LanzamientoHacha_M.LoadModel("Models/LanzamientoHacha/LanzamientoHacha.obj");
@@ -792,7 +888,7 @@ int main()
 	Hacha_M.LoadModel("Models/LanzamientoHacha/Hacha.obj");
 	Wanderer_Genshin_M = Model();
 	Wanderer_Genshin_M.LoadModel("Models/Wanderer_Genshin/Wanderer_Genshin.obj");
-	
+
 	//Puesto Dados
 	MesaDados_M = Model();
 	MesaDados_M.LoadModel("Models/MesaDados/MesaDados.obj");
@@ -816,7 +912,7 @@ int main()
 	Bola_Boliche_M.LoadModel("Models/Boliche/Bola.obj");
 	Ayato_Genshin_M = Model();
 	Ayato_Genshin_M.LoadModel("Models/Ayato_Genshin/Ayato_Genshin.obj");
-	
+
 	//Puesto Golpear al Topo
 	GolpearTopo_M = Model();
 	GolpearTopo_M.LoadModel("Models/GolpearAlTopo/GolpearAlTopo.obj");
@@ -832,7 +928,7 @@ int main()
 	Topos_M.LoadModel("Models/GolpearAlTopo/Topos.obj");
 	GolpearTopo_Topos3_M = Model();
 	GolpearTopo_Topos3_M.LoadModel("Models/GolpearAlTopo/GolpearAlTopo_Topos3.obj");
-	
+
 	//Puesto Algodón Azúcar
 	MaquinaAlgodon_M = Model();
 	MaquinaAlgodon_M.LoadModel("Models/MaquinaAlgodon/MaquinaAlgodon.obj");
@@ -848,7 +944,7 @@ int main()
 	Carro_Azul_M.LoadModel("Models/PuestoCarrosChocones/CarroAzul.obj");
 	Carro_Naranja_M = Model();
 	Carro_Naranja_M.LoadModel("Models/PuestoCarrosChocones/CarroNaranja.obj");
-	
+
 	//Jaula Bateo
 	PuestoBateo_M = Model();
 	PuestoBateo_M.LoadModel("Models/PuestoBateo/puestoBateo.obj");
@@ -860,7 +956,7 @@ int main()
 	LukeCasual_Themis_M.LoadModel("Models/LukeCasual_Themis/LukeCasual.obj");
 	Maquina_Bateo_M = Model();
 	Maquina_Bateo_M.LoadModel("Models/PuestoBateo/maquinaBateo.obj");
-	
+
 	//Baño Boliche
 	Ratio_StarTail_M = Model();
 	Ratio_StarTail_M.LoadModel("Models/Ratio_StarRail/Ratio_StarRail.obj");
@@ -956,7 +1052,7 @@ int main()
 	Gato_Herta_M.LoadModel("Models/Gato_StarRail/Gato_StarRail_Herta.obj");
 	Gato_Verde_M = Model();
 	Gato_Verde_M.LoadModel("Models/Gato_StarRail/Gato_StarRail_Verde.obj");
-	
+
 	//Blade Star Rail
 	Blade_Cuerpo = Model();
 	Blade_Cuerpo.LoadModel("Models/Blade_StarRail/BladeCuerpo_StarRail.obj");
@@ -1044,7 +1140,7 @@ int main()
 	PuestoElotes_M.LoadModel("Models/PuestoElotes/puestoElotes.obj");
 	Kaveh_M = Model();
 	Kaveh_M.LoadModel("Models/Kaveh_Genshin/Kaveh_Genshin.obj");
-	
+
 	//Phanion Star Rail
 	Phanion_M = Model();
 	Phanion_M.LoadModel("Models/Phainon_StarRail/Phainon_StarRail.obj");
@@ -1084,6 +1180,21 @@ int main()
 	skyboxFacesNoche.push_back("Textures/Skybox/Night_Detras.tga");
 	skyboxFacesNoche.push_back("Textures/Skybox/Night_Enfrente.tga");
 	
+	// --------------------------------------
+	// -------------CARGAR MÚSICA-------------
+	// --------------------------------------
+
+	//Cargar la música
+	soundSystem.createSound(&SoundTrack, "Music/ClockTown_Zelda.wav");
+	soundSystem.createSound(&Ambiental, "Music/ParqueDiversiones.wav");
+	soundSystem.createSound(&Carrusel, "Music/Carrusel.wav");
+	soundSystem.createSound(&Rupia, "Music/N64_Ocarina_Rupee.wav");
+
+	//Correr la música, 0.0f (silencio), 1.0f (volumen original)
+	soundSystem.playSound(SoundTrack, &chan1, 0.8f, true);  // 80% volumen
+	soundSystem.playSound(Ambiental, &chan2, 1.0f, true);	// 100% volumen
+	soundSystem.playSound(Carrusel, &chan3, 0.0f, true);	// 0% volumen
+
 	// --------------------------------------
 	// -----------CREAR MATERIALES-----------
 	// --------------------------------------
@@ -1404,6 +1515,7 @@ int main()
 
 	glm::vec3 bladePosition = glm::vec3(83.0f, 6.463f, 130.0f);
 
+
 	// --------------------------------------
 	// ------------WHILE PRINCIPAL-----------
 	// --------------------------------------
@@ -1415,6 +1527,9 @@ int main()
 		deltaTime = now - lastTime;
 		deltaTime += (now - lastTime) / limitFPS;
 		lastTime = now;
+
+		//Para actualizar la información de la música
+		soundSystem.update();
 
 		// --------------------------------------
 		// ----------------SKYBOX----------------
@@ -1703,7 +1818,6 @@ int main()
 			else contadorBate = 0;
 		}
 
-		
 
 		//Actualizar el segundo arreglo de día (para encender y apagar Inazuma y Hot Dogs)
 		pointLightsDia2[0] = pointLightsDia[0];
@@ -1831,15 +1945,16 @@ int main()
 		glm::mat4 model(1.0);
 		glm::mat4 modelaux(1.0);
 		glm::mat4 modelaux2(1.0);
+		glm::mat4 modelaux3(1.0);
 		glm::vec3 color = glm::vec3(1.0f, 1.0f, 1.0f);
 
 		// --------------------------------------
 		// ----------ANIMACIONES STANDS----------
 		// --------------------------------------
-		
+
 		if (camaraAnimacion == 1) { //Stand hacha 3
 			banderaCamara = 1; //Para que la camara no se pueda mover hasta que se acabe la animación. Al final debe volver a 0.
-			
+
 			if (timerBateo < 1100.0) { //Timpo que va a durar la animación general del stand 670
 
 				//INICIO ANIMACIÓN DE LA MONEDA
@@ -1863,6 +1978,11 @@ int main()
 					BrazoDerecho_Izquierda.RenderModel();
 
 					if (timerBateo > 100.0 && timerBateo < 170.0) {
+						if (banderaRupia == 0) {
+							soundSystem.playSound(Rupia, &chan4, 1.0f, false);  // 100% volumen
+							banderaRupia = 1;
+						}
+							
 						//Moneda del juego
 						model = glm::mat4(1.0);
 						model = glm::translate(model, glm::vec3(-108.85f, 7.6f, -78.6f));//(x -1.65, y +0.5, z misma)
@@ -1872,6 +1992,8 @@ int main()
 					}
 				}
 				if (brazoVariacion1 >= 20.0 && brazoVariacion >= 100 && timerBateo > 180.0) {
+					banderaRupia = 0;
+					
 					//Antebrazo derecho
 					model = glm::mat4(1.0);
 					model = glm::translate(model, glm::vec3(-107.2f, 7.1f, -78.6f));
@@ -2125,7 +2247,7 @@ int main()
 				}
 
 				////
-				
+
 				timerBateo += 0.5f * deltaTime;
 			}
 			else {
@@ -2156,7 +2278,7 @@ int main()
 		}
 		else if (camaraAnimacion == 2) { //Stand boliche
 			banderaCamara = 1; //Para que la camara no se pueda mover hasta que se acabe la animación. Al final debe volver a 0.
-			
+
 			if (timerBateo < 1700.0) { //Timpo que va a durar la animación general del stand  1650
 
 				//INICIO ANIMACIÓN DE LA MONEDA
@@ -2194,6 +2316,11 @@ int main()
 					Rendija_Boliche_M.RenderModel();
 
 					if (timerBateo > 100.0 && timerBateo < 170.0) {
+						if (banderaRupia == 0) {
+							soundSystem.playSound(Rupia, &chan4, 1.0f, false);  // 100% volumen
+							banderaRupia = 1;
+						}
+						
 						//Moneda del juego
 						model = glm::mat4(1.0);
 						model = glm::translate(model, glm::vec3(-54.0f, 9.0f, 65.85f));//(x misma, y +0.5, z +1.65)
@@ -2202,6 +2329,8 @@ int main()
 					}
 				}
 				if (brazoVariacion1 >= 20.0 && brazoVariacion >= 100 && timerBateo > 180.0) {
+					banderaRupia = 0;
+					
 					//Antebrazo derecho
 					model = glm::mat4(1.0);
 					model = glm::translate(model, glm::vec3(-54.0f, 8.5f, 64.2f));
@@ -2422,7 +2551,7 @@ int main()
 
 						//Mano separada norte
 						model = glm::translate(model, glm::vec3(0.0f, -1.0f, 0.08f));
-						model = glm::rotate(model, ( - Extra1 + Extra2) * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));//para el munequeo
+						model = glm::rotate(model, (-Extra1 + Extra2) * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));//para el munequeo
 						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 						ManoDerecho_Separado.RenderModel();
 
@@ -2994,7 +3123,7 @@ int main()
 		}
 		else if (camaraAnimacion == 3) { //Stand dados
 			banderaCamara = 1; //Para que la camara no se pueda mover hasta que se acabe la animación. Al final debe volver a 0.
-			
+
 			if (timerBateo < 830.0) { //Timpo que va a durar la animación general del stand
 
 				//INICIO ANIMACIÓN DE LA MONEDA
@@ -3018,6 +3147,11 @@ int main()
 					BrazoDerecho_Izquierda.RenderModel();
 
 					if (timerBateo > 100.0 && timerBateo < 170.0) {
+						if (banderaRupia == 0) {
+							soundSystem.playSound(Rupia, &chan4, 1.0f, false);  // 100% volumen
+							banderaRupia = 1;
+						}
+
 						//Moneda del juego
 						model = glm::mat4(1.0);
 						model = glm::translate(model, glm::vec3(-104.65f, 7.5f, -36.6f));//(x -1.65, y +0.5, z misma)
@@ -3027,6 +3161,8 @@ int main()
 					}
 				}
 				if (brazoVariacion1 >= 20.0 && brazoVariacion >= 100 && timerBateo > 180.0) {
+					banderaRupia = 0;
+					
 					//Antebrazo derecho
 					model = glm::mat4(1.0);
 					model = glm::translate(model, glm::vec3(-103.0f, 7.0f, -36.6f));
@@ -3248,7 +3384,7 @@ int main()
 		}
 		else if (camaraAnimacion == 4) { //Stand bateo
 			banderaCamara = 1; //Para que la camara no se pueda mover hasta que se acabe la animación. Al final debe volver a 0.
-			
+
 			if (timerBateo < 1200.0) { //Timpo que va a durar la animación general del stand		
 
 				//INICIO ANIMACIÓN DE LA MONEDA
@@ -3272,6 +3408,11 @@ int main()
 					BrazoDerecho_Sur.RenderModel();
 
 					if (timerBateo > 100.0 && timerBateo < 170.0) {
+						if (banderaRupia == 0) {
+							soundSystem.playSound(Rupia, &chan4, 1.0f, false);  // 100% volumen
+							banderaRupia = 1;
+						}
+						
 						//Moneda del juego
 						model = glm::mat4(1.0);
 						model = glm::translate(model, glm::vec3(-3.6f, 8.5f, 95.85f));//(x misma, y +0.5, z +1.65)
@@ -3280,6 +3421,8 @@ int main()
 					}
 				}
 				if (brazoVariacion1 >= 20.0 && brazoVariacion >= 100 && timerBateo > 180.0) {
+					banderaRupia = 0;
+					
 					//Antebrazo derecho
 					model = glm::mat4(1.0);
 					model = glm::translate(model, glm::vec3(-3.6f, 8.0f, 94.2f));
@@ -3338,7 +3481,7 @@ int main()
 					if (movDardoNuevo < 40.0 && movBateo >= 0.8 && inicioBrazo >= 100.0) {//Mueve la muneca
 						//Bate
 						model = glm::mat4(1.0);
-						model = glm::translate(model, glm::vec3(-3.5f - movBateo, 8.2f, 96.0f - movDardoNuevo*0.015f));
+						model = glm::translate(model, glm::vec3(-3.5f - movBateo, 8.2f, 96.0f - movDardoNuevo * 0.015f));
 						model = glm::rotate(model, 30 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));//+30 grados
 						model = glm::rotate(model, (movBateo * 50) * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
 						model = glm::rotate(model, -movDardoNuevo * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));//para el munequeo
@@ -3575,7 +3718,7 @@ int main()
 		}
 		else if (camaraAnimacion == 5) { //Stand dardos
 			banderaCamara = 1; //Para que la camara no se pueda mover hasta que se acabe la animación. Al final debe volver a 0.
-			
+
 			if (timerBateo < 980.0) { //Timpo que va a durar la animación general del stand
 
 				//INICIO ANIMACIÓN DE LA MONEDA
@@ -3625,6 +3768,11 @@ int main()
 					Globo3_M.RenderModel();
 
 					if (timerBateo > 100.0 && timerBateo < 170.0) {
+						if (banderaRupia == 0) {
+							soundSystem.playSound(Rupia, &chan4, 1.0f, false);  // 100% volumen
+							banderaRupia = 1;
+						}
+						
 						//Moneda del juego
 						model = glm::mat4(1.0);
 						model = glm::translate(model, glm::vec3(93.95f, 8.2f, -25.0f));//(x +1.65, y +0.5, z misma)
@@ -3634,6 +3782,8 @@ int main()
 					}
 				}
 				if (brazoVariacion1 >= 20.0 && brazoVariacion >= 100 && timerBateo > 180.0) {
+					banderaRupia = 0;
+					
 					//Antebrazo derecho
 					model = glm::mat4(1.0);
 					model = glm::translate(model, glm::vec3(92.3f, 7.7f, -25.0f));
@@ -3769,7 +3919,7 @@ int main()
 
 						//Mano separada izquierda
 						model = glm::translate(model, glm::vec3(0.0f, -1.2f, 0.08f));
-						model = glm::rotate(model, (- Extra1 + Extra2) * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));//para el munequeo
+						model = glm::rotate(model, (-Extra1 + Extra2) * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));//para el munequeo
 						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 						ManoIzquierda_Separado.RenderModel();
 
@@ -3902,7 +4052,7 @@ int main()
 
 						//Mano separada izquierda
 						model = glm::translate(model, glm::vec3(0.0f, -1.2f, 0.08f));
-						model = glm::rotate(model, (- Extra5 + Extra6) * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));//para el munequeo
+						model = glm::rotate(model, (-Extra5 + Extra6) * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));//para el munequeo
 						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 						ManoIzquierda_Separado.RenderModel();
 
@@ -4097,7 +4247,7 @@ int main()
 		}
 		else if (camaraAnimacion == 6) { //Stand topo
 			banderaCamara = 1; //Para que la camara no se pueda mover hasta que se acabe la animación. Al final debe volver a 0.
-			
+
 			if (timerBateo < 860.0) { //Timpo que va a durar la animación general del stand
 
 				//INICIO ANIMACIÓN DE LA MONEDA
@@ -4177,6 +4327,11 @@ int main()
 					GolpearTopo_Topos3_M.RenderModel();
 
 					if (timerBateo > 100.0 && timerBateo < 170.0) {
+						if (banderaRupia == 0) {
+							soundSystem.playSound(Rupia, &chan4, 1.0f, false);  // 100% volumen
+							banderaRupia = 1;
+						}
+						
 						//Moneda del juego
 						model = glm::mat4(1.0);
 						model = glm::translate(model, glm::vec3(59.5f, 7.6f, 64.85f));//(x misma, y +0.5, z +1.65)
@@ -4185,6 +4340,8 @@ int main()
 					}
 				}
 				if (brazoVariacion1 >= 20.0 && brazoVariacion >= 100 && timerBateo > 180.0) {
+					banderaRupia = 0;
+					
 					//Antebrazo derecho
 					model = glm::mat4(1.0);
 					model = glm::translate(model, glm::vec3(59.5f, 7.1f, 63.2f));
@@ -4296,7 +4453,7 @@ int main()
 
 						//Topo1
 						model = glm::mat4(1.0);
-						model = glm::translate(model, glm::vec3(65.0f, 0.0f + (- inicioBrazo + movBateo)* 0.003, 70.0f));
+						model = glm::translate(model, glm::vec3(65.0f, 0.0f + (-inicioBrazo + movBateo) * 0.003, 70.0f));
 						model = glm::rotate(model, -180 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 						GolpearTopo_Topos1_M.RenderModel();
@@ -4320,9 +4477,9 @@ int main()
 					if (movDardoNuevo < 100.0 && movBateo >= 100 && inicioBrazo >= 110.0) {//Golpea
 						//Antebrazo derecho
 						model = glm::mat4(1.0);
-						model = glm::translate(model, glm::vec3(59.5f + movDardoNuevo * 0.014, 7.1f, 63.2f + movDardoNuevo*0.005));
+						model = glm::translate(model, glm::vec3(59.5f + movDardoNuevo * 0.014, 7.1f, 63.2f + movDardoNuevo * 0.005));
 						model = glm::rotate(model, 10 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
-						model = glm::rotate(model, (- inicioBrazo + movDardoNuevo) * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));//mueve arriba (-) o abajo (+)
+						model = glm::rotate(model, (-inicioBrazo + movDardoNuevo) * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));//mueve arriba (-) o abajo (+)
 						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 						BrazoDerecho_Derecha.RenderModel();
 
@@ -4384,7 +4541,7 @@ int main()
 
 						//Topo1
 						model = glm::mat4(1.0);
-						model = glm::translate(model, glm::vec3(65.0f, 0.0f + (-inicioBrazo + movBateo -movBateoPelota) * 0.003, 70.0f));
+						model = glm::translate(model, glm::vec3(65.0f, 0.0f + (-inicioBrazo + movBateo - movBateoPelota) * 0.003, 70.0f));
 						model = glm::rotate(model, -180 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 						glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 						GolpearTopo_Topos1_M.RenderModel();
@@ -4974,7 +5131,6 @@ int main()
 				//
 			}
 		}
-		
 
 		// --------------------------------------
 		// -----------------PISO-----------------
@@ -4994,14 +5150,99 @@ int main()
 		// --------------------------------------
 		// ------------RUEDA FORTUNA-------------
 		// --------------------------------------
-		
-		//Rueda Fortuna
+
+		//Montura Rueda
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		RuedaFortuna_M.RenderModel();
-		
+		Montura_Rueda_M.RenderModel();
+
 		if (contadorInicioPrograma == 1) {
+
+			if (giroRuedaFortuna < 360.0f) {
+				giroRuedaFortuna += 0.3f * deltaTime;
+			}
+			else {
+				giroRuedaFortuna = 360.0f - giroRuedaFortuna;
+			}
+
+			if (giroCabina > -360.0f) {
+				giroCabina -= 0.3f * deltaTime;
+			}
+			else {
+				giroCabina = -360.0f - giroCabina;
+			}
+
+			//Rueda Fortuna (Rueda)
+			model = glm::mat4(1.0);
+			model = glm::translate(model, glm::vec3(0.0f, 67.35f, -0.9f));
+			model = glm::rotate(model, giroRuedaFortuna * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+			modelaux3 = model;
+			glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+			RuedaFortuna_M.RenderModel();
+
+			//Cabinas izquierda y centro
+			model = modelaux3;
+			model = glm::translate(model, glm::vec3(0.0f, -51.85f, -0.1f));
+			model = glm::rotate(model, giroCabina * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+			glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+			Cabina_M.RenderModel();
+
+			model = modelaux3;
+			model = glm::translate(model, glm::vec3(-30.4f, -42.0f, -0.1f));
+			model = glm::rotate(model, giroCabina * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+			glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+			Cabina_M.RenderModel();
+
+			model = modelaux3;
+			model = glm::translate(model, glm::vec3(-49.4f, -16.0f, -0.1f));
+			model = glm::rotate(model, giroCabina * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+			glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+			Cabina_M.RenderModel();
+
+			model = modelaux3;
+			model = glm::translate(model, glm::vec3(-49.0f, 16.0f, -0.1f));
+			model = glm::rotate(model, giroCabina * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+			glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+			Cabina_M.RenderModel();
+
+			model = modelaux3;
+			model = glm::translate(model, glm::vec3(-30.3f, 41.9f, -0.1f));
+			model = glm::rotate(model, giroCabina * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+			glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+			Cabina_M.RenderModel();
+
+			model = modelaux3;
+			model = glm::translate(model, glm::vec3(0.0f, 51.5f, -0.1f));
+			model = glm::rotate(model, giroCabina * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+			glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+			Cabina_M.RenderModel();
+
+			//Cabinas derecha
+			model = modelaux3;
+			model = glm::translate(model, glm::vec3(30.4f, -42.0f, -0.1f));
+			model = glm::rotate(model, giroCabina * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+			glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+			Cabina_M.RenderModel();
+
+			model = modelaux3;
+			model = glm::translate(model, glm::vec3(49.4f, -16.0f, -0.1f));
+			model = glm::rotate(model, giroCabina * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+			glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+			Cabina_M.RenderModel();
+
+			model = modelaux3;
+			model = glm::translate(model, glm::vec3(49.0f, 16.0f, -0.1f));
+			model = glm::rotate(model, giroCabina * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+			glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+			Cabina_M.RenderModel();
+
+			model = modelaux3;
+			model = glm::translate(model, glm::vec3(30.3f, 41.9f, -0.1f));
+			model = glm::rotate(model, giroCabina * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+			glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+			Cabina_M.RenderModel();
+
 
 			//Neuvillette (cuerpo) Genshin Impact
 			model = glm::mat4(1.0);
@@ -5246,7 +5487,7 @@ int main()
 		// --------------------------------------
 
 		Material_Madera.UseMaterial(uniformSpecularIntensity, uniformShininess);
-		
+
 		//Puesto Dardos
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(110.0f, 0.0f, -25.0f));
@@ -5330,6 +5571,28 @@ int main()
 		// ---------------CARRUSEL---------------
 		// --------------------------------------
 
+		//AUDIO
+		if (bladePosition.x >= 15.0f && bladePosition.x <= 80 && bladePosition.z >= -100.0f && bladePosition.z <= -30.0f) {
+			//Permite ajustar el volumen a uno cierto
+			adjustVolume(chan3, 0.8f);
+			adjustVolume(chan1, 0.5f);
+		}
+		else if (bladePosition.x >= 5.0f && bladePosition.x <= 90 && bladePosition.z >= -110.0f && bladePosition.z <= -20.0f) {
+			//Permite ajustar el volumen a uno cierto
+			adjustVolume(chan3, 0.5f);
+			adjustVolume(chan1, 0.6f);
+		}
+		else if (bladePosition.x >= -10.0f && bladePosition.x <= 105 && bladePosition.z >= -125.0f && bladePosition.z <= -05.0f) {
+			//Permite ajustar el volumen a uno cierto
+			adjustVolume(chan3, 0.3f);
+			adjustVolume(chan1, 0.7f);
+		}
+		else {
+			//Permite ajustar el volumen a uno cierto
+			adjustVolume(chan3, 0.0f); //"Apagarlo"
+			adjustVolume(chan1, 0.8f); //Regresarlo a su valor normal
+		}
+
 		//Base no movible Carrusel
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(43.0f, 0.0f, -65.0f));
@@ -5337,15 +5600,154 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Carrusel_Base_M.RenderModel();
 
-		//Carrusel
-		Carrusel_M.RenderModel();
+		if (contadorInicioPrograma5 == 1) {
 
-		//Lyney Genshin Impact
-		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(69.0f, 0.0f, -65.0f));
-		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Lyney_M.RenderModel();
+			if (giroCarrusel < 360.0f) {
+				giroCarrusel += 0.3f * deltaTime;
+			}
+			else {
+				giroCarrusel = 360.0f - giroCarrusel;
+			}
+
+			caballosBlancosMovimiento -= 1.5f * deltaTime;
+
+			caballosNegrosMovimiento += 1.5f * deltaTime;
+
+			//Carrusel Movible
+			model = glm::rotate(model, giroCarrusel * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+			glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+			Carrusel_Movible_M.RenderModel();
+
+			model = glm::mat4(1.0);
+			model = glm::translate(model, glm::vec3(43.0f, 0.0f +sin(glm::radians(caballosBlancosMovimiento)), -65.0f));
+			model = glm::rotate(model, giroCarrusel * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+			glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+			Caballos_Blancos_M.RenderModel();
+
+			//Caballos Negros
+			model = glm::mat4(1.0);
+			model = glm::translate(model, glm::vec3(43.0f, 0.0f +sin(glm::radians(caballosNegrosMovimiento)), -65.0f));
+			model = glm::rotate(model, giroCarrusel * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+			glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+			Caballos_Negros_M.RenderModel();
+
+			//Lyney Genshin Impact (Cuerpo)
+			model = glm::mat4(1.0);
+			model = glm::translate(model, glm::vec3(69.0f, 0.0f, -65.0f));
+			//model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+			glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+			Lyney_M.RenderModel();
+
+			if (banderaLyney == 0) {
+				if (LyneyHombro < 35.0f) {
+					LyneyHombro += 0.1f * deltaTime;
+				}
+				if (LyneyMano < 25.0f) {
+					LyneyMano += 0.1f * deltaTime;
+				}
+				if (LyneyCapa < 25.0f) {
+					LyneyCapa += 0.1f * deltaTime;
+				}
+				if (LyneyBrazo < 90.0f) {
+					LyneyBrazo += 0.3f * deltaTime;
+				}
+				if (LyneySombrero < 160.0f) {
+					LyneySombrero += 0.5f * deltaTime;
+				}
+				if (LyneySomPosicionY > -1.80) { //-1.62
+					LyneySomPosicionY -= 0.007f * deltaTime;
+				}
+				if (LyneySomPosicionZ < 2.47F) {
+					LyneySomPosicionZ += 0.007f * deltaTime;
+				}
+
+				if (contadorLyney < 60.0f) {
+					contadorLyney += 0.1f * deltaTime;
+				}
+				else banderaLyney = 1;
+
+			}
+			else {
+				if (LyneyHombro > 0.0f) {
+					LyneyHombro -= 0.1f * deltaTime;
+				}
+				if (LyneyMano > 0.0f) {
+					LyneyMano -= 0.1f * deltaTime;
+				}
+				if (LyneyCapa > 0.0f) {
+					LyneyCapa -= 0.1f * deltaTime;
+				}
+				if (LyneyBrazo > 0.0f) {
+					LyneyBrazo -= 0.3f * deltaTime;
+				}
+				if (LyneySombrero > 0.0f) {
+					LyneySombrero -= 0.5f * deltaTime;
+				}
+				if (LyneySomPosicionY < 0.0f) {
+					LyneySomPosicionY += 0.007f * deltaTime;
+				}
+				if (LyneySomPosicionZ > 0.0f) {
+					LyneySomPosicionZ -= 0.007f * deltaTime;
+				}
+
+				if (contadorLyney > 0.0f) {
+					contadorLyney -= 0.1f * deltaTime;
+				}
+				else banderaLyney = 0;
+			}
+
+			//Lyney Hombro
+			model = glm::translate(model, glm::vec3(0.3f, 6.46f, 0.7f));
+			model = glm::rotate(model, LyneyHombro * toRadians, glm::vec3(1.0f, 0.0f, 0.0f)); //35
+			glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+			Lyney_Hombro_M.RenderModel();
+
+			//Lyney Brazo
+			model = glm::translate(model, glm::vec3(0.105f, 0.095f + 0.06f, 0.88f)); //+0.1f en Y
+			model = glm::rotate(model, LyneyBrazo * toRadians, glm::vec3(1.0f, 0.0f, 0.0f)); //90
+			glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+			Lyney_Brazo_M.RenderModel();
+
+			//Lyney Mano
+			model = glm::translate(model, glm::vec3(0.235f, 0.8f, -0.26f));
+			model = glm::rotate(model, LyneyMano * toRadians, glm::vec3(1.0f, 0.0f, 0.0f)); //25
+			glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+			Lyney_Mano_M.RenderModel();
+
+			//Lyney Capa
+			model = glm::mat4(1.0);
+			model = glm::translate(model, glm::vec3(69.4f, 6.7f, -64.6f));
+			model = glm::rotate(model, LyneyCapa * toRadians, glm::vec3(1.0f, 0.0f, 0.0f)); //25
+			glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+			Lyney_Capa_M.RenderModel();
+
+			if (contadorLyney < 36.0f) {
+				//Lyney Sombrero
+				model = glm::mat4(1.0);
+				model = glm::translate(model, glm::vec3(69.89f, 7.67f + LyneySomPosicionY, -64.34f + LyneySomPosicionZ));
+				model = glm::rotate(model, LyneySombrero * toRadians, glm::vec3(1.0f, 0.0f, 0.0f)); //160
+				glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+				Lyney_Sombrero_M.RenderModel();
+			}
+			else if (banderaLyney == 0) {
+				//Lyney Sombrero Gato
+				model = glm::mat4(1.0);
+				model = glm::translate(model, glm::vec3(69.89f, 7.67f + LyneySomPosicionY, -64.34f + LyneySomPosicionZ));
+				model = glm::rotate(model, LyneySombrero * toRadians, glm::vec3(1.0f, 0.0f, 0.0f)); //160
+				glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+				Lyney_SombreroGato_M.RenderModel();
+			}
+			else {
+				//Lyney Sombrero
+				model = glm::mat4(1.0);
+				model = glm::translate(model, glm::vec3(69.89f, 7.67f + LyneySomPosicionY, -64.34f + LyneySomPosicionZ));
+				model = glm::rotate(model, LyneySombrero * toRadians, glm::vec3(1.0f, 0.0f, 0.0f)); //160
+				glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+				Lyney_Sombrero_M.RenderModel();
+			}
+
+		}
+		else contadorInicioPrograma5++;
 
 		//Basura Honkai Star Rail
 		model = glm::mat4(1.0);
@@ -5612,7 +6014,7 @@ int main()
 		// --------------------------------------
 
 		Material_Terciopelo.UseMaterial(uniformSpecularIntensity, uniformShininess);
-		
+
 		//Puesto de Tiro de Dados
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(-113.0f, 0.0f, -35.0f));
@@ -5624,7 +6026,7 @@ int main()
 
 		//Aventurine Honkai Star Rail
 		Aventurine_StarRail_M.RenderModel();
-		
+
 		//Lámpara Genshin Impact
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(-120.0f, 0.0f, -20.0f));
@@ -5669,13 +6071,13 @@ int main()
 		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Globo_Naranja_M.RenderModel();
-		
+
 		// --------------------------------------
 		// -----------PUESTO BOLICHE-------------
 		// --------------------------------------
 		
 		Material_MaderaPulida.UseMaterial(uniformSpecularIntensity, uniformShininess);
-		
+
 		//Puesto Boliche
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(-60.0f, 0.0f, 93.0f));
@@ -5689,7 +6091,7 @@ int main()
 			//Rendija Boliche
 			Rendija_Boliche_M.RenderModel();
 		}
-		
+
 		//Ayato Genshin Impact
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(-25.0f, 0.0f, 83.0f));
@@ -5741,7 +6143,7 @@ int main()
 		// --------------------------------------
 
 		Material_Plastico.UseMaterial(uniformSpecularIntensity, uniformShininess);
-		
+
 		//Puesto Golpear al Topo
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(65.0f, 0.0f, 70.0f));
@@ -5769,7 +6171,7 @@ int main()
 		model = glm::translate(model, glm::vec3(-3.0f, 0.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Yanqing_StarRail_M.RenderModel();
-		
+
 		//Lámpara Genshin Impact
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(49.5f, 0.0f, 80.0f));
@@ -5822,19 +6224,83 @@ int main()
 		//Artem Casual Tears of Themis
 		ArtemCasual_Themis_M.RenderModel();
 
-		//Carro Azul
-		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(12.0f, 5.0f, -150.0f));
-		model = glm::rotate(model, 45 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Carro_Azul_M.RenderModel();
+		if (contadorInicioPrograma6 == 1) {
+			
+			if (banderaCarro1 == 0) {
+				if (CarroNaranja1 > -30.0f) {
+					CarroNaranja1 -= 0.2f * deltaTime;
+				}
+				else banderaCarro1 = 1;
+			}
+			else if (banderaCarro1 == 1) {
+				if (CarroNaranja < 70.0f) {
+					CarroNaranja += 0.5f * deltaTime;
+				}
+				else banderaCarro1 = 2;
+			}
+			else if (banderaCarro1 == 2) {
+				if (CarroNaranja2 < 25.0f) {
+					CarroNaranja2 += 0.2f * deltaTime;
+				}
+				else banderaCarro1 = 3;
+			}
+			else if (banderaCarro1 == 3) {
+				if (CarroNaranja < 200.0f) {
+					CarroNaranja += 0.7f * deltaTime;
+				}
+				else banderaCarro1 = 4;
+			}
+			else if (banderaCarro1 == 4) {
+				if (CarroNaranja2 > 0.0f) {
+					CarroNaranja2 -= 0.2f * deltaTime;
+				}
+				
+				if (CarroNaranja1 < 0.0f) {
+					CarroNaranja1 += 0.2f * deltaTime;
+				}
+				else banderaCarro1 = 5;
+			}
+			else if (banderaCarro1 == 5) {
+				if (CarroNaranja > 0.0f) {
+					CarroNaranja -= 0.7f * deltaTime;
+				}
+				else banderaCarro1 = 0;
+			}
 
-		//Carro Naranja
-		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(18.0f, 5.0f, -170.0f));
-		model = glm::rotate(model, -20 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		Carro_Naranja_M.RenderModel();
+			if (banderaCarro2 == 0) {
+				if (CarroAzul < 9.0f) {
+					CarroAzul += 0.1f * deltaTime;
+				}
+				if (CarroAzul1 < 9.0f) {
+					CarroAzul1 += 0.1f * deltaTime;
+				}
+				else banderaCarro2 = 1;
+			}
+			else if (banderaCarro2 == 1) {
+				if (CarroAzul > 0.0f) {
+					CarroAzul -= 0.1f * deltaTime;
+				}
+				if (CarroAzul1 > 0.0f) {
+					CarroAzul1 -= 0.1f * deltaTime;
+				}
+				else banderaCarro2 = 0;
+			}
+
+			//Carro Naranja
+			model = glm::mat4(1.0);
+			model = glm::translate(model, glm::vec3(18.0f + CarroNaranja1, 5.0f, -170.0f + CarroNaranja2));
+			model = glm::rotate(model, (-70 + CarroNaranja) * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+			glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+			Carro_Naranja_M.RenderModel();
+
+			//Carro Azul
+			model = glm::mat4(1.0);
+			model = glm::translate(model, glm::vec3(12.0f + CarroAzul, 5.0f, -150.0f + CarroAzul1));
+			model = glm::rotate(model, 45 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+			glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+			Carro_Azul_M.RenderModel();
+		}
+		else contadorInicioPrograma6++;
 
 		// --------------------------------------
 		// ------------BAÑO BOLICHE--------------
@@ -6103,7 +6569,7 @@ int main()
 		model = glm::translate(model, glm::vec3(-27.0f, 0.0f, -116.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Gato_Herta_M.RenderModel();
-
+		
 		// --------------------------------------
 		// -------------PISO CAMINO--------------
 		// --------------------------------------
@@ -6145,10 +6611,6 @@ int main()
 		// --------------------------------------
 
 		Material_Avatar.UseMaterial(uniformSpecularIntensity, uniformShininess);
-
-		// --------------------------------------
-		// ----------BLADE JERARQUICO------------
-		// --------------------------------------
 
 		if (mainWindow.getAvanzaBlade() == 1) {
 
@@ -6418,7 +6880,7 @@ int main()
 		//Kaveh Genshin
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Kaveh_M.RenderModel();
-		
+
 		// --------------------------------------
 		// ----------------PHAINON---------------
 		// --------------------------------------
@@ -6471,11 +6933,6 @@ int main()
 		}
 		else contadorInicioPrograma8++;
 
-		
-
-
-
-
 		//-----------------¡¡TRANSPARENCIAS!!---------------------------------
 
 		// --------------------------------------
@@ -6493,14 +6950,14 @@ int main()
 		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Wanderer_Genshin_M.RenderModel();
-		
+
 		//Luke Casual Tears of Themis
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 85.0f));
 		model = glm::rotate(model, -180 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		LukeCasual_Themis_M.RenderModel();
-		
+
 		//Basura Honkai Star Rail
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(16.0f, 0.0f, 80.0f));
@@ -6514,14 +6971,14 @@ int main()
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 		Material_Reja.UseMaterial(uniformSpecularIntensity, uniformShininess);
-		
+
 		//Puesto de Lanzamiento de Hacha
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(-105.0f, 0.0f, -78.0f));
 		model = glm::rotate(model, 90 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		LanzamientoHacha_M.RenderModel();
-		
+
 		//Jaula Bateo
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 85.0f));
@@ -6535,11 +6992,11 @@ int main()
 		model = glm::rotate(model, -180 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Maquina_Bateo_M.RenderModel();
-		
+
 		//------
 		//REJAS-
 		//------
-		
+
 		//Derecha
 		model = glm::mat4(1.0);
 		model = glm::translate(model, glm::vec3(130.0f, 0.0f, 0.0f));
@@ -6791,7 +7248,6 @@ int main()
 		meshList[1]->RenderMesh();
 
 		glDisable(GL_BLEND);
-
 
 		glUseProgram(0);
 
